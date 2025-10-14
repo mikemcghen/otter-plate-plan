@@ -8,7 +8,8 @@ All colors MUST be HSL.
 
 @layer base {
   :root {
-    --background: 270 30% 98%;
+    /* Light Mode - Bright & Clean */
+    --background: 0 0% 100%;
     --foreground: 270 15% 15%;
 
     --card: 0 0% 100%;
@@ -44,13 +45,6 @@ All colors MUST be HSL.
 
     --radius: 1rem;
 
-    --gradient-primary: linear-gradient(135deg, hsl(270 70% 60%), hsl(285 80% 65%));
-    --gradient-success: linear-gradient(135deg, hsl(145 65% 50%), hsl(160 60% 55%));
-    --gradient-background: linear-gradient(180deg, hsl(270 30% 98%), hsl(280 35% 96%));
-
-    --shadow-glow: 0 0 30px hsl(270 70% 60% / 0.3);
-    --shadow-card: 0 4px 20px hsl(270 20% 20% / 0.08);
-
     --sidebar-background: 0 0% 98%;
     --sidebar-foreground: 240 5.3% 26.1%;
     --sidebar-primary: 240 5.9% 10%;
@@ -62,46 +56,40 @@ All colors MUST be HSL.
   }
 
   .dark {
-    --background: 270 40% 8%;
+    /* Dark Mode - Rich & Vibrant */
+    --background: 270 40% 10%;
     --foreground: 270 20% 95%;
 
-    --card: 270 30% 12%;
+    --card: 270 35% 14%;
     --card-foreground: 270 20% 95%;
 
-    --popover: 270 30% 12%;
+    --popover: 270 35% 14%;
     --popover-foreground: 270 20% 95%;
 
-    --primary: 270 70% 65%;
+    --primary: 270 80% 70%;
     --primary-foreground: 270 15% 15%;
 
-    --secondary: 270 30% 18%;
+    --secondary: 270 30% 20%;
     --secondary-foreground: 270 20% 95%;
 
-    --muted: 270 30% 18%;
-    --muted-foreground: 270 15% 60%;
+    --muted: 270 30% 20%;
+    --muted-foreground: 270 15% 65%;
 
-    --accent: 285 80% 70%;
+    --accent: 285 85% 75%;
     --accent-foreground: 270 15% 15%;
 
-    --destructive: 0 62.8% 50.6%;
+    --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 100%;
 
-    --success: 145 65% 55%;
+    --success: 145 70% 55%;
     --success-foreground: 0 0% 100%;
 
-    --streak: 25 95% 60%;
-    --streak-foreground: 0 0% 100%;
+    --streak: 25 95% 65%;
+    --streak-foreground: 270 15% 15%;
 
-    --border: 270 30% 20%;
-    --input: 270 30% 20%;
-    --ring: 270 70% 65%;
-
-    --gradient-primary: linear-gradient(135deg, hsl(270 70% 65%), hsl(285 80% 70%));
-    --gradient-success: linear-gradient(135deg, hsl(145 65% 55%), hsl(160 60% 60%));
-    --gradient-background: linear-gradient(180deg, hsl(270 40% 8%), hsl(280 35% 10%));
-
-    --shadow-glow: 0 0 30px hsl(270 70% 65% / 0.4);
-    --shadow-card: 0 4px 20px hsl(270 40% 5% / 0.5);
+    --border: 270 30% 25%;
+    --input: 270 30% 25%;
+    --ring: 270 80% 70%;
 
     --sidebar-background: 240 5.9% 10%;
     --sidebar-foreground: 240 4.8% 95.9%;
@@ -116,15 +104,26 @@ All colors MUST be HSL.
 
 @layer base {
   * {
-    @apply border-border transition-colors duration-200;
+    @apply border-border;
   }
 
   body {
     @apply bg-background text-foreground;
-    transition: background-color 0.3s ease, color 0.3s ease;
   }
-  
-  html {
-    transition: background-color 0.3s ease;
+
+  /* Smooth theme transition */
+  *,
+  *::before,
+  *::after {
+    transition-property: background-color, border-color, color, fill, stroke, box-shadow;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    transition-duration: 300ms;
+  }
+
+  /* Disable transitions for animations and transforms to avoid conflicts */
+  *[class*="animate-"],
+  svg,
+  svg * {
+    transition-property: none !important;
   }
 }

@@ -28,9 +28,10 @@ export const MacroRing = ({
             cx={size / 2}
             cy={size / 2}
             r={radius}
-            stroke="hsl(var(--border))"
+            stroke="hsl(var(--muted))"
             strokeWidth={strokeWidth}
             fill="none"
+            opacity="0.3"
           />
           <circle
             cx={size / 2}

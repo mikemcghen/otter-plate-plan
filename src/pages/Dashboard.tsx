@@ -88,7 +88,7 @@ const Dashboard = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-background via-background to-muted/30 transition-colors duration-300 pb-6">
+    <div className="min-h-screen bg-gradient-to-b from-background via-background to-muted/20 pb-6">
       <Confetti active={showConfetti} />
       
       {/* Push Notification Banner */}
@@ -135,7 +135,7 @@ const Dashboard = () => {
 
       <main className="max-w-md mx-auto px-4 py-6 space-y-6">
         {/* Main Calorie Ring */}
-        <div className="bg-card rounded-3xl p-8 shadow-lg border border-border animate-fade-in">
+        <div className="bg-card rounded-3xl p-8 shadow-[0_8px_30px_rgb(0,0,0,0.08)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.4)] border border-border animate-fade-in">
           <div className="flex flex-col items-center gap-6">
             <div className="text-center">
               <h2 className="text-lg font-semibold text-foreground mb-1">
@@ -158,7 +158,7 @@ const Dashboard = () => {
         </div>
 
         {/* Macro Rings */}
-        <div className="bg-card rounded-3xl p-6 shadow-lg border border-border">
+        <div className="bg-card rounded-3xl p-6 shadow-[0_8px_30px_rgb(0,0,0,0.08)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.4)] border border-border">
           <h3 className="text-sm font-semibold text-foreground mb-4 px-2">
             Macros
           </h3>
@@ -185,7 +185,7 @@ const Dashboard = () => {
         </div>
 
         {/* Snack Carousel */}
-        <div className="bg-card rounded-3xl p-6 shadow-lg border border-border">
+        <div className="bg-card rounded-3xl p-6 shadow-[0_8px_30px_rgb(0,0,0,0.08)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.4)] border border-border">
           <SnackCarousel
             snacks={snackOptions}
             onLog={handleLogSnack}

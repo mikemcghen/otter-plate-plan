@@ -53,7 +53,7 @@ export const SnackCarousel = ({ snacks, onLog, otterImage }: SnackCarouselProps)
           {snacks.map((snack, index) => (
             <div
               key={index}
-              className="flex-[0_0_85%] min-w-0 bg-card rounded-2xl p-4 border border-border shadow-lg transition-all duration-300"
+              className="flex-[0_0_85%] min-w-0 bg-card rounded-2xl p-4 border-2 border-border shadow-[0_4px_20px_rgb(0,0,0,0.06)] dark:shadow-[0_4px_20px_rgb(0,0,0,0.3)] transition-all duration-300"
               style={{
                 opacity: selectedIndex === index ? 1 : 0.6,
                 transform: selectedIndex === index ? "scale(1)" : "scale(0.95)",

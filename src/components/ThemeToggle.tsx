@@ -4,7 +4,7 @@ import { useTheme } from "next-themes";
 import { Button } from "@/components/ui/button";
 
 export function ThemeToggle() {
-  const { theme, setTheme } = useTheme();
+  const { theme, setTheme, systemTheme } = useTheme();
   const [mounted, setMounted] = React.useState(false);
 
   // Avoid hydration mismatch
@@ -13,32 +13,42 @@ export function ThemeToggle() {
   }, []);
 
   const toggleTheme = () => {
-    const newTheme = theme === "dark" ? "light" : "dark";
-    console.log("Toggling theme from", theme, "to", newTheme);
+    const currentTheme = theme === "system" ? systemTheme : theme;
+    const newTheme = currentTheme === "dark" ? "light" : "dark";
     setTheme(newTheme);
   };
 
   if (!mounted) {
     return (
-      <Button variant="ghost" size="icon" className="rounded-full">
+      <Button variant="ghost" size="icon" className="rounded-full h-9 w-9">
         <div className="h-5 w-5" />
       </Button>
     );
   }
+
+  const currentTheme = theme === "system" ? systemTheme : theme;
+  const isDark = currentTheme === "dark";
 
   return (
     <Button
       variant="ghost"
       size="icon"
       onClick={toggleTheme}
-      className="rounded-full hover:bg-primary/10 transition-all"
-      title={`Switch to ${theme === "dark" ? "light" : "dark"} mode`}
+      className="rounded-full h-9 w-9 hover:bg-primary/10 transition-all relative overflow-hidden group"
+      title={`Switch to ${isDark ? "light" : "dark"} mode`}
     >
-      {theme === "dark" ? (
-        <Sun className="h-5 w-5 text-primary transition-all" />
-      ) : (
-        <Moon className="h-5 w-5 text-primary transition-all" />
-      )}
+      <div className="relative w-5 h-5">
+        <Sun
+          className={`absolute inset-0 h-5 w-5 text-primary transition-all duration-300 ${
+            isDark ? "rotate-90 scale-0 opacity-0" : "rotate-0 scale-100 opacity-100"
+          }`}
+        />
+        <Moon
+          className={`absolute inset-0 h-5 w-5 text-primary transition-all duration-300 ${
+            isDark ? "rotate-0 scale-100 opacity-100" : "-rotate-90 scale-0 opacity-0"
+          }`}
+        />
+      </div>
       <span className="sr-only">Toggle theme</span>
     </Button>
   );

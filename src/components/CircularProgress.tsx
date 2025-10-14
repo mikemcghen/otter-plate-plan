@@ -38,9 +38,10 @@ export const CircularProgress = ({
           cx={size / 2}
           cy={size / 2}
           r={radius}
-          stroke="hsl(var(--border))"
+          stroke="hsl(var(--muted))"
           strokeWidth={strokeWidth}
           fill="none"
+          opacity="0.3"
         />
         {/* Progress circle */}
         <circle
@@ -55,11 +56,8 @@ export const CircularProgress = ({
           strokeDashoffset={offset}
           className={cn(
             "transition-all duration-1000 ease-out",
-            showGlow && "animate-glow-pulse"
+            showGlow && "drop-shadow-[0_0_12px_hsl(var(--primary)/0.6)]"
           )}
-          style={{
-            filter: showGlow ? `drop-shadow(0 0 12px ${strokeColor})` : undefined,
-          }}
         />
       </svg>
       <div className="absolute inset-0 flex flex-col items-center justify-center text-center animate-fade-in">

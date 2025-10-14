@@ -40,7 +40,7 @@ const WeeklyCheckIn = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-background via-background to-muted/30 transition-colors duration-300">
+    <div className="min-h-screen bg-gradient-to-b from-background via-background to-muted/20">
       {/* Header */}
       <header className="bg-card border-b border-border shadow-sm">
         <div className="max-w-md mx-auto px-4 py-4 flex items-center gap-3">
@@ -59,7 +59,7 @@ const WeeklyCheckIn = () => {
 
       <main className="max-w-md mx-auto px-4 py-6 space-y-6">
         {/* Otter Greeting */}
-        <div className="bg-card rounded-3xl p-6 shadow-lg border border-border animate-scale-in">
+        <div className="bg-card rounded-3xl p-6 shadow-[0_8px_30px_rgb(0,0,0,0.08)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.4)] border border-border animate-scale-in">
           <div className="flex items-start gap-4">
             <img
               src={otterEncourage}
@@ -79,7 +79,7 @@ const WeeklyCheckIn = () => {
         </div>
 
         {/* Weight Stats */}
-        <div className="bg-card rounded-3xl p-6 shadow-lg border border-border space-y-4">
+        <div className="bg-card rounded-3xl p-6 shadow-[0_8px_30px_rgb(0,0,0,0.08)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.4)] border border-border space-y-4">
           <div className="flex items-center gap-2 mb-2">
             <TrendingUp className="w-5 h-5 text-primary" />
             <h3 className="text-sm font-semibold text-foreground">
@@ -110,7 +110,7 @@ const WeeklyCheckIn = () => {
         </div>
 
         {/* Weight Chart */}
-        <div className="bg-card rounded-3xl p-6 shadow-lg border border-border">
+        <div className="bg-card rounded-3xl p-6 shadow-[0_8px_30px_rgb(0,0,0,0.08)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.4)] border border-border">
           <h3 className="text-sm font-semibold text-foreground mb-4">
             Weekly Weight
           </h3>
