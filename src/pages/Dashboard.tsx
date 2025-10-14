@@ -88,7 +88,7 @@ const Dashboard = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-background to-muted/30 pb-6">
+    <div className="min-h-screen bg-gradient-to-b from-background via-background to-muted/30 transition-colors duration-300 pb-6">
       <Confetti active={showConfetti} />
       
       {/* Push Notification Banner */}

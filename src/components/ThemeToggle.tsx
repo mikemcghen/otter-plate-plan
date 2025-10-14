@@ -12,6 +12,12 @@ export function ThemeToggle() {
     setMounted(true);
   }, []);
 
+  const toggleTheme = () => {
+    const newTheme = theme === "dark" ? "light" : "dark";
+    console.log("Toggling theme from", theme, "to", newTheme);
+    setTheme(newTheme);
+  };
+
   if (!mounted) {
     return (
       <Button variant="ghost" size="icon" className="rounded-full">
@@ -24,8 +30,9 @@ export function ThemeToggle() {
     <Button
       variant="ghost"
       size="icon"
-      onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+      onClick={toggleTheme}
       className="rounded-full hover:bg-primary/10 transition-all"
+      title={`Switch to ${theme === "dark" ? "light" : "dark"} mode`}
     >
       {theme === "dark" ? (
         <Sun className="h-5 w-5 text-primary transition-all" />

@@ -40,7 +40,7 @@ const WeeklyCheckIn = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-background to-muted/30">
+    <div className="min-h-screen bg-gradient-to-b from-background via-background to-muted/30 transition-colors duration-300">
       {/* Header */}
       <header className="bg-card border-b border-border shadow-sm">
         <div className="max-w-md mx-auto px-4 py-4 flex items-center gap-3">
