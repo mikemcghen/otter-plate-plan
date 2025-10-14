@@ -41,7 +41,7 @@ export const CircularProgress = ({
           stroke="hsl(var(--muted))"
           strokeWidth={strokeWidth}
           fill="none"
-          opacity="0.3"
+          opacity="0.4"
         />
         {/* Progress circle */}
         <circle
@@ -62,11 +62,13 @@ export const CircularProgress = ({
       </svg>
       <div className="absolute inset-0 flex flex-col items-center justify-center text-center animate-fade-in">
         {value && (
-          <div className="text-2xl font-bold text-foreground transition-all duration-300">
+          <div className="text-3xl font-bold text-foreground transition-all duration-300">
             {value}
           </div>
         )}
-        {label && <div className="text-xs text-muted-foreground mt-1">{label}</div>}
+        {label && (
+          <div className="text-sm font-medium text-muted-foreground mt-1">{label}</div>
+        )}
       </div>
     </div>
   );

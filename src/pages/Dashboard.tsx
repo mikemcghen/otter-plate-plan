@@ -135,13 +135,13 @@ const Dashboard = () => {
 
       <main className="max-w-md mx-auto px-4 py-6 space-y-6">
         {/* Main Calorie Ring */}
-        <div className="bg-card rounded-3xl p-8 shadow-[0_8px_30px_rgb(0,0,0,0.08)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.4)] border border-border animate-fade-in">
+        <div className="bg-card rounded-3xl p-8 shadow-[0_8px_30px_rgb(0,0,0,0.08)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.4)] border-2 border-border animate-fade-in">
           <div className="flex flex-col items-center gap-6">
             <div className="text-center">
-              <h2 className="text-lg font-semibold text-foreground mb-1">
+              <h2 className="text-xl font-bold text-foreground mb-1">
                 Daily Calories
               </h2>
-              <p className="text-sm text-muted-foreground animate-fade-in">
+              <p className="text-base text-muted-foreground animate-fade-in font-medium">
                 {otterState.message}
               </p>
             </div>
@@ -158,8 +158,8 @@ const Dashboard = () => {
         </div>
 
         {/* Macro Rings */}
-        <div className="bg-card rounded-3xl p-6 shadow-[0_8px_30px_rgb(0,0,0,0.08)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.4)] border border-border">
-          <h3 className="text-sm font-semibold text-foreground mb-4 px-2">
+        <div className="bg-card rounded-3xl p-6 shadow-[0_8px_30px_rgb(0,0,0,0.08)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.4)] border-2 border-border">
+          <h3 className="text-base font-bold text-foreground mb-4 px-2">
             Macros
           </h3>
           <div className="grid grid-cols-3 gap-4">
@@ -185,7 +185,7 @@ const Dashboard = () => {
         </div>
 
         {/* Snack Carousel */}
-        <div className="bg-card rounded-3xl p-6 shadow-[0_8px_30px_rgb(0,0,0,0.08)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.4)] border border-border">
+        <div className="bg-card rounded-3xl p-6 shadow-[0_8px_30px_rgb(0,0,0,0.08)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.4)] border-2 border-border">
           <SnackCarousel
             snacks={snackOptions}
             onLog={handleLogSnack}
@@ -198,34 +198,34 @@ const Dashboard = () => {
           <Button
             onClick={handleQuickLog}
             variant="outline"
-            className="h-auto flex-col gap-2 py-4 border-2 hover:border-primary hover:bg-primary/5 transition-all"
+            className="h-auto flex-col gap-2 py-4 border-2 hover:border-primary hover:bg-primary/10 focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 transition-all group"
           >
-            <Plus className="w-5 h-5" />
-            <span className="text-xs font-medium">Quick Log</span>
+            <Plus className="w-5 h-5 group-hover:scale-110 transition-transform" />
+            <span className="text-xs font-semibold">Quick Log</span>
           </Button>
           <Button
             onClick={() => navigate("/weekly-checkin")}
             variant="outline"
-            className="h-auto flex-col gap-2 py-4 border-2 hover:border-primary hover:bg-primary/5 transition-all"
+            className="h-auto flex-col gap-2 py-4 border-2 hover:border-primary hover:bg-primary/10 focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 transition-all group"
           >
-            <Calendar className="w-5 h-5" />
-            <span className="text-xs font-medium">Weigh In</span>
+            <Calendar className="w-5 h-5 group-hover:scale-110 transition-transform" />
+            <span className="text-xs font-semibold">Weigh In</span>
           </Button>
           <Button
             onClick={() => navigate("/weekly-checkin")}
             variant="outline"
-            className="h-auto flex-col gap-2 py-4 border-2 hover:border-primary hover:bg-primary/5 transition-all"
+            className="h-auto flex-col gap-2 py-4 border-2 hover:border-primary hover:bg-primary/10 focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 transition-all group"
           >
-            <TrendingUp className="w-5 h-5" />
-            <span className="text-xs font-medium">Trends</span>
+            <TrendingUp className="w-5 h-5 group-hover:scale-110 transition-transform" />
+            <span className="text-xs font-semibold">Trends</span>
           </Button>
           <Button
             onClick={() => toast({ title: "Settings coming soon!" })}
             variant="outline"
-            className="h-auto flex-col gap-2 py-4 border-2 hover:border-primary hover:bg-primary/5 transition-all"
+            className="h-auto flex-col gap-2 py-4 border-2 hover:border-primary hover:bg-primary/10 focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 transition-all group"
           >
-            <Settings className="w-5 h-5" />
-            <span className="text-xs font-medium">Settings</span>
+            <Settings className="w-5 h-5 group-hover:scale-110 transition-transform" />
+            <span className="text-xs font-semibold">Settings</span>
           </Button>
         </div>
       </main>

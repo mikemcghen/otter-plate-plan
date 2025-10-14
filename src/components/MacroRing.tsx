@@ -31,7 +31,7 @@ export const MacroRing = ({
             stroke="hsl(var(--muted))"
             strokeWidth={strokeWidth}
             fill="none"
-            opacity="0.3"
+            opacity="0.4"
           />
           <circle
             cx={size / 2}

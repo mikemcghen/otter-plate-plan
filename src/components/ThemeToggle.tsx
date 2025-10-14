@@ -34,7 +34,7 @@ export function ThemeToggle() {
       variant="ghost"
       size="icon"
       onClick={toggleTheme}
-      className="rounded-full h-9 w-9 hover:bg-primary/10 transition-all relative overflow-hidden group"
+      className="rounded-full h-9 w-9 hover:bg-primary/10 focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 transition-all relative overflow-hidden group"
       title={`Switch to ${isDark ? "light" : "dark"} mode`}
     >
       <div className="relative w-5 h-5">

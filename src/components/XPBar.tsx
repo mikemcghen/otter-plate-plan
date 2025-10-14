@@ -14,10 +14,10 @@ export const XPBar = ({ current, max, level = 1 }: XPBarProps) => {
     <div className="w-full space-y-2">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <Sparkles className="w-4 h-4 text-primary" />
-          <span className="text-sm font-medium text-foreground">Level {level}</span>
+          <Sparkles className="w-5 h-5 text-primary" />
+          <span className="text-sm font-bold text-foreground">Level {level}</span>
         </div>
-        <span className="text-sm text-muted-foreground">
+        <span className="text-sm font-semibold text-muted-foreground">
           {current}/{max} XP
         </span>
       </div>
