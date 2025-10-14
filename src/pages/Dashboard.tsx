@@ -1,10 +1,13 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { CircularProgress } from "@/components/CircularProgress";
 import { MacroRing } from "@/components/MacroRing";
 import { StreakCounter } from "@/components/StreakCounter";
 import { XPBar } from "@/components/XPBar";
 import { SnackCarousel } from "@/components/SnackCarousel";
+import { NotificationBanner } from "@/components/NotificationBanner";
+import { SnackPickerModal } from "@/components/SnackPickerModal";
+import { SuccessConfirmationModal } from "@/components/SuccessConfirmationModal";
 import { Confetti } from "@/components/Confetti";
 import { Plus, TrendingUp, Settings, Calendar } from "lucide-react";
 import { useNavigate } from "react-router-dom";
@@ -19,12 +22,26 @@ const Dashboard = () => {
   const [caloriesConsumed] = useState(1450);
   const [caloriesTarget] = useState(2000);
   const [showConfetti, setShowConfetti] = useState(false);
+  const [showNotification, setShowNotification] = useState(false);
+  const [showSnackPicker, setShowSnackPicker] = useState(false);
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
+  const [loggedSnack, setLoggedSnack] = useState<string>("");
 
   const caloriePercentage = (caloriesConsumed / caloriesTarget) * 100;
   const isInMaintenanceZone = caloriePercentage >= 90 && caloriePercentage <= 110;
   const isPerfect = caloriePercentage >= 95 && caloriePercentage <= 105;
   const isUnder = caloriePercentage < 90;
   const isOver = caloriePercentage > 110;
+
+  // Simulate notification trigger after component mounts (afternoon check-in)
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      if (caloriePercentage < 90) {
+        setShowNotification(true);
+      }
+    }, 2000);
+    return () => clearTimeout(timer);
+  }, [caloriePercentage]);
 
   // Dynamic otter and message based on status
   const getOtterState = () => {
@@ -44,10 +61,18 @@ const Dashboard = () => {
   ];
 
   const handleLogSnack = (snack: typeof snackOptions[0]) => {
-    toast({
-      title: "Snack logged! 🎉",
-      description: `${snack.name} added to your daily log`,
-    });
+    setLoggedSnack(snack.name);
+    setShowSuccessModal(true);
+    setShowNotification(false);
+    
+    // Show toast after modal closes
+    setTimeout(() => {
+      toast({
+        title: "Snack logged! 🎉",
+        description: `${snack.name} added to your daily log`,
+      });
+    }, 500);
+
     if (isPerfect) {
       setShowConfetti(true);
       setTimeout(() => setShowConfetti(false), 3000);
@@ -64,6 +89,33 @@ const Dashboard = () => {
   return (
     <div className="min-h-screen bg-gradient-to-b from-background to-muted/30 pb-6">
       <Confetti active={showConfetti} />
+      
+      {/* Push Notification Banner */}
+      <NotificationBanner
+        visible={showNotification}
+        message="Running low on fuel 🧃 — how about a snack to stay in your zone?"
+        onOpen={() => {
+          setShowSnackPicker(true);
+          setShowNotification(false);
+        }}
+        onDismiss={() => setShowNotification(false)}
+      />
+
+      {/* Snack Picker Modal */}
+      <SnackPickerModal
+        open={showSnackPicker}
+        onOpenChange={setShowSnackPicker}
+        snacks={snackOptions}
+        onLog={handleLogSnack}
+        otterImage={otterState.image}
+      />
+
+      {/* Success Confirmation Modal */}
+      <SuccessConfirmationModal
+        open={showSuccessModal}
+        onOpenChange={setShowSuccessModal}
+        snackName={loggedSnack}
+      />
       {/* Header with XP and Streak */}
       <header className="bg-card border-b border-border shadow-sm">
         <div className="max-w-md mx-auto px-4 py-4 space-y-3">
