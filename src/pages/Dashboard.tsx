@@ -9,6 +9,7 @@ import { NotificationBanner } from "@/components/NotificationBanner";
 import { SnackPickerModal } from "@/components/SnackPickerModal";
 import { SuccessConfirmationModal } from "@/components/SuccessConfirmationModal";
 import { Confetti } from "@/components/Confetti";
+import { ThemeToggle } from "@/components/ThemeToggle";
 import { Plus, TrendingUp, Settings, Calendar } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "@/hooks/use-toast";
@@ -123,7 +124,10 @@ const Dashboard = () => {
             <h1 className="text-2xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
               OttrCal
             </h1>
-            <StreakCounter days={12} />
+            <div className="flex items-center gap-2">
+              <ThemeToggle />
+              <StreakCounter days={12} />
+            </div>
           </div>
           <XPBar current={450} max={600} level={8} />
         </div>

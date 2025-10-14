@@ -1,4 +1,5 @@
 import { Button } from "@/components/ui/button";
+import { ThemeToggle } from "@/components/ThemeToggle";
 import { ArrowLeft, TrendingUp } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import otterEncourage from "@/assets/otter-encourage.png";
@@ -51,7 +52,8 @@ const WeeklyCheckIn = () => {
           >
             <ArrowLeft className="w-5 h-5" />
           </Button>
-          <h1 className="text-xl font-bold text-foreground">Weekly Check-In</h1>
+          <h1 className="text-xl font-bold text-foreground flex-1">Weekly Check-In</h1>
+          <ThemeToggle />
         </div>
       </header>
 
