@@ -2,10 +2,12 @@ import { useState } from "react";
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Search, Plus, TrendingUp, Clock, Zap } from "lucide-react";
+import { Search, Plus, TrendingUp, Clock, Zap, Camera, ChefHat, X, Minus } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 import otterDancing from "@/assets/otter-dancing.png";
 import otterHappy from "@/assets/otter-happy.png";
+import { BarcodeScannerModal } from "./BarcodeScannerModal";
+import { RecipeCreationModal } from "./RecipeCreationModal";
 
 interface FoodItem {
   id: string;
@@ -26,6 +28,9 @@ interface QuickLogPanelProps {
 export function QuickLogPanel({ open, onOpenChange, onLog }: QuickLogPanelProps) {
   const [searchQuery, setSearchQuery] = useState("");
   const [showCelebration, setShowCelebration] = useState(false);
+  const [showBarcodeScanner, setShowBarcodeScanner] = useState(false);
+  const [showRecipeCreation, setShowRecipeCreation] = useState(false);
+  const [savedRecipes, setSavedRecipes] = useState<any[]>([]);
 
   // Mock data for recent & frequent foods
   const recentFoods: FoodItem[] = [
@@ -64,6 +69,35 @@ export function QuickLogPanel({ open, onOpenChange, onLog }: QuickLogPanelProps)
     }, 1500);
   };
 
+  const handleBarcodeLog = (product: any, servings: number) => {
+    const food: FoodItem = {
+      id: product.barcode,
+      name: `${product.name} (${servings}x)`,
+      calories: product.calories * servings,
+      protein: product.protein * servings,
+      carbs: product.carbs * servings,
+      fat: product.fat * servings,
+    };
+    handleLogFood(food);
+  };
+
+  const handleRecipeSave = (recipe: any) => {
+    setSavedRecipes([...savedRecipes, recipe]);
+  };
+
+  const handleRecipeLog = (recipe: any, servings: number) => {
+    const caloriesPerServing = recipe.totalCalories / recipe.servings;
+    const food: FoodItem = {
+      id: recipe.id,
+      name: `${recipe.name} (${servings} ${servings === 1 ? 'serving' : 'servings'})`,
+      calories: Math.round(caloriesPerServing * servings),
+      protein: Math.round((recipe.totalProtein / recipe.servings) * servings),
+      carbs: Math.round((recipe.totalCarbs / recipe.servings) * servings),
+      fat: Math.round((recipe.totalFat / recipe.servings) * servings),
+    };
+    handleLogFood(food);
+  };
+
   const handleCustomAdd = () => {
     toast({
       title: "Custom food entry",
@@ -72,11 +106,24 @@ export function QuickLogPanel({ open, onOpenChange, onLog }: QuickLogPanelProps)
   };
 
   return (
-    <Sheet open={open} onOpenChange={onOpenChange}>
-      <SheetContent 
-        side="bottom" 
-        className="h-[85vh] rounded-t-3xl border-t-2 border-border p-0 overflow-hidden"
-      >
+    <>
+      <BarcodeScannerModal
+        open={showBarcodeScanner}
+        onOpenChange={setShowBarcodeScanner}
+        onLog={handleBarcodeLog}
+      />
+      
+      <RecipeCreationModal
+        open={showRecipeCreation}
+        onOpenChange={setShowRecipeCreation}
+        onSave={handleRecipeSave}
+      />
+
+      <Sheet open={open} onOpenChange={onOpenChange}>
+        <SheetContent 
+          side="bottom" 
+          className="h-[85vh] rounded-t-3xl border-t-2 border-border p-0 overflow-hidden"
+        >
         {/* Celebration Overlay */}
         {showCelebration && (
           <div className="absolute inset-0 z-50 bg-background/95 flex items-center justify-center animate-fade-in">
@@ -158,6 +205,62 @@ export function QuickLogPanel({ open, onOpenChange, onLog }: QuickLogPanelProps)
             </div>
           </section>
 
+          {/* Barcode Scanner & Recipe Buttons */}
+          <section className="mb-6">
+            <div className="grid grid-cols-2 gap-3">
+              <Button
+                onClick={() => setShowBarcodeScanner(true)}
+                variant="outline"
+                className="h-auto py-6 border-2 border-border hover:border-primary hover:bg-primary/5 rounded-2xl group transition-all focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
+              >
+                <div className="flex flex-col items-center gap-2">
+                  <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center group-hover:bg-primary/20 transition-colors">
+                    <Camera className="w-6 h-6 text-primary" />
+                  </div>
+                  <div className="text-center">
+                    <h4 className="font-semibold text-foreground text-sm">Scan Barcode</h4>
+                    <p className="text-xs text-muted-foreground">Quick scan</p>
+                  </div>
+                </div>
+              </Button>
+
+              <Button
+                onClick={() => setShowRecipeCreation(true)}
+                variant="outline"
+                className="h-auto py-6 border-2 border-border hover:border-accent hover:bg-accent/5 rounded-2xl group transition-all focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2"
+              >
+                <div className="flex flex-col items-center gap-2">
+                  <div className="w-12 h-12 rounded-full bg-accent/10 flex items-center justify-center group-hover:bg-accent/20 transition-colors">
+                    <ChefHat className="w-6 h-6 text-accent" />
+                  </div>
+                  <div className="text-center">
+                    <h4 className="font-semibold text-foreground text-sm">Add Recipe</h4>
+                    <p className="text-xs text-muted-foreground">Create new</p>
+                  </div>
+                </div>
+              </Button>
+            </div>
+          </section>
+
+          {/* Saved Recipes */}
+          {savedRecipes.length > 0 && (
+            <section className="mb-6">
+              <div className="flex items-center gap-2 mb-3">
+                <ChefHat className="w-4 h-4 text-accent" />
+                <h3 className="text-base font-bold text-foreground">My Recipes</h3>
+              </div>
+              <div className="space-y-2">
+                {savedRecipes.map((recipe) => (
+                  <RecipeLogButton
+                    key={recipe.id}
+                    recipe={recipe}
+                    onLog={handleRecipeLog}
+                  />
+                ))}
+              </div>
+            </section>
+          )}
+
           {/* Smart Suggestions */}
           <section className="mb-6">
             <div className="flex items-center gap-2 mb-3">
@@ -220,5 +323,105 @@ export function QuickLogPanel({ open, onOpenChange, onLog }: QuickLogPanelProps)
         </div>
       </SheetContent>
     </Sheet>
+    </>
+  );
+}
+
+// Recipe Log Button Component
+interface RecipeLogButtonProps {
+  recipe: any;
+  onLog: (recipe: any, servings: number) => void;
+}
+
+function RecipeLogButton({ recipe, onLog }: RecipeLogButtonProps) {
+  const [servings, setServings] = useState(1);
+  const [showServingPicker, setShowServingPicker] = useState(false);
+
+  const caloriesPerServing = Math.round(recipe.totalCalories / recipe.servings);
+  const proteinPerServing = Math.round(recipe.totalProtein / recipe.servings);
+  const carbsPerServing = Math.round(recipe.totalCarbs / recipe.servings);
+  const fatPerServing = Math.round(recipe.totalFat / recipe.servings);
+
+  const handleLog = () => {
+    onLog(recipe, servings);
+    setShowServingPicker(false);
+    setServings(1);
+  };
+
+  if (showServingPicker) {
+    return (
+      <div className="w-full bg-gradient-to-r from-accent/10 to-primary/10 border-2 border-accent/30 rounded-2xl p-4 space-y-4">
+        <div className="flex items-center justify-between">
+          <h4 className="font-semibold text-foreground">{recipe.name}</h4>
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => setShowServingPicker(false)}
+            className="h-6 w-6 p-0"
+          >
+            <X className="w-4 h-4" />
+          </Button>
+        </div>
+        
+        <div className="flex items-center justify-center gap-4">
+          <Button
+            variant="outline"
+            size="icon"
+            onClick={() => setServings(Math.max(1, servings - 1))}
+            className="h-10 w-10 rounded-full border-2"
+          >
+            <Minus className="w-4 h-4" />
+          </Button>
+          <div className="min-w-[80px] text-center">
+            <p className="text-3xl font-bold text-accent">{servings}</p>
+            <p className="text-xs text-muted-foreground">
+              {servings === 1 ? 'serving' : 'servings'}
+            </p>
+          </div>
+          <Button
+            variant="outline"
+            size="icon"
+            onClick={() => setServings(servings + 1)}
+            className="h-10 w-10 rounded-full border-2"
+          >
+            <Plus className="w-4 h-4" />
+          </Button>
+        </div>
+
+        <Button
+          onClick={handleLog}
+          className="w-full bg-gradient-to-r from-accent to-accent/80 font-semibold"
+        >
+          Log Recipe
+        </Button>
+      </div>
+    );
+  }
+
+  return (
+    <button
+      onClick={() => setShowServingPicker(true)}
+      className="w-full bg-gradient-to-r from-accent/10 to-primary/10 border-2 border-accent/30 rounded-2xl p-4 hover:border-accent hover:from-accent/20 hover:to-primary/20 transition-all group focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2"
+    >
+      <div className="flex items-center gap-3">
+        <div className="w-10 h-10 rounded-full bg-accent/20 flex items-center justify-center">
+          <ChefHat className="w-5 h-5 text-accent" />
+        </div>
+        <div className="flex-1 text-left">
+          <h4 className="font-semibold text-foreground group-hover:text-accent transition-colors">
+            {recipe.name}
+          </h4>
+          <div className="flex items-center gap-3 mt-1">
+            <span className="text-sm font-medium text-muted-foreground">
+              {caloriesPerServing} cal/serving
+            </span>
+            <span className="text-xs text-muted-foreground">
+              P: {proteinPerServing}g • C: {carbsPerServing}g • F: {fatPerServing}g
+            </span>
+          </div>
+        </div>
+        <Plus className="w-5 h-5 text-accent opacity-0 group-hover:opacity-100 transition-opacity" />
+      </div>
+    </button>
   );
 }
