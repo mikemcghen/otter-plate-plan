@@ -9,6 +9,7 @@ import { NotificationBanner } from "@/components/NotificationBanner";
 import { SnackPickerModal } from "@/components/SnackPickerModal";
 import { SuccessConfirmationModal } from "@/components/SuccessConfirmationModal";
 import { Confetti } from "@/components/Confetti";
+import { QuickLogPanel } from "@/components/QuickLogPanel";
 import { Plus, TrendingUp, Settings, Calendar } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "@/hooks/use-toast";
@@ -25,6 +26,7 @@ const Dashboard = () => {
   const [showNotification, setShowNotification] = useState(false);
   const [showSnackPicker, setShowSnackPicker] = useState(false);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
+  const [showQuickLog, setShowQuickLog] = useState(false);
   const [loggedSnack, setLoggedSnack] = useState<string>("");
 
   const caloriePercentage = (caloriesConsumed / caloriesTarget) * 100;
@@ -80,10 +82,20 @@ const Dashboard = () => {
   };
 
   const handleQuickLog = () => {
+    setShowQuickLog(true);
+  };
+
+  const handleQuickLogFood = (food: any) => {
+    setLoggedSnack(food.name);
     toast({
-      title: "Quick log coming soon!",
-      description: "This feature will let you log meals quickly",
+      title: "Food logged! 🎉",
+      description: `${food.name} added to your daily log`,
     });
+    
+    if (isPerfect) {
+      setShowConfetti(true);
+      setTimeout(() => setShowConfetti(false), 3000);
+    }
   };
 
   return (
@@ -116,6 +128,14 @@ const Dashboard = () => {
         onOpenChange={setShowSuccessModal}
         snackName={loggedSnack}
       />
+
+      {/* Quick Log Panel */}
+      <QuickLogPanel
+        open={showQuickLog}
+        onOpenChange={setShowQuickLog}
+        onLog={handleQuickLogFood}
+      />
+
       {/* Header with XP and Streak */}
       <header className="bg-card border-b border-border shadow-sm">
         <div className="max-w-md mx-auto px-4 py-4 space-y-3">
