@@ -4,25 +4,54 @@ import { CircularProgress } from "@/components/CircularProgress";
 import { MacroRing } from "@/components/MacroRing";
 import { StreakCounter } from "@/components/StreakCounter";
 import { XPBar } from "@/components/XPBar";
-import { SnackSuggestion } from "@/components/SnackSuggestion";
-import { Plus, TrendingUp, Settings } from "lucide-react";
+import { SnackCarousel } from "@/components/SnackCarousel";
+import { Confetti } from "@/components/Confetti";
+import { Plus, TrendingUp, Settings, Calendar } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "@/hooks/use-toast";
+import otterPerfect from "@/assets/otter-perfect.png";
+import otterHappy from "@/assets/otter-happy.png";
+import otterSleepy from "@/assets/otter-sleepy.png";
+import otterConcerned from "@/assets/otter-concerned.png";
 
 const Dashboard = () => {
   const navigate = useNavigate();
   const [caloriesConsumed] = useState(1450);
   const [caloriesTarget] = useState(2000);
-  const [showSnackSuggestion] = useState(true);
+  const [showConfetti, setShowConfetti] = useState(false);
 
   const caloriePercentage = (caloriesConsumed / caloriesTarget) * 100;
   const isInMaintenanceZone = caloriePercentage >= 90 && caloriePercentage <= 110;
+  const isPerfect = caloriePercentage >= 95 && caloriePercentage <= 105;
+  const isUnder = caloriePercentage < 90;
+  const isOver = caloriePercentage > 110;
 
-  const handleLogSnack = () => {
+  // Dynamic otter and message based on status
+  const getOtterState = () => {
+    if (isPerfect) return { image: otterPerfect, message: "Perfect balance! You're crushing it! 🎉" };
+    if (isInMaintenanceZone) return { image: otterHappy, message: "Great job! Right in the zone! 🎯" };
+    if (isUnder) return { image: otterSleepy, message: "You need more energy! Let's add a snack 😴" };
+    if (isOver) return { image: otterConcerned, message: "A bit high today, but that's okay! 💪" };
+    return { image: otterHappy, message: "Keep going! You're doing great!" };
+  };
+
+  const otterState = getOtterState();
+
+  const snackOptions = [
+    { name: "Greek Yogurt with Berries", calories: 150, protein: 15, emoji: "🫐" },
+    { name: "Apple with Almond Butter", calories: 180, protein: 8, emoji: "🍎" },
+    { name: "Protein Smoothie", calories: 200, protein: 20, emoji: "🥤" },
+  ];
+
+  const handleLogSnack = (snack: typeof snackOptions[0]) => {
     toast({
       title: "Snack logged! 🎉",
-      description: "Greek yogurt added to your daily log",
+      description: `${snack.name} added to your daily log`,
     });
+    if (isPerfect) {
+      setShowConfetti(true);
+      setTimeout(() => setShowConfetti(false), 3000);
+    }
   };
 
   const handleQuickLog = () => {
@@ -33,7 +62,8 @@ const Dashboard = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-background to-muted/30 pb-20">
+    <div className="min-h-screen bg-gradient-to-b from-background to-muted/30 pb-6">
+      <Confetti active={showConfetti} />
       {/* Header with XP and Streak */}
       <header className="bg-card border-b border-border shadow-sm">
         <div className="max-w-md mx-auto px-4 py-4 space-y-3">
@@ -49,16 +79,14 @@ const Dashboard = () => {
 
       <main className="max-w-md mx-auto px-4 py-6 space-y-6">
         {/* Main Calorie Ring */}
-        <div className="bg-card rounded-3xl p-8 shadow-lg border border-border">
+        <div className="bg-card rounded-3xl p-8 shadow-lg border border-border animate-fade-in">
           <div className="flex flex-col items-center gap-6">
             <div className="text-center">
               <h2 className="text-lg font-semibold text-foreground mb-1">
                 Daily Calories
               </h2>
-              <p className="text-sm text-muted-foreground">
-                {isInMaintenanceZone
-                  ? "Perfect balance! 🎯"
-                  : "Keep going! You're doing great"}
+              <p className="text-sm text-muted-foreground animate-fade-in">
+                {otterState.message}
               </p>
             </div>
             <CircularProgress
@@ -67,8 +95,8 @@ const Dashboard = () => {
               strokeWidth={12}
               value={`${caloriesConsumed}`}
               label={`of ${caloriesTarget} cal`}
-              status={isInMaintenanceZone ? "success" : "normal"}
-              showGlow={isInMaintenanceZone}
+              status={isPerfect ? "success" : isInMaintenanceZone ? "normal" : "warning"}
+              showGlow={isPerfect}
             />
           </div>
         </div>
@@ -100,18 +128,17 @@ const Dashboard = () => {
           </div>
         </div>
 
-        {/* Snack Suggestion */}
-        {showSnackSuggestion && (
-          <SnackSuggestion
-            snackName="Greek Yogurt with Berries"
-            calories={150}
-            protein={15}
+        {/* Snack Carousel */}
+        <div className="bg-card rounded-3xl p-6 shadow-lg border border-border">
+          <SnackCarousel
+            snacks={snackOptions}
             onLog={handleLogSnack}
+            otterImage={otterState.image}
           />
-        )}
+        </div>
 
         {/* Quick Actions */}
-        <div className="grid grid-cols-3 gap-3">
+        <div className="grid grid-cols-4 gap-3">
           <Button
             onClick={handleQuickLog}
             variant="outline"
@@ -119,6 +146,14 @@ const Dashboard = () => {
           >
             <Plus className="w-5 h-5" />
             <span className="text-xs font-medium">Quick Log</span>
+          </Button>
+          <Button
+            onClick={() => navigate("/weekly-checkin")}
+            variant="outline"
+            className="h-auto flex-col gap-2 py-4 border-2 hover:border-primary hover:bg-primary/5 transition-all"
+          >
+            <Calendar className="w-5 h-5" />
+            <span className="text-xs font-medium">Weigh In</span>
           </Button>
           <Button
             onClick={() => navigate("/weekly-checkin")}

@@ -54,16 +54,20 @@ export const CircularProgress = ({
           strokeDasharray={circumference}
           strokeDashoffset={offset}
           className={cn(
-            "transition-all duration-500 ease-out",
-            showGlow && "drop-shadow-[0_0_8px_var(--primary)]"
+            "transition-all duration-1000 ease-out",
+            showGlow && "animate-glow-pulse"
           )}
           style={{
-            filter: showGlow ? `drop-shadow(0 0 8px ${strokeColor})` : undefined,
+            filter: showGlow ? `drop-shadow(0 0 12px ${strokeColor})` : undefined,
           }}
         />
       </svg>
-      <div className="absolute inset-0 flex flex-col items-center justify-center text-center">
-        {value && <div className="text-2xl font-bold text-foreground">{value}</div>}
+      <div className="absolute inset-0 flex flex-col items-center justify-center text-center animate-fade-in">
+        {value && (
+          <div className="text-2xl font-bold text-foreground transition-all duration-300">
+            {value}
+          </div>
+        )}
         {label && <div className="text-xs text-muted-foreground mt-1">{label}</div>}
       </div>
     </div>
