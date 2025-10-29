@@ -12,7 +12,10 @@ import { Confetti } from "@/components/Confetti";
 import { QuickLogPanel } from "@/components/QuickLogPanel";
 import { MobileBottomNav } from "@/components/MobileBottomNav";
 import { PullToRefresh } from "@/components/PullToRefresh";
-import { Plus, TrendingUp, Settings, Calendar } from "lucide-react";
+import { DailyGreetingModal } from "@/components/DailyGreetingModal";
+import { EndOfDaySummaryModal } from "@/components/EndOfDaySummaryModal";
+import { FloatingMascotButton } from "@/components/FloatingMascotButton";
+import { Moon } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "@/hooks/use-toast";
 import { useHaptics } from "@/hooks/useHaptics";
@@ -32,12 +35,28 @@ const Dashboard = () => {
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [showQuickLog, setShowQuickLog] = useState(false);
   const [loggedSnack, setLoggedSnack] = useState<string>("");
+  const [showDailyGreeting, setShowDailyGreeting] = useState(false);
+  const [showEndOfDay, setShowEndOfDay] = useState(false);
+  const [currentStreak] = useState(12);
+  const [xpGained] = useState(85);
+  const [foodsLogged] = useState(5);
 
   const caloriePercentage = (caloriesConsumed / caloriesTarget) * 100;
   const isInMaintenanceZone = caloriePercentage >= 90 && caloriePercentage <= 110;
   const isPerfect = caloriePercentage >= 95 && caloriePercentage <= 105;
   const isUnder = caloriePercentage < 90;
   const isOver = caloriePercentage > 110;
+
+  // Check for daily greeting
+  useEffect(() => {
+    const lastVisit = localStorage.getItem("ottrcal_last_visit");
+    const today = new Date().toDateString();
+    
+    if (!lastVisit || lastVisit !== today) {
+      setShowDailyGreeting(true);
+      localStorage.setItem("ottrcal_last_visit", today);
+    }
+  }, []);
 
   // Simulate notification trigger after component mounts (afternoon check-in)
   useEffect(() => {
@@ -114,9 +133,31 @@ const Dashboard = () => {
     });
   };
 
+  const caloriesRemaining = caloriesTarget - caloriesConsumed;
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-background via-background to-muted/20 pb-24">
       <Confetti active={showConfetti} />
+      
+      {/* Daily Greeting Modal */}
+      <DailyGreetingModal
+        open={showDailyGreeting}
+        onOpenChange={setShowDailyGreeting}
+        streak={currentStreak}
+        onStart={() => setShowDailyGreeting(false)}
+      />
+
+      {/* End of Day Summary Modal */}
+      <EndOfDaySummaryModal
+        open={showEndOfDay}
+        onOpenChange={setShowEndOfDay}
+        xpGained={xpGained}
+        foodsLogged={foodsLogged}
+        isPerfect={isPerfect}
+      />
+
+      {/* Floating Mascot Button */}
+      <FloatingMascotButton caloriesRemaining={caloriesRemaining} />
       
       {/* Push Notification Banner */}
       <NotificationBanner
@@ -160,7 +201,20 @@ const Dashboard = () => {
               <h1 className="text-2xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
                 OttrCal
               </h1>
-              <StreakCounter days={12} />
+              <div className="flex items-center gap-2">
+                <StreakCounter days={currentStreak} />
+                <Button
+                  size="icon"
+                  variant="ghost"
+                  className="w-10 h-10 rounded-full active:scale-95 transition-transform"
+                  onClick={async () => {
+                    await impact();
+                    setShowEndOfDay(true);
+                  }}
+                >
+                  <Moon className="w-5 h-5 text-muted-foreground" />
+                </Button>
+              </div>
             </div>
             <XPBar current={450} max={600} level={8} />
           </div>
