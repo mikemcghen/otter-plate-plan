@@ -228,7 +228,7 @@ const Dashboard = () => {
             <span className="text-xs font-semibold">Weigh In</span>
           </Button>
           <Button
-            onClick={() => navigate("/weekly-checkin")}
+            onClick={() => navigate("/trends")}
             variant="outline"
             className="h-auto flex-col gap-2 py-4 border-2 hover:border-primary hover:bg-primary/10 focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 transition-all group"
           >
