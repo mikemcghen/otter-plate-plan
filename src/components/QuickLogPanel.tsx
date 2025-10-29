@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Search, Plus, TrendingUp, Clock, Zap, Camera, ChefHat, X, Minus } from "lucide-react";
+import { Search, Plus, TrendingUp, Clock, Zap, Camera, ChefHat, X, Minus, Drumstick, Wheat, Milk, Banana, Apple, CupSoda } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 import { EmptyState } from "@/components/EmptyState";
 import otterDancing from "@/assets/otter-dancing.png";
@@ -17,8 +17,18 @@ interface FoodItem {
   protein: number;
   carbs: number;
   fat: number;
-  emoji?: string;
+  icon?: string;
 }
+
+// Icon mapping for food items
+const foodIconMap: Record<string, any> = {
+  drumstick: Drumstick,
+  wheat: Wheat,
+  milk: Milk,
+  banana: Banana,
+  apple: Apple,
+  "cup-soda": CupSoda,
+};
 
 interface QuickLogPanelProps {
   open: boolean;
@@ -35,17 +45,17 @@ export function QuickLogPanel({ open, onOpenChange, onLog }: QuickLogPanelProps)
 
   // Mock data for recent & frequent foods
   const recentFoods: FoodItem[] = [
-    { id: "1", name: "Grilled Chicken Breast", calories: 165, protein: 31, carbs: 0, fat: 3.6, emoji: "drumstick" },
-    { id: "2", name: "Brown Rice (1 cup)", calories: 216, protein: 5, carbs: 45, fat: 1.8, emoji: "wheat" },
-    { id: "3", name: "Greek Yogurt", calories: 100, protein: 17, carbs: 6, fat: 0.7, emoji: "milk" },
-    { id: "4", name: "Banana", calories: 105, protein: 1.3, carbs: 27, fat: 0.4, emoji: "banana" },
-    { id: "5", name: "Almonds (handful)", calories: 164, protein: 6, carbs: 6, fat: 14, emoji: "nut" },
+    { id: "1", name: "Grilled Chicken Breast", calories: 165, protein: 31, carbs: 0, fat: 3.6, icon: "drumstick" },
+    { id: "2", name: "Brown Rice (1 cup)", calories: 216, protein: 5, carbs: 45, fat: 1.8, icon: "wheat" },
+    { id: "3", name: "Greek Yogurt", calories: 100, protein: 17, carbs: 6, fat: 0.7, icon: "milk" },
+    { id: "4", name: "Banana", calories: 105, protein: 1.3, carbs: 27, fat: 0.4, icon: "banana" },
+    { id: "5", name: "Almonds (handful)", calories: 164, protein: 6, carbs: 6, fat: 14, icon: "apple" },
   ];
 
   // Smart suggestions based on time of day
   const smartSuggestions: FoodItem[] = [
-    { id: "s1", name: "Protein Smoothie", calories: 200, protein: 20, carbs: 24, fat: 3, emoji: "cup-soda" },
-    { id: "s2", name: "Mixed Nuts & Seeds", calories: 180, protein: 6, carbs: 8, fat: 15, emoji: "nut" },
+    { id: "s1", name: "Protein Smoothie", calories: 200, protein: 20, carbs: 24, fat: 3, icon: "cup-soda" },
+    { id: "s2", name: "Mixed Nuts & Seeds", calories: 180, protein: 6, carbs: 8, fat: 15, icon: "apple" },
   ];
 
   const filteredFoods = searchQuery
@@ -183,31 +193,36 @@ export function QuickLogPanel({ open, onOpenChange, onLog }: QuickLogPanelProps)
               </div>
             ) : (
               <div className="space-y-2">
-              {filteredFoods.map((food) => (
-                <button
-                  key={food.id}
-                  onClick={() => handleLogFood(food)}
-                  className="w-full bg-card border-2 border-border rounded-2xl p-4 hover:border-primary hover:bg-primary/5 transition-all group focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
-                >
-                  <div className="flex items-center gap-3">
-                    <div className="text-3xl">{food.emoji}</div>
-                    <div className="flex-1 text-left">
-                      <h4 className="font-semibold text-foreground group-hover:text-primary transition-colors">
-                        {food.name}
-                      </h4>
-                      <div className="flex items-center gap-3 mt-1">
-                        <span className="text-sm font-medium text-muted-foreground">
-                          {food.calories} cal
-                        </span>
-                        <span className="text-xs text-muted-foreground">
-                          P: {food.protein}g • C: {food.carbs}g • F: {food.fat}g
-                        </span>
+              {filteredFoods.map((food) => {
+                const FoodIcon = food.icon ? foodIconMap[food.icon] || Apple : Apple;
+                return (
+                  <button
+                    key={food.id}
+                    onClick={() => handleLogFood(food)}
+                    className="w-full bg-card border-2 border-border rounded-2xl p-4 hover:border-primary hover:bg-primary/5 transition-all group focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
+                  >
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
+                        <FoodIcon className="w-6 h-6 text-primary" />
                       </div>
+                      <div className="flex-1 text-left">
+                        <h4 className="font-semibold text-foreground group-hover:text-primary transition-colors">
+                          {food.name}
+                        </h4>
+                        <div className="flex items-center gap-3 mt-1">
+                          <span className="text-sm font-medium text-muted-foreground">
+                            {food.calories} cal
+                          </span>
+                          <span className="text-xs text-muted-foreground">
+                            P: {food.protein}g • C: {food.carbs}g • F: {food.fat}g
+                          </span>
+                        </div>
+                      </div>
+                      <Plus className="w-5 h-5 text-primary opacity-0 group-hover:opacity-100 transition-opacity" />
                     </div>
-                    <Plus className="w-5 h-5 text-primary opacity-0 group-hover:opacity-100 transition-opacity" />
-                  </div>
-                </button>
-              ))}
+                  </button>
+                );
+              })}
             </div>
             )}
           </section>
@@ -278,34 +293,39 @@ export function QuickLogPanel({ open, onOpenChange, onLog }: QuickLogPanelProps)
               </span>
             </div>
             <div className="space-y-2">
-              {smartSuggestions.map((food) => (
-                <button
-                  key={food.id}
-                  onClick={() => handleLogFood(food)}
-                  className="w-full bg-gradient-to-r from-accent/10 to-primary/10 border-2 border-accent/30 rounded-2xl p-4 hover:border-accent hover:from-accent/20 hover:to-primary/20 transition-all group focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2"
-                >
-                  <div className="flex items-center gap-3">
-                    <div className="text-3xl">{food.emoji}</div>
-                    <div className="flex-1 text-left">
-                      <div className="flex items-center gap-2">
-                        <h4 className="font-semibold text-foreground group-hover:text-accent transition-colors">
-                          {food.name}
-                        </h4>
-                        <TrendingUp className="w-4 h-4 text-accent" />
+              {smartSuggestions.map((food) => {
+                const FoodIcon = food.icon ? foodIconMap[food.icon] || Apple : Apple;
+                return (
+                  <button
+                    key={food.id}
+                    onClick={() => handleLogFood(food)}
+                    className="w-full bg-gradient-to-r from-accent/10 to-primary/10 border-2 border-accent/30 rounded-2xl p-4 hover:border-accent hover:from-accent/20 hover:to-primary/20 transition-all group focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2"
+                  >
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 rounded-full bg-accent/10 flex items-center justify-center">
+                        <FoodIcon className="w-6 h-6 text-accent" />
                       </div>
-                      <div className="flex items-center gap-3 mt-1">
-                        <span className="text-sm font-medium text-muted-foreground">
-                          {food.calories} cal
-                        </span>
-                        <span className="text-xs text-muted-foreground">
-                          P: {food.protein}g • C: {food.carbs}g • F: {food.fat}g
-                        </span>
+                      <div className="flex-1 text-left">
+                        <div className="flex items-center gap-2">
+                          <h4 className="font-semibold text-foreground group-hover:text-accent transition-colors">
+                            {food.name}
+                          </h4>
+                          <TrendingUp className="w-4 h-4 text-accent" />
+                        </div>
+                        <div className="flex items-center gap-3 mt-1">
+                          <span className="text-sm font-medium text-muted-foreground">
+                            {food.calories} cal
+                          </span>
+                          <span className="text-xs text-muted-foreground">
+                            P: {food.protein}g • C: {food.carbs}g • F: {food.fat}g
+                          </span>
+                        </div>
                       </div>
+                      <Plus className="w-5 h-5 text-accent opacity-0 group-hover:opacity-100 transition-opacity" />
                     </div>
-                    <Plus className="w-5 h-5 text-accent opacity-0 group-hover:opacity-100 transition-opacity" />
-                  </div>
-                </button>
-              ))}
+                  </button>
+                );
+              })}
             </div>
           </section>
 
