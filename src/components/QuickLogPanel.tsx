@@ -126,7 +126,7 @@ export function QuickLogPanel({ open, onOpenChange, onLog }: QuickLogPanelProps)
               <img 
                 src={otterDancing} 
                 alt="Celebrating otter" 
-                className="w-32 h-32 mx-auto animate-bounce"
+                className="w-32 h-32 mx-auto"
               />
               <div className="space-y-2">
                 <h3 className="text-2xl font-bold text-primary">Great job!</h3>

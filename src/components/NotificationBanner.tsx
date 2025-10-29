@@ -25,7 +25,7 @@ export const NotificationBanner = ({
             <img
               src={otterHappy}
               alt="Otter notification"
-              className="w-12 h-12 object-contain animate-bounce-subtle"
+              className="w-12 h-12 object-contain"
             />
             <div className="flex-1 min-w-0">
               <div className="flex items-start justify-between gap-2">

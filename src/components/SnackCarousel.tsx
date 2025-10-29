@@ -41,7 +41,7 @@ export const SnackCarousel = ({ snacks, onLog, otterImage }: SnackCarouselProps)
           <img
             src={otterImage}
             alt="Otter mascot"
-            className="w-16 h-16 object-contain animate-bounce-subtle relative z-10"
+            className="w-16 h-16 object-contain relative z-10"
           />
           <div className="absolute inset-0 bg-primary/10 dark:bg-primary/20 rounded-full blur-xl -z-10" />
         </div>

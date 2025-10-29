@@ -64,7 +64,7 @@ export const FloatingMascotButton = ({
       {/* Floating Button */}
       <Button
         size="icon"
-        className={`fixed bottom-24 right-6 w-16 h-16 rounded-full shadow-2xl bg-primary hover:bg-primary/90 active:scale-90 transition-all duration-200 z-40 animate-bounce-subtle ${className}`}
+        className={`fixed bottom-24 right-6 w-16 h-16 rounded-full shadow-2xl bg-primary hover:bg-primary/90 active:scale-90 transition-all duration-200 z-40 ${className}`}
         onClick={handleClick}
       >
         <img

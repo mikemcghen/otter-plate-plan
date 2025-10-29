@@ -26,7 +26,7 @@ export const LevelUpModal = ({ open, onOpenChange, level }: LevelUpModalProps) =
         <div className="flex flex-col items-center text-center space-y-6 animate-fade-in">
           <div className="relative">
             <OtterMascot mood="joyful" animate={true} />
-            <div className="absolute -top-2 -right-2 bg-primary text-primary-foreground rounded-full w-12 h-12 flex items-center justify-center animate-bounce-subtle">
+            <div className="absolute -top-2 -right-2 bg-primary text-primary-foreground rounded-full w-12 h-12 flex items-center justify-center">
               <Trophy className="w-6 h-6" />
             </div>
           </div>

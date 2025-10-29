@@ -65,7 +65,7 @@ export const DailyGreetingModal = ({
 
           {streak > 0 && (
             <div className="flex items-center gap-3 bg-gradient-to-r from-streak/15 to-streak/25 px-6 py-3 rounded-full border-2 border-streak/40">
-              <Flame className="w-6 h-6 text-streak animate-bounce-subtle" />
+              <Flame className="w-6 h-6 text-streak" />
               <div className="text-left">
                 <div className="text-2xl font-bold text-streak">{streak}</div>
                 <div className="text-xs font-semibold text-foreground -mt-1">
