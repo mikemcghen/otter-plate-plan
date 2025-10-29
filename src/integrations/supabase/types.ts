@@ -88,29 +88,38 @@ export type Database = {
       }
       profiles: {
         Row: {
+          auto_share_recipes: boolean | null
           avatar_url: string | null
           created_at: string | null
           display_name: string
           favorite_badge_id: string | null
           id: string
+          profile_visibility: string | null
+          show_badges_to_friends: boolean | null
           title: string | null
           updated_at: string | null
         }
         Insert: {
+          auto_share_recipes?: boolean | null
           avatar_url?: string | null
           created_at?: string | null
           display_name: string
           favorite_badge_id?: string | null
           id: string
+          profile_visibility?: string | null
+          show_badges_to_friends?: boolean | null
           title?: string | null
           updated_at?: string | null
         }
         Update: {
+          auto_share_recipes?: boolean | null
           avatar_url?: string | null
           created_at?: string | null
           display_name?: string
           favorite_badge_id?: string | null
           id?: string
+          profile_visibility?: string | null
+          show_badges_to_friends?: boolean | null
           title?: string | null
           updated_at?: string | null
         }
