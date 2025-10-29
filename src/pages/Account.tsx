@@ -6,6 +6,7 @@ import { FriendCard } from "@/components/FriendCard";
 import { BadgeCard } from "@/components/BadgeCard";
 import { AddFriendModal } from "@/components/AddFriendModal";
 import { BadgeUnlockModal } from "@/components/BadgeUnlockModal";
+import { ShareContentModal } from "@/components/ShareContentModal";
 import { MobileBottomNav } from "@/components/MobileBottomNav";
 import { useAuth } from "@/contexts/AuthContext";
 import { useAppContext } from "@/contexts/AppContext";
@@ -30,7 +31,9 @@ const Account = () => {
   const [sharedContent, setSharedContent] = useState<any[]>([]);
   const [showAddFriend, setShowAddFriend] = useState(false);
   const [showBadgeUnlock, setShowBadgeUnlock] = useState(false);
+  const [showShareContent, setShowShareContent] = useState(false);
   const [unlockedBadge, setUnlockedBadge] = useState<any>(null);
+  const [pendingRequests, setPendingRequests] = useState<any[]>([]);
 
   useEffect(() => {
     if (user) {
@@ -38,6 +41,7 @@ const Account = () => {
       loadBadges();
       loadFriends();
       loadSharedContent();
+      loadPendingRequests();
     }
   }, [user]);
 
@@ -100,6 +104,19 @@ const Account = () => {
     if (data) setSharedContent(data);
   };
 
+  const loadPendingRequests = async () => {
+    const { data } = await supabase
+      .from("friendships")
+      .select(`
+        *,
+        requester:profiles!friendships_user_id_fkey(*)
+      `)
+      .eq("friend_id", user?.id)
+      .eq("status", "pending");
+
+    if (data) setPendingRequests(data);
+  };
+
   const handleAddFriend = async (method: string, value: string) => {
     // Mock implementation - would search for user and create friendship
     toast({
@@ -122,6 +139,51 @@ const Account = () => {
 
   const isBadgeUnlocked = (badgeId: string) => {
     return userBadges.some(ub => ub.badge_id === badgeId);
+  };
+
+  const handleAcceptRequest = async (friendshipId: string) => {
+    const { error } = await supabase
+      .from("friendships")
+      .update({ status: "accepted" })
+      .eq("id", friendshipId);
+
+    if (!error) {
+      toast({ title: "Friend request accepted!" });
+      loadPendingRequests();
+      loadFriends();
+    }
+  };
+
+  const handleRejectRequest = async (friendshipId: string) => {
+    const { error } = await supabase
+      .from("friendships")
+      .delete()
+      .eq("id", friendshipId);
+
+    if (!error) {
+      toast({ title: "Friend request rejected" });
+      loadPendingRequests();
+    }
+  };
+
+  const handleShareContent = async (content: any) => {
+    const { error } = await supabase
+      .from("shared_content")
+      .insert({
+        user_id: user?.id,
+        title: content.title,
+        description: content.description,
+        content_type: content.type,
+        calories: content.calories,
+        protein: content.protein,
+        carbs: content.carbs,
+        fat: content.fat,
+      });
+
+    if (!error) {
+      toast({ title: "Content shared with friends!" });
+      loadSharedContent();
+    }
   };
 
   const xpPercentage = (xp / getXPForNextLevel()) * 100;
@@ -252,6 +314,48 @@ const Account = () => {
               Add Friend
             </Button>
 
+            {/* Pending Requests */}
+            {pendingRequests.length > 0 && (
+              <div className="bg-card rounded-3xl p-4 border-2 border-primary/50">
+                <h4 className="text-sm font-bold text-foreground mb-3">
+                  Friend Requests ({pendingRequests.length})
+                </h4>
+                <div className="space-y-2">
+                  {pendingRequests.map((request) => (
+                    <div
+                      key={request.id}
+                      className="flex items-center gap-3 p-3 bg-muted rounded-2xl"
+                    >
+                      <Avatar className="w-10 h-10">
+                        <AvatarImage src={request.requester?.avatar_url} />
+                        <AvatarFallback>{request.requester?.display_name?.[0]}</AvatarFallback>
+                      </Avatar>
+                      <div className="flex-1 min-w-0">
+                        <p className="text-sm font-semibold text-foreground truncate">
+                          {request.requester?.display_name}
+                        </p>
+                      </div>
+                      <div className="flex gap-2">
+                        <Button
+                          size="sm"
+                          onClick={() => handleAcceptRequest(request.id)}
+                        >
+                          Accept
+                        </Button>
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={() => handleRejectRequest(request.id)}
+                        >
+                          Reject
+                        </Button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
             <div className="space-y-3">
               {friends.length === 0 ? (
                 <div className="bg-card rounded-3xl p-8 text-center border-2 border-border">
@@ -276,6 +380,14 @@ const Account = () => {
 
           {/* Shared Content Tab */}
           <TabsContent value="shared" className="space-y-4">
+            <Button
+              className="w-full"
+              onClick={() => setShowShareContent(true)}
+            >
+              <Share2 className="w-4 h-4 mr-2" />
+              Share Content
+            </Button>
+
             {sharedContent.length === 0 ? (
               <div className="bg-card rounded-3xl p-8 text-center border-2 border-border">
                 <ChefHat className="w-12 h-12 text-muted-foreground mx-auto mb-3" />
@@ -336,6 +448,12 @@ const Account = () => {
           badgeDescription={unlockedBadge.description}
         />
       )}
+
+      <ShareContentModal
+        open={showShareContent}
+        onOpenChange={setShowShareContent}
+        onShare={handleShareContent}
+      />
 
       <MobileBottomNav />
     </div>

@@ -24,6 +24,8 @@ import { Moon, UtensilsCrossed, Sparkles } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "@/hooks/use-toast";
 import { useHaptics } from "@/hooks/useHaptics";
+import { useBadgeUnlock } from "@/hooks/useBadgeUnlock";
+import { BadgeUnlockModal } from "@/components/BadgeUnlockModal";
 import otterPerfect from "@/assets/otter-perfect.png";
 import otterHappy from "@/assets/otter-happy.png";
 import otterSleepy from "@/assets/otter-sleepy.png";
@@ -62,6 +64,14 @@ const Dashboard = () => {
   const [showLevelUp, setShowLevelUp] = useState(false);
   const [previousLevel, setPreviousLevel] = useState(level);
   const [logAnimation, setLogAnimation] = useState(false);
+  const [showBadgeUnlock, setShowBadgeUnlock] = useState(false);
+  const [unlockedBadge, setUnlockedBadge] = useState<any>(null);
+
+  // Badge unlock hook
+  useBadgeUnlock(xp, level, streak, foodLogs.length, (badge) => {
+    setUnlockedBadge(badge);
+    setShowBadgeUnlock(true);
+  });
 
   const caloriePercentage = (caloriesConsumed / caloriesTarget) * 100;
   const isInMaintenanceZone = caloriePercentage >= 90 && caloriePercentage <= 110;
@@ -227,6 +237,16 @@ const Dashboard = () => {
         onOpenChange={setShowLevelUp}
         level={level}
       />
+
+      {/* Badge Unlock Modal */}
+      {unlockedBadge && (
+        <BadgeUnlockModal
+          open={showBadgeUnlock}
+          onOpenChange={setShowBadgeUnlock}
+          badgeName={unlockedBadge.name}
+          badgeDescription={unlockedBadge.description}
+        />
+      )}
 
       {/* End of Day Summary Modal */}
       <EndOfDaySummaryModal
