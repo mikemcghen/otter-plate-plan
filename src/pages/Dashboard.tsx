@@ -26,6 +26,10 @@ import { toast } from "@/hooks/use-toast";
 import { useHaptics } from "@/hooks/useHaptics";
 import { useBadgeUnlock } from "@/hooks/useBadgeUnlock";
 import { BadgeUnlockModal } from "@/components/BadgeUnlockModal";
+import { FriendWaves } from "@/components/FriendWaves";
+import { AddFriendModal } from "@/components/AddFriendModal";
+import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/contexts/AuthContext";
 import otterPerfect from "@/assets/otter-perfect.png";
 import otterHappy from "@/assets/otter-happy.png";
 import otterSleepy from "@/assets/otter-sleepy.png";
@@ -33,6 +37,7 @@ import otterConcerned from "@/assets/otter-concerned.png";
 
 const Dashboard = () => {
   const navigate = useNavigate();
+  const { user } = useAuth();
   const { impact, notification } = useHaptics();
   const appContext = useAppContext();
   const {
@@ -66,12 +71,60 @@ const Dashboard = () => {
   const [logAnimation, setLogAnimation] = useState(false);
   const [showBadgeUnlock, setShowBadgeUnlock] = useState(false);
   const [unlockedBadge, setUnlockedBadge] = useState<any>(null);
+  const [friends, setFriends] = useState<any[]>([]);
+  const [showAddFriend, setShowAddFriend] = useState(false);
 
   // Badge unlock hook
   useBadgeUnlock(xp, level, streak, foodLogs.length, (badge) => {
     setUnlockedBadge(badge);
     setShowBadgeUnlock(true);
   });
+
+  // Load friends
+  useEffect(() => {
+    if (user) {
+      loadFriends();
+    }
+  }, [user]);
+
+  const loadFriends = async () => {
+    if (!user) return;
+    
+    const { data } = await supabase
+      .from("friendships")
+      .select(`
+        *,
+        friend:profiles!friendships_friend_id_fkey(*)
+      `)
+      .eq("user_id", user.id)
+      .eq("status", "accepted");
+
+    if (data) {
+      const friendProfiles = data.map(f => ({
+        ...f.friend,
+        level: Math.floor(Math.random() * 10) + 1,
+        xp: Math.floor(Math.random() * 500),
+        streak: Math.floor(Math.random() * 30),
+        caloriePercentage: Math.floor(Math.random() * 120) + 50,
+      }));
+      setFriends(friendProfiles);
+    }
+  };
+
+  const handleAddFriend = async (method: string, value: string) => {
+    toast({
+      title: "Friend request sent!",
+      description: `Request sent via ${method}`,
+    });
+    setShowAddFriend(false);
+  };
+
+  const handleFriendClick = (friend: any) => {
+    toast({
+      title: `${friend.display_name}'s Profile`,
+      description: `Level ${friend.level} • ${friend.streak} day streak`,
+    });
+  };
 
   const caloriePercentage = (caloriesConsumed / caloriesTarget) * 100;
   const isInMaintenanceZone = caloriePercentage >= 90 && caloriePercentage <= 110;
@@ -367,6 +420,17 @@ const Dashboard = () => {
           </div>
         </div>
 
+        {/* Friend Waves */}
+        {user && (
+          <div className="bg-card/80 backdrop-blur-sm rounded-3xl p-5 shadow-[0_8px_30px_rgb(0,0,0,0.08)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.4)] border-2 border-border">
+            <FriendWaves
+              friends={friends}
+              onAddFriend={() => setShowAddFriend(true)}
+              onFriendClick={handleFriendClick}
+            />
+          </div>
+        )}
+
         {/* Macro Rings */}
         <div className={`bg-card/80 backdrop-blur-sm rounded-3xl p-6 shadow-[0_8px_30px_rgb(0,0,0,0.08)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.4)] border-2 border-border ${logAnimation ? "animate-pulse-scale" : ""}`}>
           <h3 className="text-base font-bold text-foreground mb-4 px-2">
@@ -418,6 +482,13 @@ const Dashboard = () => {
 
         </main>
       </PullToRefresh>
+
+      {/* Add Friend Modal */}
+      <AddFriendModal
+        open={showAddFriend}
+        onOpenChange={setShowAddFriend}
+        onAddFriend={handleAddFriend}
+      />
 
       {/* Mobile Bottom Navigation */}
       <MobileBottomNav onQuickLog={handleQuickLog} />

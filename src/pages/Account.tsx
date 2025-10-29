@@ -14,9 +14,12 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/hooks/use-toast";
 import { 
   ArrowLeft, Edit, LogOut, UserPlus, Flame, Sparkles, 
-  Users, ChefHat, Target, Trophy, Share2 
+  Users, ChefHat, Target, Trophy, Share2, Settings
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { ThemeToggle } from "@/components/ThemeToggle";
+import { Separator } from "@/components/ui/separator";
+import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
 import otterHappy from "@/assets/otter-happy.png";
 
 const Account = () => {
@@ -199,6 +202,9 @@ const Account = () => {
 
   const xpPercentage = (xp / getXPForNextLevel()) * 100;
   const friendCount = friends.length;
+  
+  // Get favorite badge details
+  const favoriteBadge = badges.find(b => b.id === profile?.favorite_badge_id);
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-background via-background to-muted/20 pb-24">
@@ -226,57 +232,147 @@ const Account = () => {
       </header>
 
       <main className="max-w-md mx-auto px-4 py-6 space-y-6">
-        {/* Profile Header */}
-        <div className="bg-card rounded-3xl p-6 shadow-[0_8px_30px_rgb(0,0,0,0.08)] border-2 border-border space-y-4">
+        {/* Profile Header - Enhanced */}
+        <div className="bg-card rounded-3xl p-6 shadow-[0_8px_30px_rgb(0,0,0,0.08)] border-2 border-border space-y-5 animate-fade-in">
           <div className="flex items-start gap-4">
-            <Avatar className="w-20 h-20">
-              <AvatarImage src={profile?.avatar_url || otterHappy} alt={profile?.display_name} />
-              <AvatarFallback>{profile?.display_name?.[0]}</AvatarFallback>
-            </Avatar>
+            <div className="relative">
+              <Avatar className="w-24 h-24 border-4 border-primary/20 shadow-lg">
+                <AvatarImage src={profile?.avatar_url || otterHappy} alt={profile?.display_name} />
+                <AvatarFallback className="text-2xl">{profile?.display_name?.[0]}</AvatarFallback>
+              </Avatar>
+              {/* Favorite Badge Indicator */}
+              {favoriteBadge && (
+                <div className="absolute -bottom-2 -right-2 w-10 h-10 bg-primary rounded-full border-4 border-card flex items-center justify-center shadow-lg animate-bounce-subtle">
+                  <Trophy className="w-5 h-5 text-primary-foreground" />
+                </div>
+              )}
+            </div>
             
-            <div className="flex-1 min-w-0">
-              <h2 className="text-xl font-bold text-foreground">
-                {profile?.display_name}
+            <div className="flex-1 min-w-0 space-y-2">
+              <h2 className="text-2xl font-bold text-foreground">
+                {profile?.display_name || user?.email?.split('@')[0]}
               </h2>
-              <p className="text-sm text-muted-foreground">
-                {profile?.title}
+              <p className="text-sm text-muted-foreground font-medium">
+                {profile?.title || "Snack Apprentice"}
               </p>
               
-              {/* Stats */}
-              <div className="flex gap-4 mt-2">
-                <div className="flex items-center gap-1">
+              {/* Stats Row */}
+              <div className="flex gap-4 pt-1">
+                <div className="flex items-center gap-1.5 bg-streak/10 px-3 py-1.5 rounded-full">
                   <Flame className="w-4 h-4 text-streak" />
-                  <span className="text-sm font-semibold text-foreground">{streak}</span>
+                  <span className="text-sm font-bold text-foreground">{streak}</span>
+                  <span className="text-xs text-muted-foreground">day</span>
                 </div>
-                <div className="flex items-center gap-1">
+                <div className="flex items-center gap-1.5 bg-primary/10 px-3 py-1.5 rounded-full">
                   <Users className="w-4 h-4 text-primary" />
-                  <span className="text-sm font-semibold text-foreground">{friendCount}</span>
+                  <span className="text-sm font-bold text-foreground">{friendCount}</span>
+                  <span className="text-xs text-muted-foreground">friends</span>
                 </div>
               </div>
             </div>
 
-            <Button variant="outline" size="icon" className="rounded-full">
-              <Edit className="w-4 h-4" />
+            <Button 
+              variant="outline" 
+              size="icon" 
+              className="rounded-full active:scale-95 transition-transform"
+              onClick={() => navigate("/settings")}
+            >
+              <Settings className="w-4 h-4" />
             </Button>
           </div>
 
-          {/* Level & XP Bar */}
+          {/* Favorite Badge Display */}
+          {favoriteBadge && (
+            <div className="bg-gradient-to-r from-primary/10 to-accent/10 rounded-2xl p-3 border border-primary/20">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl bg-primary/20 flex items-center justify-center">
+                  <Trophy className="w-5 h-5 text-primary" />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className="text-xs text-muted-foreground font-medium">Favorite Badge</p>
+                  <p className="text-sm font-bold text-foreground truncate">{favoriteBadge.name}</p>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Level & XP Bar - Enhanced */}
           <div className="space-y-2">
             <div className="flex items-center justify-between text-sm">
-              <div className="flex items-center gap-1">
-                <Sparkles className="w-4 h-4 text-primary" />
-                <span className="font-bold text-foreground">Level {level}</span>
+              <div className="flex items-center gap-2">
+                <Sparkles className="w-5 h-5 text-primary animate-pulse" />
+                <span className="font-bold text-foreground text-base">Level {level}</span>
               </div>
-              <span className="text-muted-foreground">{xp}/{getXPForNextLevel()} XP</span>
+              <span className="text-muted-foreground font-medium">{xp}/{getXPForNextLevel()} XP</span>
             </div>
-            <div className="h-2 rounded-full bg-muted overflow-hidden">
+            <div className="relative h-3 rounded-full bg-muted overflow-hidden">
               <div 
-                className="h-full bg-gradient-to-r from-primary to-accent transition-all duration-500"
+                className="absolute inset-0 bg-gradient-to-r from-primary via-accent to-primary transition-all duration-500"
                 style={{ width: `${xpPercentage}%` }}
               />
+              {xpPercentage > 80 && (
+                <div className="absolute inset-0 animate-shimmer bg-gradient-to-r from-transparent via-white/30 to-transparent" />
+              )}
             </div>
           </div>
         </div>
+
+        {/* Friends Preview Carousel */}
+        {friends.length > 0 && (
+          <div className="bg-card rounded-3xl p-5 shadow-[0_8px_30px_rgb(0,0,0,0.08)] border-2 border-border">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-base font-bold text-foreground flex items-center gap-2">
+                <Users className="w-5 h-5 text-primary" />
+                Friends
+              </h3>
+              <Button variant="ghost" size="sm" onClick={() => setShowAddFriend(true)}>
+                <UserPlus className="w-4 h-4 mr-1" />
+                Add
+              </Button>
+            </div>
+            <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-hide">
+              {friends.map((friend) => (
+                <div
+                  key={friend.id}
+                  className="flex-shrink-0 flex flex-col items-center gap-2 cursor-pointer active:scale-95 transition-transform"
+                >
+                  <Avatar className="w-16 h-16 border-2 border-primary/30">
+                    <AvatarImage src={friend.avatar_url} />
+                    <AvatarFallback>{friend.display_name?.[0]}</AvatarFallback>
+                  </Avatar>
+                  <p className="text-xs font-semibold text-foreground text-center w-16 truncate">
+                    {friend.display_name}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Recent Achievements Carousel */}
+        {userBadges.length > 0 && (
+          <div className="bg-card rounded-3xl p-5 shadow-[0_8px_30px_rgb(0,0,0,0.08)] border-2 border-border">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-base font-bold text-foreground flex items-center gap-2">
+                <Trophy className="w-5 h-5 text-accent" />
+                Recent Achievements
+              </h3>
+            </div>
+            <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-hide">
+              {userBadges.slice(0, 5).map((ub) => (
+                <div
+                  key={ub.id}
+                  className="flex-shrink-0 flex flex-col items-center gap-2 p-3 bg-gradient-to-br from-accent/10 to-primary/10 rounded-2xl border border-accent/20 min-w-[100px]"
+                >
+                  <Trophy className="w-8 h-8 text-accent" />
+                  <p className="text-xs font-bold text-foreground text-center line-clamp-2">
+                    {ub.badges?.name}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
 
         {/* Tabs for Badges, Friends, Shared */}
         <Tabs defaultValue="badges" className="w-full">
@@ -442,6 +538,51 @@ const Account = () => {
             )}
           </TabsContent>
         </Tabs>
+
+        {/* Account Controls Section */}
+        <div className="bg-card rounded-3xl p-6 shadow-[0_8px_30px_rgb(0,0,0,0.08)] border-2 border-border space-y-4">
+          <h3 className="text-base font-bold text-foreground mb-4">Account</h3>
+          
+          <div className="flex items-center justify-between p-3 bg-muted/30 rounded-2xl">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
+                <Settings className="w-5 h-5 text-primary" />
+              </div>
+              <span className="text-sm font-medium text-foreground">Theme</span>
+            </div>
+            <ThemeToggle />
+          </div>
+
+          <Separator />
+
+          <Button
+            variant="outline"
+            className="w-full justify-start gap-3 h-auto p-4 rounded-2xl"
+            onClick={() => navigate("/settings")}
+          >
+            <div className="w-10 h-10 rounded-full bg-accent/10 flex items-center justify-center">
+              <Settings className="w-5 h-5 text-accent" />
+            </div>
+            <div className="flex-1 text-left">
+              <p className="text-sm font-semibold text-foreground">Settings & Privacy</p>
+              <p className="text-xs text-muted-foreground">Manage your account preferences</p>
+            </div>
+          </Button>
+
+          <Button
+            variant="outline"
+            className="w-full justify-start gap-3 h-auto p-4 rounded-2xl text-destructive hover:text-destructive hover:bg-destructive/10"
+            onClick={signOut}
+          >
+            <div className="w-10 h-10 rounded-full bg-destructive/10 flex items-center justify-center">
+              <LogOut className="w-5 h-5" />
+            </div>
+            <div className="flex-1 text-left">
+              <p className="text-sm font-semibold">Sign Out</p>
+              <p className="text-xs text-muted-foreground">See you later, Ottr friend! 🦦</p>
+            </div>
+          </Button>
+        </div>
       </main>
 
       {/* Modals */}
