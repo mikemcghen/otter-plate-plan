@@ -17,6 +17,8 @@ import { EndOfDaySummaryModal } from "@/components/EndOfDaySummaryModal";
 import { FloatingMascotButton } from "@/components/FloatingMascotButton";
 import { LevelUpModal } from "@/components/LevelUpModal";
 import { EmptyState } from "@/components/EmptyState";
+import { OtterMascot } from "@/components/OtterMascot";
+import type { OtterMood } from "@/components/OtterMascot";
 import { useAppContext } from "@/contexts/AppContext";
 import { Moon, UtensilsCrossed } from "lucide-react";
 import { useNavigate } from "react-router-dom";
@@ -59,6 +61,7 @@ const Dashboard = () => {
   const [showEndOfDay, setShowEndOfDay] = useState(false);
   const [showLevelUp, setShowLevelUp] = useState(false);
   const [previousLevel, setPreviousLevel] = useState(level);
+  const [logAnimation, setLogAnimation] = useState(false);
 
   const caloriePercentage = (caloriesConsumed / caloriesTarget) * 100;
   const isInMaintenanceZone = caloriePercentage >= 90 && caloriePercentage <= 110;
@@ -66,6 +69,15 @@ const Dashboard = () => {
   const isUnder = caloriePercentage < 90;
   const isOver = caloriePercentage > 110;
   const caloriesRemaining = getCaloriesRemaining();
+
+  // Dynamic background based on status
+  const getBackgroundGradient = () => {
+    if (isPerfect) return "bg-perfect-gradient";
+    if (isInMaintenanceZone) return "bg-maintenance-gradient";
+    if (isUnder) return "bg-under-gradient";
+    if (isOver) return "bg-over-gradient";
+    return "bg-default-gradient";
+  };
   
   // Check for level up
   useEffect(() => {
@@ -104,13 +116,13 @@ const Dashboard = () => {
     return () => clearTimeout(timer);
   }, [caloriePercentage, showNotification]);
 
-  // Dynamic otter and message based on status
-  const getOtterState = () => {
-    if (isPerfect) return { image: otterPerfect, message: "Perfect balance! You're crushing it! 🎉" };
-    if (isInMaintenanceZone) return { image: otterHappy, message: "Great job! Right in the zone! 🎯" };
-    if (isUnder) return { image: otterSleepy, message: "You need more energy! Let's add a snack 😴" };
-    if (isOver) return { image: otterConcerned, message: "A bit high today, but that's okay! 💪" };
-    return { image: otterHappy, message: "Keep going! You're doing great!" };
+  // Dynamic otter mood and message based on status
+  const getOtterState = (): { mood: OtterMood; message: string; image: string } => {
+    if (isPerfect) return { mood: "proud", message: "Perfect balance! You're crushing it! 🎉", image: otterPerfect };
+    if (isInMaintenanceZone) return { mood: "happy", message: "Great job! Right in the zone! 🎯", image: otterHappy };
+    if (isUnder) return { mood: "hungry", message: "You need more energy! Let's add a snack 😴", image: otterSleepy };
+    if (isOver) return { mood: "encouraging", message: "A bit high today, but that's okay! 💪", image: otterConcerned };
+    return { mood: "happy", message: "Keep going! You're doing great!", image: otterHappy };
   };
 
   const otterState = getOtterState();
@@ -123,6 +135,10 @@ const Dashboard = () => {
 
   const handleLogSnack = async (snack: typeof snackOptions[0]) => {
     await notification("success");
+    
+    // Trigger animation
+    setLogAnimation(true);
+    setTimeout(() => setLogAnimation(false), 600);
     
     // Log to context
     logFood({
@@ -159,6 +175,10 @@ const Dashboard = () => {
   const handleQuickLogFood = async (food: any) => {
     await notification("success");
     
+    // Trigger animation
+    setLogAnimation(true);
+    setTimeout(() => setLogAnimation(false), 600);
+    
     // Log to context
     logFood({
       name: food.name,
@@ -173,6 +193,11 @@ const Dashboard = () => {
       title: "Food logged! 🎉",
       description: `${food.name} added • +15 XP`,
     });
+
+    if (isPerfect) {
+      setShowConfetti(true);
+      setTimeout(() => setShowConfetti(false), 3000);
+    }
   };
 
   const handleRefresh = async () => {
@@ -185,7 +210,7 @@ const Dashboard = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-background via-background to-muted/20 pb-24">
+    <div className={`min-h-screen pb-24 transition-all duration-700 ${getBackgroundGradient()}`}>
       <Confetti active={showConfetti} />
       
       {/* Daily Greeting Modal */}
@@ -277,31 +302,49 @@ const Dashboard = () => {
         </header>
 
         <main className="max-w-md mx-auto px-4 py-6 space-y-6">
-        {/* Main Calorie Ring */}
-        <div className="bg-card rounded-3xl p-8 shadow-[0_8px_30px_rgb(0,0,0,0.08)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.4)] border-2 border-border animate-fade-in">
-          <div className="flex flex-col items-center gap-6">
-            <div className="text-center">
-              <h2 className="text-xl font-bold text-foreground mb-1">
-                Daily Calories
-              </h2>
-              <p className="text-base text-muted-foreground animate-fade-in font-medium">
-                {otterState.message}
-              </p>
-            </div>
-            <CircularProgress
-              percentage={caloriePercentage}
-              size={200}
-              strokeWidth={12}
-              value={`${caloriesConsumed}`}
-              label={`of ${caloriesTarget} cal`}
-              status={isPerfect ? "success" : isInMaintenanceZone ? "normal" : "warning"}
-              showGlow={isPerfect}
+        {/* Hero Section: Mascot + Progress */}
+        <div className={`bg-card/80 backdrop-blur-sm rounded-3xl p-6 shadow-[0_8px_30px_rgb(0,0,0,0.08)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.4)] border-2 border-border animate-fade-in ${logAnimation ? "animate-success-bounce" : ""}`}>
+          <div className="flex flex-col items-center gap-4">
+            {/* Mascot Integration */}
+            <OtterMascot 
+              mood={otterState.mood} 
+              message={otterState.message}
+              animate={true}
             />
+            
+            {/* Calorie Progress Ring */}
+            <div className={`transition-transform duration-300 ${logAnimation ? "animate-pulse-scale" : ""}`}>
+              <CircularProgress
+                percentage={caloriePercentage}
+                size={200}
+                strokeWidth={14}
+                value={`${caloriesConsumed}`}
+                label={`of ${caloriesTarget} cal`}
+                status={isPerfect ? "success" : isInMaintenanceZone ? "normal" : "warning"}
+                showGlow={isPerfect}
+              />
+            </div>
+
+            {/* Encouraging Status Text */}
+            <div className="text-center space-y-1">
+              <p className="text-sm font-semibold text-muted-foreground">
+                {caloriesRemaining > 0 
+                  ? `${caloriesRemaining} cal to go` 
+                  : caloriesRemaining === 0 
+                  ? "Perfect! You hit your target!" 
+                  : `${Math.abs(caloriesRemaining)} cal over`}
+              </p>
+              {isPerfect && (
+                <p className="text-xs text-success font-medium animate-shimmer bg-gradient-to-r from-success via-primary to-success bg-clip-text text-transparent bg-[length:200%_auto]">
+                  ✨ You're in the perfect zone! ✨
+                </p>
+              )}
+            </div>
           </div>
         </div>
 
         {/* Macro Rings */}
-        <div className="bg-card rounded-3xl p-6 shadow-[0_8px_30px_rgb(0,0,0,0.08)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.4)] border-2 border-border">
+        <div className={`bg-card/80 backdrop-blur-sm rounded-3xl p-6 shadow-[0_8px_30px_rgb(0,0,0,0.08)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.4)] border-2 border-border ${logAnimation ? "animate-pulse-scale" : ""}`}>
           <h3 className="text-base font-bold text-foreground mb-4 px-2">
             Macros
           </h3>
@@ -328,7 +371,7 @@ const Dashboard = () => {
         </div>
 
         {/* Snack Carousel */}
-        <div className="bg-card rounded-3xl p-6 shadow-[0_8px_30px_rgb(0,0,0,0.08)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.4)] border-2 border-border">
+        <div className="bg-card/80 backdrop-blur-sm rounded-3xl p-6 shadow-[0_8px_30px_rgb(0,0,0,0.08)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.4)] border-2 border-border">
           {foodLogs.length === 0 ? (
             <EmptyState
               variant="encourage"

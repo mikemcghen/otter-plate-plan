@@ -249,4 +249,70 @@ All colors MUST be HSL.
   .animate-glow-pulse {
     animation: glow-pulse 2s ease-in-out infinite;
   }
+
+  @keyframes shimmer {
+    0% {
+      background-position: -200% center;
+    }
+    100% {
+      background-position: 200% center;
+    }
+  }
+
+  .animate-shimmer {
+    animation: shimmer 3s ease-in-out infinite;
+  }
+
+  @keyframes pulse-scale {
+    0%, 100% {
+      transform: scale(1);
+    }
+    50% {
+      transform: scale(1.05);
+    }
+  }
+
+  .animate-pulse-scale {
+    animation: pulse-scale 0.5s ease-in-out;
+  }
+
+  @keyframes success-bounce {
+    0%, 100% {
+      transform: translateY(0) scale(1);
+    }
+    25% {
+      transform: translateY(-10px) scale(1.05);
+    }
+    50% {
+      transform: translateY(0) scale(1);
+    }
+    75% {
+      transform: translateY(-5px) scale(1.02);
+    }
+  }
+
+  .animate-success-bounce {
+    animation: success-bounce 0.6s ease-in-out;
+  }
+
+  /* Dynamic background gradients */
+  .bg-perfect-gradient {
+    background: linear-gradient(135deg, hsl(var(--success) / 0.1) 0%, hsl(var(--primary) / 0.05) 100%);
+  }
+
+  .bg-maintenance-gradient {
+    background: linear-gradient(135deg, hsl(var(--primary) / 0.08) 0%, hsl(var(--accent) / 0.05) 100%);
+  }
+
+  .bg-under-gradient {
+    background: linear-gradient(135deg, hsl(var(--warning) / 0.08) 0%, hsl(var(--muted) / 0.05) 100%);
+  }
+
+  .bg-over-gradient {
+    background: linear-gradient(135deg, hsl(var(--accent) / 0.08) 0%, hsl(var(--muted) / 0.05) 100%);
+  }
+
+  .bg-default-gradient {
+    background: linear-gradient(135deg, hsl(var(--background)) 0%, hsl(var(--muted) / 0.2) 100%);
+  }
 }
