@@ -80,12 +80,63 @@ const Dashboard = () => {
     setShowBadgeUnlock(true);
   });
 
-  // Load friends
+  // Load friends (with placeholders for demo)
   useEffect(() => {
     if (user) {
       loadFriends();
+    } else {
+      // Show placeholder friends when not logged in
+      setFriends(placeholderFriends);
     }
   }, [user]);
+
+  const placeholderFriends = [
+    {
+      id: "1",
+      display_name: "Emma",
+      avatar_url: "https://api.dicebear.com/7.x/avataaars/svg?seed=Emma",
+      level: 8,
+      xp: 420,
+      streak: 12,
+      caloriePercentage: 98,
+    },
+    {
+      id: "2",
+      display_name: "Marcus",
+      avatar_url: "https://api.dicebear.com/7.x/avataaars/svg?seed=Marcus",
+      level: 5,
+      xp: 280,
+      streak: 7,
+      caloriePercentage: 102,
+    },
+    {
+      id: "3",
+      display_name: "Sofia",
+      avatar_url: "https://api.dicebear.com/7.x/avataaars/svg?seed=Sofia",
+      level: 12,
+      xp: 750,
+      streak: 21,
+      caloriePercentage: 95,
+    },
+    {
+      id: "4",
+      display_name: "Alex",
+      avatar_url: "https://api.dicebear.com/7.x/avataaars/svg?seed=Alex",
+      level: 3,
+      xp: 150,
+      streak: 4,
+      caloriePercentage: 88,
+    },
+    {
+      id: "5",
+      display_name: "Jasmine",
+      avatar_url: "https://api.dicebear.com/7.x/avataaars/svg?seed=Jasmine",
+      level: 15,
+      xp: 920,
+      streak: 30,
+      caloriePercentage: 100,
+    },
+  ];
 
   const loadFriends = async () => {
     if (!user) return;
@@ -99,7 +150,7 @@ const Dashboard = () => {
       .eq("user_id", user.id)
       .eq("status", "accepted");
 
-    if (data) {
+    if (data && data.length > 0) {
       const friendProfiles = data.map(f => ({
         ...f.friend,
         level: Math.floor(Math.random() * 10) + 1,
@@ -108,6 +159,9 @@ const Dashboard = () => {
         caloriePercentage: Math.floor(Math.random() * 120) + 50,
       }));
       setFriends(friendProfiles);
+    } else {
+      // Use placeholders if no friends found
+      setFriends(placeholderFriends);
     }
   };
 
@@ -421,15 +475,13 @@ const Dashboard = () => {
         </div>
 
         {/* Friend Waves */}
-        {user && (
-          <div className="bg-card/80 backdrop-blur-sm rounded-3xl p-5 shadow-[0_8px_30px_rgb(0,0,0,0.08)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.4)] border-2 border-border">
-            <FriendWaves
-              friends={friends}
-              onAddFriend={() => setShowAddFriend(true)}
-              onFriendClick={handleFriendClick}
-            />
-          </div>
-        )}
+        <div className="bg-card/80 backdrop-blur-sm rounded-3xl p-5 shadow-[0_8px_30px_rgb(0,0,0,0.08)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.4)] border-2 border-border">
+          <FriendWaves
+            friends={friends}
+            onAddFriend={() => setShowAddFriend(true)}
+            onFriendClick={handleFriendClick}
+          />
+        </div>
 
         {/* Macro Rings */}
         <div className={`bg-card/80 backdrop-blur-sm rounded-3xl p-6 shadow-[0_8px_30px_rgb(0,0,0,0.08)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.4)] border-2 border-border ${logAnimation ? "animate-pulse-scale" : ""}`}>
