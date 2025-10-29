@@ -6,6 +6,7 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { DevAdminSidebar } from "@/components/DevAdminSidebar";
+import { AppProvider } from "@/contexts/AppContext";
 import { Button } from "@/components/ui/button";
 import { Menu } from "lucide-react";
 import Dashboard from "./pages/Dashboard";
@@ -43,11 +44,12 @@ const App = () => {
   return (
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
-        <Toaster />
-        <Sonner />
-        <BrowserRouter>
-          <SidebarProvider defaultOpen={devMode}>
-            <div className="flex min-h-screen w-full">
+        <AppProvider>
+          <Toaster />
+          <Sonner />
+          <BrowserRouter>
+            <SidebarProvider defaultOpen={devMode}>
+              <div className="flex min-h-screen w-full">
               {devMode && <DevAdminSidebar />}
               
               <div className="flex-1 flex flex-col w-full">
@@ -86,9 +88,10 @@ const App = () => {
                   </Routes>
                 </main>
               </div>
-            </div>
-          </SidebarProvider>
-        </BrowserRouter>
+              </div>
+            </SidebarProvider>
+          </BrowserRouter>
+        </AppProvider>
       </TooltipProvider>
     </QueryClientProvider>
   );

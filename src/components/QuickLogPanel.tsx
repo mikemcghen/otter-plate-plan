@@ -57,11 +57,6 @@ export function QuickLogPanel({ open, onOpenChange, onLog }: QuickLogPanelProps)
     setShowCelebration(true);
     onLog(food);
     
-    toast({
-      title: "Logged! 🎉",
-      description: `${food.name} added • +15 XP`,
-    });
-
     setTimeout(() => {
       setShowCelebration(false);
       onOpenChange(false);

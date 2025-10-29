@@ -15,6 +15,8 @@ import { PullToRefresh } from "@/components/PullToRefresh";
 import { DailyGreetingModal } from "@/components/DailyGreetingModal";
 import { EndOfDaySummaryModal } from "@/components/EndOfDaySummaryModal";
 import { FloatingMascotButton } from "@/components/FloatingMascotButton";
+import { LevelUpModal } from "@/components/LevelUpModal";
+import { useAppContext } from "@/contexts/AppContext";
 import { Moon } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "@/hooks/use-toast";
@@ -27,8 +29,25 @@ import otterConcerned from "@/assets/otter-concerned.png";
 const Dashboard = () => {
   const navigate = useNavigate();
   const { impact, notification } = useHaptics();
-  const [caloriesConsumed] = useState(1450);
-  const [caloriesTarget] = useState(2000);
+  const appContext = useAppContext();
+  const {
+    caloriesConsumed,
+    caloriesTarget,
+    proteinConsumed,
+    proteinTarget,
+    carbsConsumed,
+    carbsTarget,
+    fatConsumed,
+    fatTarget,
+    xp,
+    level,
+    streak,
+    foodLogs,
+    logFood,
+    getXPForNextLevel,
+    getCaloriesRemaining,
+  } = appContext;
+
   const [showConfetti, setShowConfetti] = useState(false);
   const [showNotification, setShowNotification] = useState(false);
   const [showSnackPicker, setShowSnackPicker] = useState(false);
@@ -37,15 +56,26 @@ const Dashboard = () => {
   const [loggedSnack, setLoggedSnack] = useState<string>("");
   const [showDailyGreeting, setShowDailyGreeting] = useState(false);
   const [showEndOfDay, setShowEndOfDay] = useState(false);
-  const [currentStreak] = useState(12);
-  const [xpGained] = useState(85);
-  const [foodsLogged] = useState(5);
+  const [showLevelUp, setShowLevelUp] = useState(false);
+  const [previousLevel, setPreviousLevel] = useState(level);
 
   const caloriePercentage = (caloriesConsumed / caloriesTarget) * 100;
   const isInMaintenanceZone = caloriePercentage >= 90 && caloriePercentage <= 110;
   const isPerfect = caloriePercentage >= 95 && caloriePercentage <= 105;
   const isUnder = caloriePercentage < 90;
   const isOver = caloriePercentage > 110;
+  const caloriesRemaining = getCaloriesRemaining();
+  
+  // Check for level up
+  useEffect(() => {
+    if (level > previousLevel) {
+      setPreviousLevel(level);
+      setShowLevelUp(true);
+      setShowConfetti(true);
+      notification("success");
+      setTimeout(() => setShowConfetti(false), 3000);
+    }
+  }, [level, previousLevel, notification]);
 
   // Check for daily greeting
   useEffect(() => {
@@ -58,15 +88,20 @@ const Dashboard = () => {
     }
   }, []);
 
-  // Simulate notification trigger after component mounts (afternoon check-in)
+  // Snack notification trigger - check time of day and calorie deficit
   useEffect(() => {
+    const currentHour = new Date().getHours();
+    const isAfternoon = currentHour >= 14 && currentHour < 18;
+    const isEvening = currentHour >= 18;
+    
     const timer = setTimeout(() => {
-      if (caloriePercentage < 90) {
+      if ((isAfternoon || isEvening) && caloriePercentage < 85 && !showNotification) {
         setShowNotification(true);
       }
-    }, 2000);
+    }, 3000);
+    
     return () => clearTimeout(timer);
-  }, [caloriePercentage]);
+  }, [caloriePercentage, showNotification]);
 
   // Dynamic otter and message based on status
   const getOtterState = () => {
@@ -87,6 +122,16 @@ const Dashboard = () => {
 
   const handleLogSnack = async (snack: typeof snackOptions[0]) => {
     await notification("success");
+    
+    // Log to context
+    logFood({
+      name: snack.name,
+      calories: snack.calories,
+      protein: snack.protein,
+      carbs: 0,
+      fat: 0,
+    });
+    
     setLoggedSnack(snack.name);
     setShowSuccessModal(true);
     setShowNotification(false);
@@ -95,7 +140,7 @@ const Dashboard = () => {
     setTimeout(() => {
       toast({
         title: "Snack logged! 🎉",
-        description: `${snack.name} added to your daily log`,
+        description: `${snack.name} added • +15 XP`,
       });
     }, 500);
 
@@ -112,16 +157,21 @@ const Dashboard = () => {
 
   const handleQuickLogFood = async (food: any) => {
     await notification("success");
+    
+    // Log to context
+    logFood({
+      name: food.name,
+      calories: food.calories,
+      protein: food.protein || 0,
+      carbs: food.carbs || 0,
+      fat: food.fat || 0,
+    });
+    
     setLoggedSnack(food.name);
     toast({
       title: "Food logged! 🎉",
-      description: `${food.name} added to your daily log`,
+      description: `${food.name} added • +15 XP`,
     });
-    
-    if (isPerfect) {
-      setShowConfetti(true);
-      setTimeout(() => setShowConfetti(false), 3000);
-    }
   };
 
   const handleRefresh = async () => {
@@ -133,8 +183,6 @@ const Dashboard = () => {
     });
   };
 
-  const caloriesRemaining = caloriesTarget - caloriesConsumed;
-
   return (
     <div className="min-h-screen bg-gradient-to-b from-background via-background to-muted/20 pb-24">
       <Confetti active={showConfetti} />
@@ -143,16 +191,23 @@ const Dashboard = () => {
       <DailyGreetingModal
         open={showDailyGreeting}
         onOpenChange={setShowDailyGreeting}
-        streak={currentStreak}
+        streak={streak}
         onStart={() => setShowDailyGreeting(false)}
+      />
+
+      {/* Level Up Modal */}
+      <LevelUpModal
+        open={showLevelUp}
+        onOpenChange={setShowLevelUp}
+        level={level}
       />
 
       {/* End of Day Summary Modal */}
       <EndOfDaySummaryModal
         open={showEndOfDay}
         onOpenChange={setShowEndOfDay}
-        xpGained={xpGained}
-        foodsLogged={foodsLogged}
+        xpGained={xp}
+        foodsLogged={foodLogs.length}
         isPerfect={isPerfect}
       />
 
@@ -162,7 +217,7 @@ const Dashboard = () => {
       {/* Push Notification Banner */}
       <NotificationBanner
         visible={showNotification}
-        message="Running low on fuel 🧃 — how about a snack to stay in your zone?"
+        message={`You're ${caloriesRemaining} calories short — Ottr suggests a snack! 🍎`}
         onOpen={() => {
           setShowSnackPicker(true);
           setShowNotification(false);
@@ -202,7 +257,7 @@ const Dashboard = () => {
                 OttrCal
               </h1>
               <div className="flex items-center gap-2">
-                <StreakCounter days={currentStreak} />
+                <StreakCounter days={streak} />
                 <Button
                   size="icon"
                   variant="ghost"
@@ -216,7 +271,7 @@ const Dashboard = () => {
                 </Button>
               </div>
             </div>
-            <XPBar current={450} max={600} level={8} />
+            <XPBar current={xp} max={getXPForNextLevel()} level={level} />
           </div>
         </header>
 
@@ -252,20 +307,20 @@ const Dashboard = () => {
           <div className="grid grid-cols-3 gap-4">
             <MacroRing
               label="Protein"
-              current={85}
-              target={120}
+              current={proteinConsumed}
+              target={proteinTarget}
               color="hsl(var(--primary))"
             />
             <MacroRing
               label="Carbs"
-              current={160}
-              target={200}
+              current={carbsConsumed}
+              target={carbsTarget}
               color="hsl(var(--accent))"
             />
             <MacroRing
               label="Fat"
-              current={45}
-              target={60}
+              current={fatConsumed}
+              target={fatTarget}
               color="hsl(var(--success))"
             />
           </div>
