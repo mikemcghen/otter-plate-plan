@@ -1,7 +1,7 @@
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { OtterMascot, OtterMood } from "@/components/OtterMascot";
-import { Flame, Sparkles } from "lucide-react";
+import { Flame, Sparkles, Trophy, Hand } from "lucide-react";
 import { useHaptics } from "@/hooks/useHaptics";
 
 interface DailyGreetingModalProps {
@@ -31,9 +31,9 @@ export const DailyGreetingModal = ({
       return "Welcome back, Ottr missed you! Let's start fresh today.";
     }
     if (streak >= 7) {
-      return `You're on a ${streak}-day streak! Consistency champion! 🏆`;
+      return `You're on a ${streak}-day streak! Consistency champion!`;
     }
-    return `${streak}-day streak going strong! Keep it up, swimmer! 🦦`;
+    return `${streak}-day streak going strong! Keep it up, swimmer!`;
   };
 
   const getMood = (): OtterMood => {
@@ -55,12 +55,20 @@ export const DailyGreetingModal = ({
           <OtterMascot mood={getMood()} animate={true} />
 
           <div className="space-y-2">
-            <h2 className="text-2xl font-bold text-foreground">
-              {getGreeting()}, swimmer! 👋
-            </h2>
+            <div className="flex items-center justify-center gap-2">
+              <h2 className="text-2xl font-bold text-foreground">
+                {getGreeting()}, swimmer!
+              </h2>
+              <Hand className="w-6 h-6 text-primary" />
+            </div>
             <p className="text-base text-muted-foreground">
               {getMessage()}
             </p>
+            {streak >= 7 && (
+              <div className="flex items-center justify-center gap-1">
+                <Trophy className="w-4 h-4 text-streak" />
+              </div>
+            )}
           </div>
 
           {streak > 0 && (

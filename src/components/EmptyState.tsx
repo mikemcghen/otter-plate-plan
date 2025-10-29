@@ -1,4 +1,5 @@
 import { Button } from "@/components/ui/button";
+import { AlertTriangle, WifiOff } from "lucide-react";
 import { ReactNode } from "react";
 import otterHappy from "@/assets/otter-happy.png";
 import otterEncourage from "@/assets/otter-encourage.png";
@@ -105,7 +106,7 @@ export const ErrorState = ({
 
       {/* Error Icon */}
       <div className="w-12 h-12 rounded-full bg-warning/10 flex items-center justify-center mb-4">
-        <span className="text-2xl">⚠️</span>
+        <AlertTriangle className="w-6 h-6 text-warning" />
       </div>
 
       {/* Text Content */}
@@ -146,7 +147,7 @@ export const OfflineState = ({ onRetry }: { onRetry?: () => void }) => {
 
       {/* Offline Icon */}
       <div className="w-12 h-12 rounded-full bg-muted/20 flex items-center justify-center mb-4">
-        <span className="text-2xl">📡</span>
+        <WifiOff className="w-6 h-6 text-muted-foreground" />
       </div>
 
       {/* Text Content */}

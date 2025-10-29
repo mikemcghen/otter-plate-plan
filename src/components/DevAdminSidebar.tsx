@@ -8,6 +8,7 @@ import {
   Menu,
   X,
   GitBranch,
+  Wrench,
 } from "lucide-react";
 import {
   Sidebar,
@@ -44,9 +45,12 @@ export function DevAdminSidebar() {
         {/* Header */}
         <div className="p-4 border-b-2 border-warning/30 bg-warning/10">
           <div className="flex items-center justify-between mb-2">
-            <h2 className="text-sm font-bold text-warning-foreground">
-              🛠️ Dev Mode
-            </h2>
+            <div className="flex items-center gap-2">
+              <Wrench className="w-4 h-4 text-warning-foreground" />
+              <h2 className="text-sm font-bold text-warning-foreground">
+                Dev Mode
+              </h2>
+            </div>
             <Button
               variant="ghost"
               size="icon"

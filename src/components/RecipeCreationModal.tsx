@@ -138,7 +138,7 @@ export function RecipeCreationModal({ open, onOpenChange, onSave }: RecipeCreati
     onSave(recipe);
     
     toast({
-      title: "Recipe saved! 🎉",
+      title: "Recipe saved!",
       description: `${recipe.name} is ready to log`,
     });
 

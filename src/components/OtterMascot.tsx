@@ -25,12 +25,12 @@ const otterImages: Record<OtterMood, string> = {
 };
 
 const otterMessages: Record<OtterMood, string> = {
-  joyful: "🎉 Amazing! You're on a roll!",
-  sleepy: "😴 Time to rest, swimmer",
-  hungry: "🍪 Your body needs fuel!",
-  proud: "💪 Consistency champion!",
-  encouraging: "💜 Welcome back! Every day is a fresh start",
-  happy: "🦦 Great to see you!",
+  joyful: "Amazing! You're on a roll!",
+  sleepy: "Time to rest, swimmer",
+  hungry: "Your body needs fuel!",
+  proud: "Consistency champion!",
+  encouraging: "Welcome back! Every day is a fresh start",
+  happy: "Great to see you!",
 };
 
 export const OtterMascot = ({ 

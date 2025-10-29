@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { Plus } from "lucide-react";
+import { Plus, Apple, CupSoda, Cherry } from "lucide-react";
 import useEmblaCarousel from "embla-carousel-react";
 import { useCallback, useEffect, useState } from "react";
 
@@ -46,7 +46,7 @@ export const SnackCarousel = ({ snacks, onLog, otterImage }: SnackCarouselProps)
           <div className="absolute inset-0 bg-primary/10 dark:bg-primary/20 rounded-full blur-xl -z-10" />
         </div>
         <div>
-          <h3 className="text-lg font-bold text-foreground">Snack Time! 🦦</h3>
+          <h3 className="text-lg font-bold text-foreground">Snack Time!</h3>
           <p className="text-sm font-medium text-muted-foreground">Swipe for options</p>
         </div>
       </div>
@@ -65,7 +65,9 @@ export const SnackCarousel = ({ snacks, onLog, otterImage }: SnackCarouselProps)
               <div className="space-y-3">
                 <div className="bg-secondary/50 dark:bg-secondary/30 rounded-xl p-3 space-y-1">
                   <div className="flex items-center gap-2">
-                    <span className="text-2xl">{snack.emoji}</span>
+                    {snack.emoji === "berry" && <Cherry className="w-5 h-5 text-primary" />}
+                    {snack.emoji === "apple" && <Apple className="w-5 h-5 text-primary" />}
+                    {snack.emoji === "cup-soda" && <CupSoda className="w-5 h-5 text-primary" />}
                     <p className="font-bold text-foreground">{snack.name}</p>
                   </div>
                   <div className="flex gap-4 text-sm font-medium text-muted-foreground">

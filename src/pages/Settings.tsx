@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
-import { ArrowLeft, Moon, Sun, Bell, Book, Download } from "lucide-react";
+import { ArrowLeft, Moon, Sun, Bell, Book, Download, Heart } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { MobileBottomNav } from "@/components/MobileBottomNav";
 import { ThemeToggle } from "@/components/ThemeToggle";
@@ -76,11 +76,13 @@ const Settings = () => {
         </div>
 
         {/* About */}
-        <div className="bg-card rounded-3xl p-6 shadow-[0_8px_30px_rgb(0,0,0,0.08)] border-2 border-border text-center">
-          <p className="text-sm text-muted-foreground mb-2">OttrCal v1.0</p>
-          <p className="text-xs text-muted-foreground">
-            Made with 💜 by your friendly otter coach
-          </p>
+        <div className="bg-card rounded-3xl p-6 shadow-[0_8px_30px_rgb(0,0,0,0.08)] border-2 border-border text-center space-y-2">
+          <p className="text-sm text-muted-foreground">OttrCal v1.0</p>
+          <div className="flex items-center justify-center gap-1">
+            <p className="text-xs text-muted-foreground">Made with</p>
+            <Heart className="w-3 h-3 text-primary fill-primary" />
+            <p className="text-xs text-muted-foreground">by your friendly otter coach</p>
+          </div>
         </div>
       </main>
 

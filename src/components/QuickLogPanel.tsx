@@ -35,17 +35,17 @@ export function QuickLogPanel({ open, onOpenChange, onLog }: QuickLogPanelProps)
 
   // Mock data for recent & frequent foods
   const recentFoods: FoodItem[] = [
-    { id: "1", name: "Grilled Chicken Breast", calories: 165, protein: 31, carbs: 0, fat: 3.6, emoji: "🍗" },
-    { id: "2", name: "Brown Rice (1 cup)", calories: 216, protein: 5, carbs: 45, fat: 1.8, emoji: "🍚" },
-    { id: "3", name: "Greek Yogurt", calories: 100, protein: 17, carbs: 6, fat: 0.7, emoji: "🥛" },
-    { id: "4", name: "Banana", calories: 105, protein: 1.3, carbs: 27, fat: 0.4, emoji: "🍌" },
-    { id: "5", name: "Almonds (handful)", calories: 164, protein: 6, carbs: 6, fat: 14, emoji: "🥜" },
+    { id: "1", name: "Grilled Chicken Breast", calories: 165, protein: 31, carbs: 0, fat: 3.6, emoji: "drumstick" },
+    { id: "2", name: "Brown Rice (1 cup)", calories: 216, protein: 5, carbs: 45, fat: 1.8, emoji: "wheat" },
+    { id: "3", name: "Greek Yogurt", calories: 100, protein: 17, carbs: 6, fat: 0.7, emoji: "milk" },
+    { id: "4", name: "Banana", calories: 105, protein: 1.3, carbs: 27, fat: 0.4, emoji: "banana" },
+    { id: "5", name: "Almonds (handful)", calories: 164, protein: 6, carbs: 6, fat: 14, emoji: "nut" },
   ];
 
   // Smart suggestions based on time of day
   const smartSuggestions: FoodItem[] = [
-    { id: "s1", name: "Protein Smoothie", calories: 200, protein: 20, carbs: 24, fat: 3, emoji: "🥤" },
-    { id: "s2", name: "Mixed Nuts & Seeds", calories: 180, protein: 6, carbs: 8, fat: 15, emoji: "🌰" },
+    { id: "s1", name: "Protein Smoothie", calories: 200, protein: 20, carbs: 24, fat: 3, emoji: "cup-soda" },
+    { id: "s2", name: "Mixed Nuts & Seeds", calories: 180, protein: 6, carbs: 8, fat: 15, emoji: "nut" },
   ];
 
   const filteredFoods = searchQuery

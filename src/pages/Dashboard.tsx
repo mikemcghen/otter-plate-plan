@@ -20,7 +20,7 @@ import { EmptyState } from "@/components/EmptyState";
 import { OtterMascot } from "@/components/OtterMascot";
 import type { OtterMood } from "@/components/OtterMascot";
 import { useAppContext } from "@/contexts/AppContext";
-import { Moon, UtensilsCrossed } from "lucide-react";
+import { Moon, UtensilsCrossed, Sparkles } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "@/hooks/use-toast";
 import { useHaptics } from "@/hooks/useHaptics";
@@ -118,19 +118,19 @@ const Dashboard = () => {
 
   // Dynamic otter mood and message based on status
   const getOtterState = (): { mood: OtterMood; message: string; image: string } => {
-    if (isPerfect) return { mood: "proud", message: "Perfect balance! You're crushing it! 🎉", image: otterPerfect };
-    if (isInMaintenanceZone) return { mood: "happy", message: "Great job! Right in the zone! 🎯", image: otterHappy };
-    if (isUnder) return { mood: "hungry", message: "You need more energy! Let's add a snack 😴", image: otterSleepy };
-    if (isOver) return { mood: "encouraging", message: "A bit high today, but that's okay! 💪", image: otterConcerned };
+    if (isPerfect) return { mood: "proud", message: "Perfect balance! You're crushing it!", image: otterPerfect };
+    if (isInMaintenanceZone) return { mood: "happy", message: "Great job! Right in the zone!", image: otterHappy };
+    if (isUnder) return { mood: "hungry", message: "You need more energy! Let's add a snack", image: otterSleepy };
+    if (isOver) return { mood: "encouraging", message: "A bit high today, but that's okay!", image: otterConcerned };
     return { mood: "happy", message: "Keep going! You're doing great!", image: otterHappy };
   };
 
   const otterState = getOtterState();
 
   const snackOptions = [
-    { name: "Greek Yogurt with Berries", calories: 150, protein: 15, emoji: "🫐" },
-    { name: "Apple with Almond Butter", calories: 180, protein: 8, emoji: "🍎" },
-    { name: "Protein Smoothie", calories: 200, protein: 20, emoji: "🥤" },
+    { name: "Greek Yogurt with Berries", calories: 150, protein: 15, emoji: "berry" },
+    { name: "Apple with Almond Butter", calories: 180, protein: 8, emoji: "apple" },
+    { name: "Protein Smoothie", calories: 200, protein: 20, emoji: "cup-soda" },
   ];
 
   const handleLogSnack = async (snack: typeof snackOptions[0]) => {
@@ -156,7 +156,7 @@ const Dashboard = () => {
     // Show toast after modal closes
     setTimeout(() => {
       toast({
-        title: "Snack logged! 🎉",
+        title: "Snack logged!",
         description: `${snack.name} added • +15 XP`,
       });
     }, 500);
@@ -190,7 +190,7 @@ const Dashboard = () => {
     
     setLoggedSnack(food.name);
     toast({
-      title: "Food logged! 🎉",
+      title: "Food logged!",
       description: `${food.name} added • +15 XP`,
     });
 
@@ -204,7 +204,7 @@ const Dashboard = () => {
     // Simulate data refresh
     await new Promise(resolve => setTimeout(resolve, 1000));
     toast({
-      title: "Refreshed! 🌊",
+      title: "Refreshed!",
       description: "Your data is up to date",
     });
   };
@@ -243,7 +243,7 @@ const Dashboard = () => {
       {/* Push Notification Banner */}
       <NotificationBanner
         visible={showNotification}
-        message={`You're ${caloriesRemaining} calories short — Ottr suggests a snack! 🍎`}
+        message={`You're ${caloriesRemaining} calories short — Ottr suggests a snack!`}
         onOpen={() => {
           setShowSnackPicker(true);
           setShowNotification(false);
@@ -335,9 +335,13 @@ const Dashboard = () => {
                   : `${Math.abs(caloriesRemaining)} cal over`}
               </p>
               {isPerfect && (
-                <p className="text-xs text-success font-medium animate-shimmer bg-gradient-to-r from-success via-primary to-success bg-clip-text text-transparent bg-[length:200%_auto]">
-                  ✨ You're in the perfect zone! ✨
-                </p>
+                <div className="flex items-center justify-center gap-1">
+                  <Sparkles className="w-3 h-3 text-success animate-pulse" />
+                  <p className="text-xs text-success font-medium animate-shimmer bg-gradient-to-r from-success via-primary to-success bg-clip-text text-transparent bg-[length:200%_auto]">
+                    You're in the perfect zone!
+                  </p>
+                  <Sparkles className="w-3 h-3 text-success animate-pulse" />
+                </div>
               )}
             </div>
           </div>

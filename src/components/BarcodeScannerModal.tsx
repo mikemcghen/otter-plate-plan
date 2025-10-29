@@ -56,7 +56,7 @@ export function BarcodeScannerModal({ open, onOpenChange, onLog }: BarcodeScanne
     if (scannedProduct) {
       onLog(scannedProduct, servings);
       toast({
-        title: "Logged! 🎉",
+        title: "Logged!",
         description: `${scannedProduct.name} × ${servings} • +15 XP`,
       });
       handleClose();

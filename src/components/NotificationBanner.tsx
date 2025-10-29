@@ -27,16 +27,16 @@ export const NotificationBanner = ({
               alt="Otter notification"
               className="w-12 h-12 object-contain"
             />
-            <div className="flex-1 min-w-0">
-              <div className="flex items-start justify-between gap-2">
-                <div>
-                  <p className="text-xs font-semibold text-primary mb-1">
-                    OttrCal 🦦
-                  </p>
-                  <p className="text-sm text-foreground font-medium">
-                    {message}
-                  </p>
-                </div>
+              <div className="flex-1 min-w-0">
+                <div className="flex items-start justify-between gap-2">
+                  <div>
+                    <p className="text-xs font-semibold text-primary mb-1">
+                      OttrCal
+                    </p>
+                    <p className="text-sm text-foreground font-medium">
+                      {message}
+                    </p>
+                  </div>
                 <Button
                   variant="ghost"
                   size="icon"

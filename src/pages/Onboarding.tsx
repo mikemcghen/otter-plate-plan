@@ -1,6 +1,6 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { ChevronRight, Sparkles } from "lucide-react";
+import { ChevronRight, Sparkles, Scale, TrendingUp, TrendingDown, User, Footprints, Zap } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { OtterMascot } from "@/components/OtterMascot";
 import { Confetti } from "@/components/Confetti";
@@ -15,15 +15,15 @@ const Onboarding = () => {
   const [showConfetti, setShowConfetti] = useState(false);
 
   const goals = [
-    { id: "maintain", label: "Maintain", emoji: "⚖️" },
-    { id: "gain", label: "Gain Slightly", emoji: "📈" },
-    { id: "lose", label: "Lose Slightly", emoji: "📉" },
+    { id: "maintain", label: "Maintain", icon: Scale },
+    { id: "gain", label: "Gain Slightly", icon: TrendingUp },
+    { id: "lose", label: "Lose Slightly", icon: TrendingDown },
   ];
 
   const activityLevels = [
-    { id: "light", label: "Lightly Active", emoji: "🚶" },
-    { id: "moderate", label: "Moderately Active", emoji: "🏃" },
-    { id: "very", label: "Very Active", emoji: "⚡" },
+    { id: "light", label: "Lightly Active", icon: User },
+    { id: "moderate", label: "Moderately Active", icon: Footprints },
+    { id: "very", label: "Very Active", icon: Zap },
   ];
 
   const handleNext = async () => {
@@ -82,7 +82,7 @@ const Onboarding = () => {
             }`}
           >
             <div className="flex items-center gap-4">
-              <span className="text-3xl">{goal.emoji}</span>
+              <goal.icon className="w-6 h-6" />
               <span className="text-lg font-semibold">{goal.label}</span>
             </div>
           </button>
@@ -113,7 +113,7 @@ const Onboarding = () => {
             }`}
           >
             <div className="flex items-center gap-4">
-              <span className="text-3xl">{level.emoji}</span>
+              <level.icon className="w-6 h-6" />
               <span className="text-lg font-semibold">{level.label}</span>
             </div>
           </button>
@@ -134,12 +134,23 @@ const Onboarding = () => {
       <p className="text-lg text-muted-foreground text-center max-w-sm mb-4">
         Let's start your healthy journey together
       </p>
-      <div className="bg-primary/10 rounded-2xl p-6 max-w-sm">
-        <p className="text-sm text-foreground text-center font-medium">
-          🎯 Goal: {goals.find(g => g.id === selectedGoal)?.label}
-          <br />
-          🏃 Activity: {activityLevels.find(a => a.id === selectedActivity)?.label}
-        </p>
+      <div className="bg-primary/10 rounded-2xl p-6 max-w-sm space-y-2">
+        <div className="flex items-center justify-center gap-2">
+          {goals.find(g => g.id === selectedGoal)?.icon && (
+            React.createElement(goals.find(g => g.id === selectedGoal)!.icon, { className: "w-4 h-4 text-primary" })
+          )}
+          <p className="text-sm text-foreground font-medium">
+            Goal: {goals.find(g => g.id === selectedGoal)?.label}
+          </p>
+        </div>
+        <div className="flex items-center justify-center gap-2">
+          {activityLevels.find(a => a.id === selectedActivity)?.icon && (
+            React.createElement(activityLevels.find(a => a.id === selectedActivity)!.icon, { className: "w-4 h-4 text-primary" })
+          )}
+          <p className="text-sm text-foreground font-medium">
+            Activity: {activityLevels.find(a => a.id === selectedActivity)?.label}
+          </p>
+        </div>
       </div>
     </div>,
   ];

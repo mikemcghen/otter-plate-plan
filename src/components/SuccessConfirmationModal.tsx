@@ -4,6 +4,7 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Confetti } from "@/components/Confetti";
+import { PartyPopper, Sparkles } from "lucide-react";
 import otterDancing from "@/assets/otter-dancing.png";
 
 interface SuccessConfirmationModalProps {
@@ -29,15 +30,21 @@ export const SuccessConfirmationModal = ({
               className="w-32 h-32 object-contain"
             />
             <div className="text-center space-y-2">
-              <h3 className="text-2xl font-bold text-foreground">
-                Awesome! 🎉
-              </h3>
+              <div className="flex items-center justify-center gap-2">
+                <PartyPopper className="w-6 h-6 text-primary" />
+                <h3 className="text-2xl font-bold text-foreground">
+                  Awesome!
+                </h3>
+              </div>
               <p className="text-base text-muted-foreground">
                 {snackName} logged successfully!
               </p>
-              <p className="text-sm text-success font-medium">
-                +10 XP for healthy snacking
-              </p>
+              <div className="flex items-center justify-center gap-1">
+                <Sparkles className="w-4 h-4 text-success" />
+                <p className="text-sm text-success font-medium">
+                  +10 XP for healthy snacking
+                </p>
+              </div>
             </div>
             <Button
               onClick={() => onOpenChange(false)}

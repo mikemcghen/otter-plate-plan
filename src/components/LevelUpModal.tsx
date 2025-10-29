@@ -1,7 +1,7 @@
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { OtterMascot } from "@/components/OtterMascot";
-import { Sparkles, Trophy } from "lucide-react";
+import { Sparkles, Trophy, Heart } from "lucide-react";
 import { useHaptics } from "@/hooks/useHaptics";
 import { Confetti } from "@/components/Confetti";
 
@@ -40,9 +40,12 @@ export const LevelUpModal = ({ open, onOpenChange, level }: LevelUpModalProps) =
             <p className="text-xl font-bold text-foreground">
               You reached Level {level}!
             </p>
-            <p className="text-base text-muted-foreground">
-              Ottr is proud of you 💜
-            </p>
+            <div className="flex items-center justify-center gap-2">
+              <Heart className="w-4 h-4 text-primary fill-primary" />
+              <p className="text-base text-muted-foreground">
+                Ottr is proud of you
+              </p>
+            </div>
           </div>
 
           <div className="bg-primary/10 rounded-2xl p-6 w-full border-2 border-primary/20">

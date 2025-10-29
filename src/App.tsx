@@ -9,7 +9,7 @@ import { DevAdminSidebar } from "@/components/DevAdminSidebar";
 import { AppProvider } from "@/contexts/AppContext";
 import { OfflineBanner } from "@/components/OfflineBanner";
 import { Button } from "@/components/ui/button";
-import { Menu } from "lucide-react";
+import { Menu, Wrench } from "lucide-react";
 import Dashboard from "./pages/Dashboard";
 import WeeklyCheckIn from "./pages/WeeklyCheckIn";
 import Trends from "./pages/Trends";
@@ -60,9 +60,14 @@ const App = () => {
                 <header className="h-12 flex items-center justify-between border-b border-border bg-card px-4 sticky top-0 z-50">
                   <div className="flex items-center gap-2">
                     {devMode && <SidebarTrigger />}
-                    <span className="text-xs text-muted-foreground">
-                      {devMode ? "🛠️ Dev Mode Active" : ""}
-                    </span>
+                    {devMode && (
+                      <div className="flex items-center gap-1.5">
+                        <Wrench className="w-3 h-3 text-warning" />
+                        <span className="text-xs text-warning font-medium">
+                          Dev Mode Active
+                        </span>
+                      </div>
+                    )}
                   </div>
                   <Button
                     variant={devMode ? "default" : "outline"}

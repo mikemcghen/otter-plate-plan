@@ -1,4 +1,4 @@
-import { Flame } from "lucide-react";
+import { Flame, Sparkles } from "lucide-react";
 
 interface StreakCounterProps {
   days: number;
@@ -16,8 +16,8 @@ export const StreakCounter = ({ days }: StreakCounterProps) => {
       </div>
       {/* Milestone indicator */}
       {days > 0 && days % 7 === 0 && (
-        <div className="absolute -top-1 -right-1 w-5 h-5 bg-success text-success-foreground rounded-full flex items-center justify-center text-xs">
-          ✨
+        <div className="absolute -top-1 -right-1 w-5 h-5 bg-success text-success-foreground rounded-full flex items-center justify-center">
+          <Flame className="w-3 h-3 fill-current" />
         </div>
       )}
     </div>
