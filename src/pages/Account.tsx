@@ -36,12 +36,17 @@ const Account = () => {
   const [pendingRequests, setPendingRequests] = useState<any[]>([]);
 
   useEffect(() => {
+    // Always load available badges so the section isn't empty for signed-out users
+    loadBadges();
+
     if (user) {
       loadProfile();
-      loadBadges();
       loadFriends();
       loadSharedContent();
       loadPendingRequests();
+    } else {
+      // Clear user-specific unlocks when signed out
+      setUserBadges([]);
     }
   }, [user]);
 
@@ -60,14 +65,20 @@ const Account = () => {
       .from("badges")
       .select("*")
       .order("points_required");
-    
-    const { data: unlockedBadges } = await supabase
-      .from("user_badges")
-      .select("*, badges(*)")
-      .eq("user_id", user?.id);
 
     if (allBadges) setBadges(allBadges);
-    if (unlockedBadges) setUserBadges(unlockedBadges);
+    else setBadges([]);
+
+    if (user?.id) {
+      const { data: unlockedBadges } = await supabase
+        .from("user_badges")
+        .select("*, badges(*)")
+        .eq("user_id", user.id);
+      if (unlockedBadges) setUserBadges(unlockedBadges);
+      else setUserBadges([]);
+    } else {
+      setUserBadges([]);
+    }
   };
 
   const loadFriends = async () => {
