@@ -10,9 +10,12 @@ import { SnackPickerModal } from "@/components/SnackPickerModal";
 import { SuccessConfirmationModal } from "@/components/SuccessConfirmationModal";
 import { Confetti } from "@/components/Confetti";
 import { QuickLogPanel } from "@/components/QuickLogPanel";
+import { MobileBottomNav } from "@/components/MobileBottomNav";
+import { PullToRefresh } from "@/components/PullToRefresh";
 import { Plus, TrendingUp, Settings, Calendar } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "@/hooks/use-toast";
+import { useHaptics } from "@/hooks/useHaptics";
 import otterPerfect from "@/assets/otter-perfect.png";
 import otterHappy from "@/assets/otter-happy.png";
 import otterSleepy from "@/assets/otter-sleepy.png";
@@ -20,6 +23,7 @@ import otterConcerned from "@/assets/otter-concerned.png";
 
 const Dashboard = () => {
   const navigate = useNavigate();
+  const { impact, notification } = useHaptics();
   const [caloriesConsumed] = useState(1450);
   const [caloriesTarget] = useState(2000);
   const [showConfetti, setShowConfetti] = useState(false);
@@ -62,7 +66,8 @@ const Dashboard = () => {
     { name: "Protein Smoothie", calories: 200, protein: 20, emoji: "🥤" },
   ];
 
-  const handleLogSnack = (snack: typeof snackOptions[0]) => {
+  const handleLogSnack = async (snack: typeof snackOptions[0]) => {
+    await notification("success");
     setLoggedSnack(snack.name);
     setShowSuccessModal(true);
     setShowNotification(false);
@@ -81,11 +86,13 @@ const Dashboard = () => {
     }
   };
 
-  const handleQuickLog = () => {
+  const handleQuickLog = async () => {
+    await impact();
     setShowQuickLog(true);
   };
 
-  const handleQuickLogFood = (food: any) => {
+  const handleQuickLogFood = async (food: any) => {
+    await notification("success");
     setLoggedSnack(food.name);
     toast({
       title: "Food logged! 🎉",
@@ -98,8 +105,17 @@ const Dashboard = () => {
     }
   };
 
+  const handleRefresh = async () => {
+    // Simulate data refresh
+    await new Promise(resolve => setTimeout(resolve, 1000));
+    toast({
+      title: "Refreshed! 🌊",
+      description: "Your data is up to date",
+    });
+  };
+
   return (
-    <div className="min-h-screen bg-gradient-to-b from-background via-background to-muted/20 pb-6">
+    <div className="min-h-screen bg-gradient-to-b from-background via-background to-muted/20 pb-24">
       <Confetti active={showConfetti} />
       
       {/* Push Notification Banner */}
@@ -136,20 +152,21 @@ const Dashboard = () => {
         onLog={handleQuickLogFood}
       />
 
-      {/* Header with XP and Streak */}
-      <header className="bg-card border-b border-border shadow-sm">
-        <div className="max-w-md mx-auto px-4 py-4 space-y-3">
-          <div className="flex items-center justify-between">
-            <h1 className="text-2xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
-              OttrCal
-            </h1>
-            <StreakCounter days={12} />
+      <PullToRefresh onRefresh={handleRefresh}>
+        {/* Header with XP and Streak */}
+        <header className="bg-card border-b border-border shadow-sm sticky top-0 z-40">
+          <div className="max-w-md mx-auto px-4 py-4 space-y-3">
+            <div className="flex items-center justify-between">
+              <h1 className="text-2xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
+                OttrCal
+              </h1>
+              <StreakCounter days={12} />
+            </div>
+            <XPBar current={450} max={600} level={8} />
           </div>
-          <XPBar current={450} max={600} level={8} />
-        </div>
-      </header>
+        </header>
 
-      <main className="max-w-md mx-auto px-4 py-6 space-y-6">
+        <main className="max-w-md mx-auto px-4 py-6 space-y-6">
         {/* Main Calorie Ring */}
         <div className="bg-card rounded-3xl p-8 shadow-[0_8px_30px_rgb(0,0,0,0.08)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.4)] border-2 border-border animate-fade-in">
           <div className="flex flex-col items-center gap-6">
@@ -209,42 +226,11 @@ const Dashboard = () => {
           />
         </div>
 
-        {/* Quick Actions */}
-        <div className="grid grid-cols-4 gap-3">
-          <Button
-            onClick={handleQuickLog}
-            variant="outline"
-            className="h-auto flex-col gap-2 py-4 border-2 hover:border-primary hover:bg-primary/10 focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 transition-all group"
-          >
-            <Plus className="w-5 h-5 group-hover:scale-110 transition-transform" />
-            <span className="text-xs font-semibold">Quick Log</span>
-          </Button>
-          <Button
-            onClick={() => navigate("/weekly-checkin")}
-            variant="outline"
-            className="h-auto flex-col gap-2 py-4 border-2 hover:border-primary hover:bg-primary/10 focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 transition-all group"
-          >
-            <Calendar className="w-5 h-5 group-hover:scale-110 transition-transform" />
-            <span className="text-xs font-semibold">Weigh In</span>
-          </Button>
-          <Button
-            onClick={() => navigate("/trends")}
-            variant="outline"
-            className="h-auto flex-col gap-2 py-4 border-2 hover:border-primary hover:bg-primary/10 focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 transition-all group"
-          >
-            <TrendingUp className="w-5 h-5 group-hover:scale-110 transition-transform" />
-            <span className="text-xs font-semibold">Trends</span>
-          </Button>
-          <Button
-            onClick={() => toast({ title: "Settings coming soon!" })}
-            variant="outline"
-            className="h-auto flex-col gap-2 py-4 border-2 hover:border-primary hover:bg-primary/10 focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 transition-all group"
-          >
-            <Settings className="w-5 h-5 group-hover:scale-110 transition-transform" />
-            <span className="text-xs font-semibold">Settings</span>
-          </Button>
-        </div>
-      </main>
+        </main>
+      </PullToRefresh>
+
+      {/* Mobile Bottom Navigation */}
+      <MobileBottomNav onQuickLog={handleQuickLog} />
     </div>
   );
 };

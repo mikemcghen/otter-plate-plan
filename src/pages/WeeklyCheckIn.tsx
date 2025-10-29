@@ -2,11 +2,14 @@ import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { ArrowLeft, TrendingUp } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { MobileBottomNav } from "@/components/MobileBottomNav";
+import { useHaptics } from "@/hooks/useHaptics";
 import otterEncourage from "@/assets/otter-encourage.png";
 import { toast } from "@/hooks/use-toast";
 
 const WeeklyCheckIn = () => {
   const navigate = useNavigate();
+  const { notification } = useHaptics();
 
   const weeklyData = [
     { day: "Mon", weight: 165.2 },
@@ -31,7 +34,8 @@ const WeeklyCheckIn = () => {
     return chartHeight - chartPadding - ((weight - minWeight + 0.5) / range) * (chartHeight - 2 * chartPadding);
   };
 
-  const handleCompleteCheckIn = () => {
+  const handleCompleteCheckIn = async () => {
+    await notification("success");
     toast({
       title: "Check-in completed! 🎉",
       description: "Keep up the amazing consistency!",
@@ -40,15 +44,15 @@ const WeeklyCheckIn = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-background via-background to-muted/20">
+    <div className="min-h-screen bg-gradient-to-b from-background via-background to-muted/20 pb-24">
       {/* Header */}
-      <header className="bg-card border-b border-border shadow-sm">
+      <header className="bg-card border-b border-border shadow-sm sticky top-0 z-40">
         <div className="max-w-md mx-auto px-4 py-4 flex items-center gap-3">
           <Button
             variant="ghost"
             size="icon"
             onClick={() => navigate("/")}
-            className="rounded-full"
+            className="rounded-full active:scale-95 transition-transform"
           >
             <ArrowLeft className="w-5 h-5" />
           </Button>
@@ -194,14 +198,16 @@ const WeeklyCheckIn = () => {
           </p>
         </div>
 
-        {/* Complete Button */}
         <Button
           onClick={handleCompleteCheckIn}
-          className="w-full h-12 bg-gradient-to-r from-primary to-accent hover:opacity-90 transition-opacity text-base font-semibold"
+          className="w-full h-12 bg-gradient-to-r from-primary to-accent hover:opacity-90 transition-opacity text-base font-semibold active:scale-95"
         >
           Complete Check-In
         </Button>
       </main>
+
+      {/* Mobile Bottom Navigation */}
+      <MobileBottomNav />
     </div>
   );
 };

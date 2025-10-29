@@ -2,6 +2,7 @@ import { Button } from "@/components/ui/button";
 import { ArrowLeft, TrendingUp, Flame, Award, Crown } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { MacroRing } from "@/components/MacroRing";
+import { MobileBottomNav } from "@/components/MobileBottomNav";
 import otterHappy from "@/assets/otter-happy.png";
 
 const Trends = () => {
@@ -48,15 +49,15 @@ const Trends = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-background via-background to-muted/20">
+    <div className="min-h-screen bg-gradient-to-b from-background via-background to-muted/20 pb-24">
       {/* Header */}
-      <header className="bg-card border-b border-border shadow-sm">
+      <header className="bg-card border-b border-border shadow-sm sticky top-0 z-40">
         <div className="max-w-md mx-auto px-4 py-4 flex items-center gap-3">
           <Button
             variant="ghost"
             size="icon"
             onClick={() => navigate("/")}
-            className="rounded-full hover:bg-muted"
+            className="rounded-full hover:bg-muted active:scale-95 transition-transform"
           >
             <ArrowLeft className="w-5 h-5" />
           </Button>
@@ -65,7 +66,7 @@ const Trends = () => {
         </div>
       </header>
 
-      <main className="max-w-md mx-auto px-4 py-6 space-y-6">
+      <main className="max-w-md mx-auto px-4 py-6 space-y-6 pb-6">
         {/* Otter Encouragement */}
         <div className="bg-card rounded-3xl p-6 shadow-[0_8px_30px_rgb(0,0,0,0.08)] border-2 border-border animate-fade-in">
           <div className="flex items-start gap-4">
@@ -284,6 +285,9 @@ const Trends = () => {
           </div>
         </div>
       </main>
+
+      {/* Mobile Bottom Navigation */}
+      <MobileBottomNav />
     </div>
   );
 };
