@@ -14,6 +14,7 @@ import WeeklyCheckIn from "./pages/WeeklyCheckIn";
 import Trends from "./pages/Trends";
 import Settings from "./pages/Settings";
 import Onboarding from "./pages/Onboarding";
+import StateFlowDiagram from "./pages/StateFlowDiagram";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -83,6 +84,7 @@ const App = () => {
                     <Route path="/weekly-checkin" element={<WeeklyCheckIn />} />
                     <Route path="/trends" element={<Trends />} />
                     <Route path="/settings" element={<Settings />} />
+                    <Route path="/state-flow" element={<StateFlowDiagram />} />
                     {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
                     <Route path="*" element={<NotFound />} />
                   </Routes>

@@ -7,6 +7,7 @@ import {
   Sparkles,
   Menu,
   X,
+  GitBranch,
 } from "lucide-react";
 import {
   Sidebar,
@@ -27,6 +28,7 @@ const navItems = [
   { title: "Weigh-In", url: "/check-in", icon: Scale },
   { title: "Trends", url: "/trends", icon: TrendingUp },
   { title: "Settings", url: "/settings", icon: Settings },
+  { title: "State Flow", url: "/state-flow", icon: GitBranch },
 ];
 
 export function DevAdminSidebar() {
