@@ -3,6 +3,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { Button } from "@/components/ui/button";
 import { Camera, Minus, Plus, X } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
+import { ErrorState } from "@/components/EmptyState";
 import otterHappy from "@/assets/otter-happy.png";
 
 interface ScannedProduct {
@@ -25,21 +26,30 @@ export function BarcodeScannerModal({ open, onOpenChange, onLog }: BarcodeScanne
   const [isScanning, setIsScanning] = useState(true);
   const [scannedProduct, setScannedProduct] = useState<ScannedProduct | null>(null);
   const [servings, setServings] = useState(1);
+  const [scanError, setScanError] = useState(false);
 
-  // Mock barcode scan result
+  // Mock barcode scan result - 70% success, 30% not found
   const handleScan = () => {
-    const mockProduct: ScannedProduct = {
-      barcode: "012345678910",
-      name: "Greek Yogurt",
-      servingSize: "1 container (150g)",
-      calories: 100,
-      protein: 17,
-      carbs: 6,
-      fat: 0.7,
-    };
+    const success = Math.random() > 0.3;
     
-    setScannedProduct(mockProduct);
-    setIsScanning(false);
+    if (success) {
+      const mockProduct: ScannedProduct = {
+        barcode: "012345678910",
+        name: "Greek Yogurt",
+        servingSize: "1 container (150g)",
+        calories: 100,
+        protein: 17,
+        carbs: 6,
+        fat: 0.7,
+      };
+      
+      setScannedProduct(mockProduct);
+      setIsScanning(false);
+      setScanError(false);
+    } else {
+      setScanError(true);
+      setIsScanning(false);
+    }
   };
 
   const handleLog = () => {
@@ -57,7 +67,13 @@ export function BarcodeScannerModal({ open, onOpenChange, onLog }: BarcodeScanne
     setIsScanning(true);
     setScannedProduct(null);
     setServings(1);
+    setScanError(false);
     onOpenChange(false);
+  };
+
+  const handleTryAgain = () => {
+    setIsScanning(true);
+    setScanError(false);
   };
 
   return (
@@ -81,7 +97,16 @@ export function BarcodeScannerModal({ open, onOpenChange, onLog }: BarcodeScanne
         </DialogHeader>
 
         <div className="p-6">
-          {isScanning ? (
+          {scanError ? (
+            <ErrorState
+              title="Barcode Not Found"
+              description="Hmm, Ottr couldn't find this product in the database. Try scanning again or add it manually through Quick Log."
+              action={{
+                label: "Try Scanning Again",
+                onClick: handleTryAgain,
+              }}
+            />
+          ) : isScanning ? (
             <div className="space-y-6">
               {/* Camera Scanner UI */}
               <div className="relative aspect-square bg-gradient-to-br from-primary/5 to-primary/10 rounded-2xl border-2 border-dashed border-primary/30 overflow-hidden">

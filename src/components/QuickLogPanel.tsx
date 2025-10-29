@@ -4,6 +4,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Search, Plus, TrendingUp, Clock, Zap, Camera, ChefHat, X, Minus } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
+import { EmptyState } from "@/components/EmptyState";
 import otterDancing from "@/assets/otter-dancing.png";
 import otterHappy from "@/assets/otter-happy.png";
 import { BarcodeScannerModal } from "./BarcodeScannerModal";
@@ -171,7 +172,17 @@ export function QuickLogPanel({ open, onOpenChange, onLog }: QuickLogPanelProps)
               <Clock className="w-4 h-4 text-primary" />
               <h3 className="text-base font-bold text-foreground">Recent & Frequent</h3>
             </div>
-            <div className="space-y-2">
+            {filteredFoods.length === 0 && searchQuery ? (
+              <div className="py-4">
+                <EmptyState
+                  variant="concerned"
+                  title="No foods found"
+                  description="Try a different search or add a custom food entry below."
+                  className="py-4"
+                />
+              </div>
+            ) : (
+              <div className="space-y-2">
               {filteredFoods.map((food) => (
                 <button
                   key={food.id}
@@ -198,6 +209,7 @@ export function QuickLogPanel({ open, onOpenChange, onLog }: QuickLogPanelProps)
                 </button>
               ))}
             </div>
+            )}
           </section>
 
           {/* Barcode Scanner & Recipe Buttons */}

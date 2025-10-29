@@ -7,6 +7,7 @@ import { useEffect, useState } from "react";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { DevAdminSidebar } from "@/components/DevAdminSidebar";
 import { AppProvider } from "@/contexts/AppContext";
+import { OfflineBanner } from "@/components/OfflineBanner";
 import { Button } from "@/components/ui/button";
 import { Menu } from "lucide-react";
 import Dashboard from "./pages/Dashboard";
@@ -46,6 +47,7 @@ const App = () => {
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
         <AppProvider>
+          <OfflineBanner />
           <Toaster />
           <Sonner />
           <BrowserRouter>

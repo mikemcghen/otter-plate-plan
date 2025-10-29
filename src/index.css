@@ -190,6 +190,19 @@ All colors MUST be HSL.
     animation: bounce-subtle 2s ease-in-out infinite;
   }
 
+  @keyframes slide-down {
+    from {
+      transform: translateY(-100%);
+    }
+    to {
+      transform: translateY(0);
+    }
+  }
+
+  .animate-slide-down {
+    animation: slide-down 0.3s ease-out;
+  }
+
   @keyframes wiggle {
     0%, 100% {
       transform: rotate(0deg);

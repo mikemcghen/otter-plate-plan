@@ -16,8 +16,9 @@ import { DailyGreetingModal } from "@/components/DailyGreetingModal";
 import { EndOfDaySummaryModal } from "@/components/EndOfDaySummaryModal";
 import { FloatingMascotButton } from "@/components/FloatingMascotButton";
 import { LevelUpModal } from "@/components/LevelUpModal";
+import { EmptyState } from "@/components/EmptyState";
 import { useAppContext } from "@/contexts/AppContext";
-import { Moon } from "lucide-react";
+import { Moon, UtensilsCrossed } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "@/hooks/use-toast";
 import { useHaptics } from "@/hooks/useHaptics";
@@ -328,11 +329,24 @@ const Dashboard = () => {
 
         {/* Snack Carousel */}
         <div className="bg-card rounded-3xl p-6 shadow-[0_8px_30px_rgb(0,0,0,0.08)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.4)] border-2 border-border">
-          <SnackCarousel
-            snacks={snackOptions}
-            onLog={handleLogSnack}
-            otterImage={otterState.image}
-          />
+          {foodLogs.length === 0 ? (
+            <EmptyState
+              variant="encourage"
+              title="Ottr's waiting for your first splash!"
+              description="Start your day by logging your first meal. Every journey begins with a single bite!"
+              action={{
+                label: "Log Your First Food",
+                onClick: handleQuickLog,
+              }}
+              icon={<UtensilsCrossed className="w-12 h-12" />}
+            />
+          ) : (
+            <SnackCarousel
+              snacks={snackOptions}
+              onLog={handleLogSnack}
+              otterImage={otterState.image}
+            />
+          )}
         </div>
 
         </main>

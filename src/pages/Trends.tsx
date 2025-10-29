@@ -3,10 +3,16 @@ import { ArrowLeft, TrendingUp, Flame, Award, Crown } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { MacroRing } from "@/components/MacroRing";
 import { MobileBottomNav } from "@/components/MobileBottomNav";
+import { EmptyState } from "@/components/EmptyState";
+import { useAppContext } from "@/contexts/AppContext";
 import otterHappy from "@/assets/otter-happy.png";
 
 const Trends = () => {
   const navigate = useNavigate();
+  const { foodLogs, streak } = useAppContext();
+
+  // Check if user has any data
+  const hasData = foodLogs.length > 0 || streak > 0;
 
   // Mock data for weekly consistency
   const weeklyData = [
@@ -67,6 +73,21 @@ const Trends = () => {
       </header>
 
       <main className="max-w-md mx-auto px-4 py-6 space-y-6 pb-6">
+        {!hasData ? (
+          <div className="bg-card rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.08)] border-2 border-border">
+            <EmptyState
+              variant="sleepy"
+              title="No trends to show yet"
+              description="Start logging your meals and weigh-ins to see your beautiful progress over time. Ottr can't wait to celebrate your journey!"
+              action={{
+                label: "Start Tracking",
+                onClick: () => navigate("/"),
+              }}
+              icon={<TrendingUp className="w-12 h-12" />}
+            />
+          </div>
+        ) : (
+          <>
         {/* Otter Encouragement */}
         <div className="bg-card rounded-3xl p-6 shadow-[0_8px_30px_rgb(0,0,0,0.08)] border-2 border-border animate-fade-in">
           <div className="flex items-start gap-4">
@@ -284,6 +305,8 @@ const Trends = () => {
             </div>
           </div>
         </div>
+        </>
+        )}
       </main>
 
       {/* Mobile Bottom Navigation */}
