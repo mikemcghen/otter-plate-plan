@@ -47,7 +47,7 @@ export const FriendWaves = ({ friends, onAddFriend, onFriendClick }: FriendWaves
         {/* Ottr's Spotlight Card */}
         {spotlightFriend && (
           <Card
-            className="flex-shrink-0 w-[140px] p-4 snap-start cursor-pointer active:scale-95 transition-all duration-300 hover:shadow-lg animate-bounce-subtle border-2 border-primary/30 bg-gradient-to-br from-primary/5 to-accent/5"
+            className="flex-shrink-0 w-[140px] p-4 snap-start cursor-pointer active:scale-95 transition-all duration-300 hover:shadow-lg border-2 border-primary/30 bg-gradient-to-br from-primary/5 to-accent/5"
             onClick={() => onFriendClick(spotlightFriend)}
           >
             <div className="flex flex-col items-center gap-2 text-center">
@@ -76,7 +76,7 @@ export const FriendWaves = ({ friends, onAddFriend, onFriendClick }: FriendWaves
         {friends.map((friend) => (
           <Card
             key={friend.id}
-            className="flex-shrink-0 w-[100px] p-3 snap-start cursor-pointer active:scale-95 transition-all duration-300 hover:shadow-lg animate-bounce-subtle"
+            className="flex-shrink-0 w-[100px] p-3 snap-start cursor-pointer active:scale-95 transition-all duration-300 hover:shadow-lg"
             onClick={() => onFriendClick(friend)}
           >
             <div className="flex flex-col items-center gap-2">
