@@ -29,12 +29,17 @@ All colors MUST be HSL.
 
     --accent: 285 80% 60%;
     --accent-foreground: 0 0% 100%;
+    --accent-purple: 270 75% 55%;
+    --accent-orange: 25 98% 50%;
 
     --destructive: 0 85% 55%;
     --destructive-foreground: 0 0% 100%;
 
     --success: 145 70% 45%;
     --success-foreground: 0 0% 100%;
+
+    --warning: 38 92% 50%;
+    --warning-foreground: 270 30% 18%;
 
     --streak: 25 98% 50%;
     --streak-foreground: 0 0% 100%;
@@ -44,6 +49,19 @@ All colors MUST be HSL.
     --ring: 270 75% 55%;
 
     --radius: 1rem;
+
+    /* Surface variants */
+    --surface: 0 0% 100%;
+    --surface-elevated: 270 30% 99%;
+
+    /* Typography scale - use with font-size utilities */
+    --text-xs: 0.75rem;
+    --text-sm: 0.875rem;
+    --text-base: 1rem;
+    --text-lg: 1.125rem;
+    --text-xl: 1.25rem;
+    --text-2xl: 1.5rem;
+    --text-3xl: 1.875rem;
 
     --sidebar-background: 0 0% 98%;
     --sidebar-foreground: 240 15% 25%;
@@ -77,6 +95,8 @@ All colors MUST be HSL.
 
     --accent: 285 90% 72%;
     --accent-foreground: 270 50% 15%;
+    --accent-purple: 270 85% 68%;
+    --accent-orange: 25 98% 62%;
 
     --destructive: 0 85% 62%;
     --destructive-foreground: 0 0% 100%;
@@ -84,12 +104,19 @@ All colors MUST be HSL.
     --success: 145 75% 58%;
     --success-foreground: 270 50% 15%;
 
+    --warning: 38 92% 65%;
+    --warning-foreground: 270 50% 15%;
+
     --streak: 25 98% 62%;
     --streak-foreground: 270 50% 15%;
 
     --border: 270 30% 28%;
     --input: 270 30% 28%;
     --ring: 270 85% 68%;
+
+    /* Surface variants */
+    --surface: 270 40% 16%;
+    --surface-elevated: 270 38% 20%;
 
     --sidebar-background: 240 20% 12%;
     --sidebar-foreground: 240 15% 90%;

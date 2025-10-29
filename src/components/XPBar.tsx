@@ -21,8 +21,11 @@ export const XPBar = ({ current, max, level = 1 }: XPBarProps) => {
           {current}/{max} XP
         </span>
       </div>
-      <div className="relative overflow-hidden">
-        <Progress value={percentage} className="h-3" />
+      <div className="relative overflow-hidden rounded-full">
+        <Progress 
+          value={percentage} 
+          className="h-3 transition-all duration-500 ease-out" 
+        />
         {/* Shimmer effect */}
         <div
           className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent animate-[shimmer_2s_ease-in-out_infinite]"
@@ -30,6 +33,10 @@ export const XPBar = ({ current, max, level = 1 }: XPBarProps) => {
             backgroundSize: "200% 100%",
           }}
         />
+        {/* Glow on high XP */}
+        {percentage > 80 && (
+          <div className="absolute inset-0 rounded-full animate-glow-pulse" />
+        )}
       </div>
     </div>
   );

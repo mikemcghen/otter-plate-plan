@@ -35,9 +35,17 @@ export default {
           DEFAULT: "hsl(var(--success))",
           foreground: "hsl(var(--success-foreground))",
         },
+        warning: {
+          DEFAULT: "hsl(var(--warning))",
+          foreground: "hsl(var(--warning-foreground))",
+        },
         streak: {
           DEFAULT: "hsl(var(--streak))",
           foreground: "hsl(var(--streak-foreground))",
+        },
+        surface: {
+          DEFAULT: "hsl(var(--surface))",
+          elevated: "hsl(var(--surface-elevated))",
         },
         muted: {
           DEFAULT: "hsl(var(--muted))",
@@ -108,6 +116,19 @@ export default {
           "0%": { transform: "translateY(-100%)", opacity: "0" },
           "100%": { transform: "translateY(0)", opacity: "1" },
         },
+        "pop-in": {
+          "0%": { transform: "scale(0) translateY(20px)", opacity: "0" },
+          "50%": { transform: "scale(1.1) translateY(-5px)" },
+          "100%": { transform: "scale(1) translateY(0)", opacity: "1" },
+        },
+        wiggle: {
+          "0%, 100%": { transform: "rotate(-3deg)" },
+          "50%": { transform: "rotate(3deg)" },
+        },
+        "ring-fill": {
+          "0%": { strokeDashoffset: "var(--ring-circumference)" },
+          "100%": { strokeDashoffset: "var(--ring-offset)" },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
@@ -116,6 +137,8 @@ export default {
         "scale-in": "scale-in 0.2s ease-out",
         "bounce-subtle": "bounce-subtle 1s ease-in-out infinite",
         "glow-pulse": "glow-pulse 2s ease-in-out infinite",
+        "pop-in": "pop-in 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55)",
+        "wiggle": "wiggle 0.5s ease-in-out",
       },
     },
   },
