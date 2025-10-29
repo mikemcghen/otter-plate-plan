@@ -14,7 +14,194 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      badges: {
+        Row: {
+          category: Database["public"]["Enums"]["badge_category"]
+          created_at: string | null
+          description: string
+          icon_name: string
+          id: string
+          name: string
+          points_required: number | null
+          unlock_criteria: string
+        }
+        Insert: {
+          category: Database["public"]["Enums"]["badge_category"]
+          created_at?: string | null
+          description: string
+          icon_name: string
+          id?: string
+          name: string
+          points_required?: number | null
+          unlock_criteria: string
+        }
+        Update: {
+          category?: Database["public"]["Enums"]["badge_category"]
+          created_at?: string | null
+          description?: string
+          icon_name?: string
+          id?: string
+          name?: string
+          points_required?: number | null
+          unlock_criteria?: string
+        }
+        Relationships: []
+      }
+      friendships: {
+        Row: {
+          created_at: string | null
+          friend_id: string
+          id: string
+          status: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          friend_id: string
+          id?: string
+          status: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          friend_id?: string
+          id?: string
+          status?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "friendships_friend_id_fkey"
+            columns: ["friend_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "friendships_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      profiles: {
+        Row: {
+          avatar_url: string | null
+          created_at: string | null
+          display_name: string
+          favorite_badge_id: string | null
+          id: string
+          title: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          avatar_url?: string | null
+          created_at?: string | null
+          display_name: string
+          favorite_badge_id?: string | null
+          id: string
+          title?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          avatar_url?: string | null
+          created_at?: string | null
+          display_name?: string
+          favorite_badge_id?: string | null
+          id?: string
+          title?: string | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
+      shared_content: {
+        Row: {
+          calories: number | null
+          carbs: number | null
+          content_type: string
+          created_at: string | null
+          description: string | null
+          fat: number | null
+          id: string
+          ingredients: Json | null
+          protein: number | null
+          title: string
+          user_id: string
+        }
+        Insert: {
+          calories?: number | null
+          carbs?: number | null
+          content_type: string
+          created_at?: string | null
+          description?: string | null
+          fat?: number | null
+          id?: string
+          ingredients?: Json | null
+          protein?: number | null
+          title: string
+          user_id: string
+        }
+        Update: {
+          calories?: number | null
+          carbs?: number | null
+          content_type?: string
+          created_at?: string | null
+          description?: string | null
+          fat?: number | null
+          id?: string
+          ingredients?: Json | null
+          protein?: number | null
+          title?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "shared_content_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      user_badges: {
+        Row: {
+          badge_id: string
+          id: string
+          unlocked_at: string | null
+          user_id: string
+        }
+        Insert: {
+          badge_id: string
+          id?: string
+          unlocked_at?: string | null
+          user_id: string
+        }
+        Update: {
+          badge_id?: string
+          id?: string
+          unlocked_at?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_badges_badge_id_fkey"
+            columns: ["badge_id"]
+            isOneToOne: false
+            referencedRelation: "badges"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "user_badges_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
@@ -23,7 +210,7 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
-      [_ in never]: never
+      badge_category: "streaks" | "nutrition" | "community" | "recipes"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +337,8 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      badge_category: ["streaks", "nutrition", "community", "recipes"],
+    },
   },
 } as const
