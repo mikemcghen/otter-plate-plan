@@ -39,6 +39,7 @@ interface AppContextType extends AppState {
   getXPForNextLevel: () => number;
   getCaloriesRemaining: () => number;
   checkAndUpdateStreak: () => void;
+  awardXP: (amount: number, reason?: string) => number; // Returns new total XP
 }
 
 const AppContext = createContext<AppContextType | undefined>(undefined);
@@ -188,6 +189,29 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
     return Math.max(0, state.caloriesTarget - state.caloriesConsumed);
   };
 
+  const awardXP = (amount: number, reason?: string): number => {
+    let newXP = state.xp + amount;
+    let newLevel = state.level;
+    
+    // Check for level up
+    const xpNeeded = newLevel * XP_PER_LEVEL;
+    if (newXP >= xpNeeded) {
+      newLevel += 1;
+      newXP = newXP - xpNeeded;
+      
+      // Could trigger level up modal here
+      console.log(`Level up! Now level ${newLevel}`);
+    }
+    
+    setState((prev) => ({
+      ...prev,
+      xp: newXP,
+      level: newLevel,
+    }));
+    
+    return newXP;
+  };
+
   return (
     <AppContext.Provider
       value={{
@@ -197,6 +221,7 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
         getXPForNextLevel,
         getCaloriesRemaining,
         checkAndUpdateStreak,
+        awardXP,
       }}
     >
       {children}

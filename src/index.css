@@ -325,4 +325,19 @@ All colors MUST be HSL.
   .animate-bounce-subtle {
     animation: bounce-subtle 2s ease-in-out infinite;
   }
+
+  @keyframes slideUp {
+    0% {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+    70% {
+      opacity: 1;
+      transform: translateY(-60px) scale(1.1);
+    }
+    100% {
+      opacity: 0;
+      transform: translateY(-80px) scale(0.8);
+    }
+  }
 }

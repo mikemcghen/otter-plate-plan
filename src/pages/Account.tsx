@@ -20,12 +20,15 @@ import { useNavigate } from "react-router-dom";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { Separator } from "@/components/ui/separator";
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
+import { ReactionButtons } from "@/components/ReactionButtons";
+import { ActivityFeed } from "@/components/ActivityFeed";
+import { XPGainAnimation } from "@/components/XPGainAnimation";
 import otterHappy from "@/assets/otter-happy.png";
 
 const Account = () => {
   const navigate = useNavigate();
   const { user, signOut } = useAuth();
-  const { xp, level, streak, getXPForNextLevel } = useAppContext();
+  const { xp, level, streak, getXPForNextLevel, awardXP } = useAppContext();
   
   const [profile, setProfile] = useState<any>(null);
   const [badges, setBadges] = useState<any[]>([]);
@@ -37,6 +40,7 @@ const Account = () => {
   const [showShareContent, setShowShareContent] = useState(false);
   const [unlockedBadge, setUnlockedBadge] = useState<any>(null);
   const [pendingRequests, setPendingRequests] = useState<any[]>([]);
+  const [xpGained, setXpGained] = useState<number | null>(null);
 
   useEffect(() => {
     // Always load available badges so the section isn't empty for signed-out users
@@ -197,7 +201,18 @@ const Account = () => {
     if (!error) {
       toast({ title: "Content shared with friends!" });
       loadSharedContent();
+      
+      // Award XP for sharing
+      const gained = awardXP(10);
+      setXpGained(10);
+      setTimeout(() => setXpGained(null), 2500);
     }
+  };
+
+  const handleReactionAdded = (xpAmount: number) => {
+    awardXP(xpAmount);
+    setXpGained(xpAmount);
+    setTimeout(() => setXpGained(null), 2500);
   };
 
   const xpPercentage = (xp / getXPForNextLevel()) * 100;
@@ -374,6 +389,11 @@ const Account = () => {
           </div>
         )}
 
+        {/* Activity Feed */}
+        {user && (
+          <ActivityFeed />
+        )}
+
         {/* Tabs for Badges, Friends, Shared */}
         <Tabs defaultValue="badges" className="w-full">
           <TabsList className="grid w-full grid-cols-3">
@@ -506,7 +526,7 @@ const Account = () => {
               sharedContent.map((content) => (
                 <div 
                   key={content.id}
-                  className="bg-card rounded-2xl p-4 border-2 border-border shadow-[0_4px_20px_rgb(0,0,0,0.06)]"
+                  className="bg-card rounded-2xl p-4 border-2 border-border shadow-[0_4px_20px_rgb(0,0,0,0.06)] space-y-3"
                 >
                   <div className="flex items-center gap-2 mb-2">
                     <Avatar className="w-6 h-6">
@@ -529,6 +549,11 @@ const Account = () => {
                       {content.protein && <span>{content.protein}g protein</span>}
                     </div>
                   )}
+                  
+                  <ReactionButtons 
+                    contentId={content.id} 
+                    onReactionAdded={handleReactionAdded}
+                  />
                   
                   <Button size="sm" className="w-full mt-3">
                     Add to Quick Log
@@ -606,6 +631,10 @@ const Account = () => {
         onOpenChange={setShowShareContent}
         onShare={handleShareContent}
       />
+
+      {xpGained && (
+        <XPGainAnimation amount={xpGained} onComplete={() => setXpGained(null)} />
+      )}
 
       <MobileBottomNav />
     </div>

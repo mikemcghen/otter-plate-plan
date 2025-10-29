@@ -14,6 +14,36 @@ export type Database = {
   }
   public: {
     Tables: {
+      activity_feed: {
+        Row: {
+          activity_type: string
+          actor_id: string
+          content_id: string | null
+          created_at: string
+          id: string
+          metadata: Json | null
+          user_id: string
+        }
+        Insert: {
+          activity_type: string
+          actor_id: string
+          content_id?: string | null
+          created_at?: string
+          id?: string
+          metadata?: Json | null
+          user_id: string
+        }
+        Update: {
+          activity_type?: string
+          actor_id?: string
+          content_id?: string | null
+          created_at?: string
+          id?: string
+          metadata?: Json | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       badges: {
         Row: {
           category: Database["public"]["Enums"]["badge_category"]
@@ -124,6 +154,38 @@ export type Database = {
           updated_at?: string | null
         }
         Relationships: []
+      }
+      reactions: {
+        Row: {
+          content_id: string
+          created_at: string
+          id: string
+          reaction_type: string
+          user_id: string
+        }
+        Insert: {
+          content_id: string
+          created_at?: string
+          id?: string
+          reaction_type: string
+          user_id: string
+        }
+        Update: {
+          content_id?: string
+          created_at?: string
+          id?: string
+          reaction_type?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "reactions_content_id_fkey"
+            columns: ["content_id"]
+            isOneToOne: false
+            referencedRelation: "shared_content"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       shared_content: {
         Row: {
