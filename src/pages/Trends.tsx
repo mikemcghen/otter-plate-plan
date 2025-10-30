@@ -1,10 +1,14 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { ArrowLeft, Waves, Users, Sparkles, TrendingUp, Filter } from "lucide-react";
 import { MobileBottomNav } from "@/components/MobileBottomNav";
 import { PostCard } from "@/components/PostCard";
 import { PostModal } from "@/components/PostModal";
 import { OtterMascot } from "@/components/OtterMascot";
+import { FriendHighlightCard } from "@/components/FriendHighlightCard";
+import { FriendActivityCard } from "@/components/FriendActivityCard";
+import { FriendsEmptyState } from "@/components/FriendsEmptyState";
+import { toast } from "sonner";
 
 type ViewMode = "friends" | "discover";
 type SortMode = "trending" | "new" | "popular" | "seasonal";
@@ -46,6 +50,16 @@ const Trends = () => {
   const [selectedPost, setSelectedPost] = useState<Post | null>(null);
   const [showOtterMessage, setShowOtterMessage] = useState(true);
   const [showSortMenu, setShowSortMenu] = useState(false);
+  const [hasFriends, setHasFriends] = useState(true); // Mock: set to false to see empty state
+
+  // Listen for switch to discover event
+  useEffect(() => {
+    const handleSwitchToDiscover = () => {
+      setViewMode("discover");
+    };
+    window.addEventListener('switch-to-discover', handleSwitchToDiscover);
+    return () => window.removeEventListener('switch-to-discover', handleSwitchToDiscover);
+  }, []);
 
   // Mock posts data
   const mockPosts: Post[] = [
@@ -172,12 +186,154 @@ const Trends = () => {
     },
   ];
 
+  // Mock friend highlights data
+  const mockHighlights = [
+    {
+      id: "h1",
+      type: "streak" as const,
+      friend: { name: "Alex T.", avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Alex" },
+      title: "15-Day Streak!",
+      description: "Hit their longest streak ever",
+      icon: "🔥"
+    },
+    {
+      id: "h2",
+      type: "badge" as const,
+      friend: { name: "Casey H.", avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Casey" },
+      title: "Community Chef",
+      description: "Shared 10 recipes this month",
+      icon: "🏆"
+    },
+    {
+      id: "h3",
+      type: "milestone" as const,
+      friend: { name: "Jordan P.", avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Jordan" },
+      title: "Hydration Hero",
+      description: "7 days of perfect water intake",
+      icon: "💧"
+    },
+  ];
+
+  // Mock friend activities data
+  const mockActivities = [
+    {
+      id: "a1",
+      type: "recipe" as const,
+      friend: {
+        name: "Sarah M.",
+        avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Sarah",
+        level: 12,
+        streak: 28,
+        badges: ["Breakfast Champion"]
+      },
+      timestamp: "2h ago",
+      content: {
+        image: "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400",
+        title: "High-Protein Overnight Oats 🥣",
+        text: "Perfect for busy mornings!"
+      },
+      likes: 24,
+      comments: 5,
+      isLiked: false
+    },
+    {
+      id: "a2",
+      type: "accomplishment" as const,
+      friend: {
+        name: "Alex T.",
+        avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Alex",
+        level: 8,
+        streak: 15,
+        badges: ["Streak Master"]
+      },
+      timestamp: "4h ago",
+      content: {
+        achievement: "Streak Master",
+        icon: "🔥",
+        text: "15 days of consistent logging!"
+      },
+      likes: 42,
+      comments: 8,
+      isLiked: true
+    },
+    {
+      id: "a3",
+      type: "update" as const,
+      friend: {
+        name: "Jordan P.",
+        avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Jordan",
+        level: 15,
+        streak: 42,
+        badges: ["Veggie Master", "Community Chef"]
+      },
+      timestamp: "6h ago",
+      content: {
+        text: "Hit my hydration goal 5 days straight! Feeling so much more energized 💧",
+        icon: "💪"
+      },
+      likes: 18,
+      comments: 3,
+      isLiked: false
+    },
+    {
+      id: "a4",
+      type: "recipe" as const,
+      friend: {
+        name: "Maya L.",
+        avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Maya",
+        level: 10,
+        streak: 21,
+        badges: ["Snack Sharer"]
+      },
+      timestamp: "1d ago",
+      content: {
+        image: "https://images.unsplash.com/photo-1604467715878-83e57e08aae7?w=400",
+        title: "Energy Bites for On-the-Go 🍪",
+        text: "No-bake and perfect for pre-workout!"
+      },
+      likes: 31,
+      comments: 7,
+      isLiked: true
+    },
+    {
+      id: "a5",
+      type: "update" as const,
+      friend: {
+        name: "Riley N.",
+        avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Riley",
+        level: 9,
+        streak: 19,
+        badges: ["Weekend Warrior"]
+      },
+      timestamp: "1d ago",
+      content: {
+        text: "Trying out the Overnight Oats trend everyone's talking about! 🥣",
+        icon: "🦦"
+      },
+      likes: 15,
+      comments: 4,
+      isLiked: false
+    }
+  ];
+
   const filteredPosts = mockPosts; // In real app, filter based on viewMode and sortMode
 
   const handleViewModeToggle = (mode: ViewMode) => {
     setViewMode(mode);
     setShowOtterMessage(true);
     setTimeout(() => setShowOtterMessage(false), 3000);
+  };
+
+  const handleLike = (activityId: string) => {
+    toast.success("Liked! 💜");
+  };
+
+  const handleComment = (activityId: string) => {
+    toast.info("Comments coming soon! 💬");
+  };
+
+  const handleWave = (activityId: string) => {
+    toast.success("Wave sent! 🌊");
   };
 
   const sortLabels = {
@@ -261,66 +417,120 @@ const Trends = () => {
       </header>
 
       <main className="max-w-md mx-auto px-4 py-6 pb-6">
-        {/* Ottr Message */}
-        {showOtterMessage && (
-          <div className="mb-6 bg-gradient-to-br from-primary/10 to-accent/10 rounded-3xl p-5 border-2 border-primary/30 animate-slide-in-right">
-            <OtterMascot 
-              mood="joyful" 
-              message={viewMode === "friends" 
-                ? "Your friends are making waves! 🌊" 
-                : "Discover amazing snacks & recipes! ✨"
-              } 
-            />
-          </div>
-        )}
-
-        {/* Ottr's Picks Banner (Discover only) */}
-        {viewMode === "discover" && (
-          <div className="mb-6 bg-gradient-to-r from-primary to-accent rounded-3xl p-5 text-center shadow-[0_8px_30px_rgb(0,0,0,0.12)] animate-fade-in">
-            <h2 className="text-lg font-bold text-primary-foreground mb-1">
-              🦦 Ottr's Picks
-            </h2>
-            <p className="text-sm text-primary-foreground/90">
-              Trending in the community this week
-            </p>
-          </div>
-        )}
-
-        {/* Masonry Grid */}
-        <div className="grid grid-cols-2 gap-4 auto-rows-auto">
-          {filteredPosts.map((post) => (
-            <PostCard
-              key={post.id}
-              id={post.id}
-              image={post.image}
-              title={post.title}
-              likes={post.likes}
-              downloads={post.downloads}
-              author={post.author}
-              onClick={() => setSelectedPost(post)}
-            />
-          ))}
-        </div>
-
-        {/* Friend Trends Button (Friends tab only) */}
+        {/* Friends Tab */}
         {viewMode === "friends" && (
-          <div className="mt-8">
-            <button
-              onClick={() => navigate("/weekly-check-in")}
-              className="w-full bg-gradient-to-br from-primary/10 to-accent/10 rounded-3xl p-5 border-2 border-primary/30 hover:scale-[1.02] active:scale-[0.98] transition-transform"
-            >
-              <div className="flex items-center justify-center gap-2 mb-2">
-                <Waves className="w-5 h-5 text-primary" />
-                <TrendingUp className="w-5 h-5 text-primary" />
+          <>
+            {/* Ottr Message */}
+            {showOtterMessage && (
+              <div className="mb-6 bg-gradient-to-br from-primary/10 to-accent/10 rounded-3xl p-5 border-2 border-primary/30 animate-slide-in-right">
+                <OtterMascot 
+                  mood="joyful" 
+                  message="Your friends are making waves! 🌊" 
+                />
               </div>
-              <h3 className="text-base font-bold text-foreground mb-1">
-                View Friend Trends
-              </h3>
-              <p className="text-sm text-muted-foreground">
-                See how your friends are progressing this week
+            )}
+
+            {hasFriends ? (
+              <>
+                {/* Friend Highlights of the Week */}
+                <div className="mb-6">
+                  <h2 className="text-base font-bold text-foreground mb-3 px-1">
+                    ✨ Friend Highlights of the Week
+                  </h2>
+                  <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-hide -mx-4 px-4">
+                    {mockHighlights.map((highlight) => (
+                      <FriendHighlightCard key={highlight.id} highlight={highlight} />
+                    ))}
+                  </div>
+                </div>
+
+                {/* Ottr's Pod Message */}
+                <div className="mb-6 bg-gradient-to-br from-primary/5 to-accent/5 rounded-3xl p-4 border border-primary/20">
+                  <div className="flex items-center gap-2">
+                    <span className="text-2xl">🦦</span>
+                    <p className="text-sm text-foreground">
+                      <span className="font-semibold">Ottr loves</span> seeing your pod stay consistent! Keep it up! 💜
+                    </p>
+                  </div>
+                </div>
+
+                {/* Friend Activity Feed */}
+                <div className="space-y-4">
+                  {mockActivities.map((activity) => (
+                    <FriendActivityCard 
+                      key={activity.id} 
+                      activity={activity}
+                      onLike={() => handleLike(activity.id)}
+                      onComment={() => handleComment(activity.id)}
+                      onWave={() => handleWave(activity.id)}
+                    />
+                  ))}
+                </div>
+
+                {/* Friend Trends Button */}
+                <div className="mt-8">
+                  <button
+                    onClick={() => navigate("/weekly-check-in")}
+                    className="w-full bg-gradient-to-br from-primary/10 to-accent/10 rounded-3xl p-5 border-2 border-primary/30 hover:scale-[1.02] active:scale-[0.98] transition-transform"
+                  >
+                    <div className="flex items-center justify-center gap-2 mb-2">
+                      <Waves className="w-5 h-5 text-primary" />
+                      <TrendingUp className="w-5 h-5 text-primary" />
+                    </div>
+                    <h3 className="text-base font-bold text-foreground mb-1">
+                      View Friend Trends
+                    </h3>
+                    <p className="text-sm text-muted-foreground">
+                      See how your friends are progressing this week
+                    </p>
+                  </button>
+                </div>
+              </>
+            ) : (
+              <FriendsEmptyState />
+            )}
+          </>
+        )}
+
+        {/* Discover Tab */}
+        {viewMode === "discover" && (
+          <>
+            {/* Ottr Message */}
+            {showOtterMessage && (
+              <div className="mb-6 bg-gradient-to-br from-primary/10 to-accent/10 rounded-3xl p-5 border-2 border-primary/30 animate-slide-in-right">
+                <OtterMascot 
+                  mood="joyful" 
+                  message="Discover amazing snacks & recipes! ✨" 
+                />
+              </div>
+            )}
+
+            {/* Ottr's Picks Banner */}
+            <div className="mb-6 bg-gradient-to-r from-primary to-accent rounded-3xl p-5 text-center shadow-[0_8px_30px_rgb(0,0,0,0.12)] animate-fade-in">
+              <h2 className="text-lg font-bold text-primary-foreground mb-1">
+                🦦 Ottr's Picks
+              </h2>
+              <p className="text-sm text-primary-foreground/90">
+                Trending in the community this week
               </p>
-            </button>
-          </div>
+            </div>
+
+            {/* Masonry Grid */}
+            <div className="grid grid-cols-2 gap-4 auto-rows-auto">
+              {filteredPosts.map((post) => (
+                <PostCard
+                  key={post.id}
+                  id={post.id}
+                  image={post.image}
+                  title={post.title}
+                  likes={post.likes}
+                  downloads={post.downloads}
+                  author={post.author}
+                  onClick={() => setSelectedPost(post)}
+                />
+              ))}
+            </div>
+          </>
         )}
       </main>
 
