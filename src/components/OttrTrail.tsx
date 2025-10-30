@@ -69,21 +69,37 @@ export const OttrTrail = ({ progress, level, milestones = [] }: OttrTrailProps) 
           </div>
         ))}
 
-        {/* Swimming Ottr */}
+        {/* Swimming Ottr with water splash */}
         <div
           className="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 transition-all duration-[2000ms] ease-out z-10"
           style={{ left: `${clampedProgress}%` }}
         >
-          <div
-            className={`text-3xl transition-all duration-[2000ms] ${
-              isResting ? "animate-breathing" : "animate-wiggle"
-            }`}
-          >
-            🦦
+          <div className="relative">
+            <div
+              className={`text-3xl transition-all duration-[2000ms] ${
+                isResting ? "animate-breathing" : "animate-wiggle"
+              }`}
+            >
+              🦦
+            </div>
+            
+            {/* Water splash trail when swimming */}
+            {!isResting && clampedProgress > 5 && (
+              <div className="absolute -left-4 top-1/2 -translate-y-1/2 text-blue-400/40 text-sm animate-fade-in">
+                💧
+              </div>
+            )}
+            
+            {/* Resting glow */}
+            {isResting && (
+              <>
+                <div className="absolute inset-0 bg-primary/20 rounded-full blur-xl animate-glow-pulse" />
+                <div className="absolute -top-6 left-1/2 -translate-x-1/2 text-xs whitespace-nowrap animate-fade-in">
+                  😴💤
+                </div>
+              </>
+            )}
           </div>
-          {isResting && (
-            <div className="absolute inset-0 bg-primary/20 rounded-full blur-xl animate-glow-pulse" />
-          )}
         </div>
       </div>
 

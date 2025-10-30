@@ -50,7 +50,7 @@ export const OttrJournal = () => {
     await notification("success");
     setQuests((prev) =>
       prev.map((q) =>
-        q.id === questId ? { ...q, completed: true, polaroid: `✨ ${q.title}` } : q
+        q.id === questId ? { ...q, completed: true, polaroid: `✨ ${q.title} — captured!` } : q
       )
     );
   };
@@ -58,11 +58,17 @@ export const OttrJournal = () => {
   const completedCount = quests.filter((q) => q.completed).length;
 
   return (
-    <div className="bg-card/80 backdrop-blur-sm rounded-3xl p-6 shadow-[0_8px_30px_rgb(0,0,0,0.08)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.4)] border-2 border-border">
-      <div className="flex items-center justify-between mb-4">
-        <h3 className="text-lg font-bold text-foreground">🦦 Ottr's Journal</h3>
-        <span className="text-sm text-muted-foreground">
-          {completedCount}/4 complete
+    <div className="relative bg-card/80 backdrop-blur-sm rounded-3xl p-6 shadow-[0_8px_30px_rgb(0,0,0,0.08)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.4)] border-2 border-border overflow-hidden">
+      {/* Watercolor texture overlay */}
+      <div className="absolute inset-0 opacity-5 bg-gradient-to-br from-primary/20 via-transparent to-accent/20 pointer-events-none" />
+      
+      <div className="relative flex items-center justify-between mb-4">
+        <div className="flex items-center gap-2">
+          <span className="text-2xl animate-wiggle">📖</span>
+          <h3 className="text-lg font-bold text-foreground">Ottr's Journal</h3>
+        </div>
+        <span className="text-sm text-muted-foreground bg-muted/50 px-3 py-1 rounded-full">
+          {completedCount}/4 quests
         </span>
       </div>
 

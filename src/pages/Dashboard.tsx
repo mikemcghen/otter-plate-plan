@@ -1,9 +1,16 @@
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/contexts/AuthContext";
+import { useThemeContext } from "@/contexts/ThemeContext";
 import { Button } from "@/components/ui/button";
 import { CircularProgress } from "@/components/CircularProgress";
 import { MacroRing } from "@/components/MacroRing";
 import { StreakCounter } from "@/components/StreakCounter";
 import { OttrTrail } from "@/components/OttrTrail";
+import { OttrJournal } from "@/components/OttrJournal";
+import { AmbientBackground } from "@/components/AmbientBackground";
+import { OttrDialogBubble } from "@/components/OttrDialogBubble";
 import { SnackCarousel } from "@/components/SnackCarousel";
 import { NotificationBanner } from "@/components/NotificationBanner";
 import { SnackPickerModal } from "@/components/SnackPickerModal";
@@ -21,17 +28,13 @@ import { OtterMascot } from "@/components/OtterMascot";
 import type { OtterMood } from "@/components/OtterMascot";
 import { useAppContext } from "@/contexts/AppContext";
 import { Moon, UtensilsCrossed, Sparkles } from "lucide-react";
-import { useNavigate } from "react-router-dom";
 import { toast } from "@/hooks/use-toast";
 import { useHaptics } from "@/hooks/useHaptics";
 import { useBadgeUnlock } from "@/hooks/useBadgeUnlock";
 import { BadgeUnlockModal } from "@/components/BadgeUnlockModal";
 import { FriendWaves } from "@/components/FriendWaves";
 import { AddFriendModal } from "@/components/AddFriendModal";
-import { supabase } from "@/integrations/supabase/client";
-import { useAuth } from "@/contexts/AuthContext";
 import { OttrDailyRecap } from "@/components/OttrDailyRecap";
-import { OttrJournal } from "@/components/OttrJournal";
 import { AchievementCapsule } from "@/components/AchievementCapsule";
 import { FloatingBubble } from "@/components/FloatingBubble";
 import { SnackBadgeTracker } from "@/components/SnackBadgeTracker";
@@ -46,6 +49,7 @@ import otterConcerned from "@/assets/otter-concerned.png";
 const Dashboard = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
+  const { dashboardTheme } = useThemeContext();
   const { impact, notification } = useHaptics();
   const appContext = useAppContext();
   const notifications = useNotifications();
@@ -86,6 +90,9 @@ const Dashboard = () => {
   const [selectedFriend, setSelectedFriend] = useState<any>(null);
   const [showFriendModal, setShowFriendModal] = useState(false);
   const [bubbleMessage, setBubbleMessage] = useState<string | null>(null);
+  const [ottrDialogMessage, setOttrDialogMessage] = useState<string | null>(null);
+  const [userName, setUserName] = useState("Friend");
+  const [profile, setProfile] = useState<any>(null);
 
   // Badge state
   const [snackBadges] = useState([
@@ -112,15 +119,65 @@ const Dashboard = () => {
     setShowBadgeUnlock(true);
   });
 
-  // Load friends (with placeholders for demo)
+  // Load user profile and friends
   useEffect(() => {
     if (user) {
+      loadUserProfile();
       loadFriends();
     } else {
       // Show placeholder friends when not logged in
       setFriends(placeholderFriends);
     }
   }, [user]);
+
+  const loadUserProfile = async () => {
+    if (!user) return;
+
+    const { data } = await supabase
+      .from("profiles")
+      .select("*")
+      .eq("id", user.id)
+      .single();
+
+    if (data) {
+      setProfile(data);
+      setUserName(data.display_name || "Friend");
+    }
+  };
+
+  // Get time of day for environment
+  const getTimeOfDay = (): "morning" | "afternoon" | "evening" | "night" => {
+    const hour = new Date().getHours();
+    if (hour >= 5 && hour < 12) return "morning";
+    if (hour >= 12 && hour < 17) return "afternoon";
+    if (hour >= 17 && hour < 21) return "evening";
+    return "night";
+  };
+
+  const timeOfDay = getTimeOfDay();
+
+  // Show Ottr dialog on mount
+  useEffect(() => {
+    const greetings = {
+      morning: `Morning, ${userName}! Ready to swim through today?`,
+      afternoon: `Good afternoon, ${userName}! You're flowing beautifully`,
+      evening: `Evening, ${userName}! Time to wind down gently`,
+      night: `Goodnight, ${userName}! Rest well, swimmer`,
+    };
+    
+    setTimeout(() => {
+      setOttrDialogMessage(greetings[timeOfDay]);
+    }, 1500);
+  }, [timeOfDay, userName]);
+
+  // Show encouraging dialogs on progress milestones
+  useEffect(() => {
+    if (caloriePercentage >= 80 && caloriePercentage < 85) {
+      setOttrDialogMessage("That balance looks great today 🦦💜");
+    } else if (streak > 0 && streak % 7 === 0) {
+      setOttrDialogMessage("You're staying steady as a river!");
+    }
+  }, [caloriesConsumed, caloriesTarget, streak]);
 
   const placeholderFriends = [
     {
@@ -216,6 +273,7 @@ const Dashboard = () => {
       title: "Wave sent! 🌊",
       description: `Your encouragement reached ${selectedFriend?.display_name}`,
     });
+    setShowFriendModal(false);
   };
 
   // Demo: Random friend wave after 10 seconds
@@ -435,8 +493,20 @@ const Dashboard = () => {
   };
 
   return (
-    <div className={`min-h-screen pb-24 transition-all duration-[2500ms] ${getEnvironmentGradient()}`}>
+    <div className="min-h-screen relative pb-24">
+      {/* Ambient background with dynamic time/progress states */}
+      <AmbientBackground timeOfDay={timeOfDay} progressPercentage={caloriePercentage} />
+      
       <Confetti active={showConfetti} />
+
+      {/* Ottr dialog bubbles */}
+      {ottrDialogMessage && (
+        <OttrDialogBubble 
+          message={ottrDialogMessage} 
+          mood="happy"
+          onDismiss={() => setOttrDialogMessage(null)}
+        />
+      )}
       
       {/* Daily Greeting Modal */}
       <DailyGreetingModal
@@ -536,7 +606,7 @@ const Dashboard = () => {
           </div>
         </header>
 
-        <main className="max-w-md mx-auto px-4 py-6 space-y-6">
+        <main className="relative max-w-md mx-auto px-4 py-6 space-y-6">
         {/* Ottr's Journal - Daily Quests */}
         <OttrJournal />
 
@@ -585,8 +655,14 @@ const Dashboard = () => {
           </div>
         </div>
 
-        {/* Macro Rings */}
-        <div className={`bg-card/80 backdrop-blur-sm rounded-3xl p-6 shadow-[0_8px_30px_rgb(0,0,0,0.08)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.4)] border-2 border-border transition-all duration-[1500ms] ${logAnimation ? "animate-pulse-scale" : ""}`}>
+        {/* Macro Rings - pulses when in green zone */}
+        <div className={`bg-card/80 backdrop-blur-sm rounded-3xl p-6 shadow-[0_8px_30px_rgb(0,0,0,0.08)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.4)] border-2 border-border transition-all duration-[2000ms] ${
+          logAnimation ? "animate-pulse-scale" : ""
+        } ${
+          caloriePercentage >= 80 && caloriePercentage <= 100 
+            ? "ring-2 ring-success/30 shadow-[0_0_30px_rgba(34,197,94,0.2)]" 
+            : ""
+        }`}>
           <h3 className="text-base font-bold text-foreground mb-4 px-2">
             Macros
           </h3>
@@ -610,6 +686,12 @@ const Dashboard = () => {
               color="hsl(var(--success))"
             />
           </div>
+          
+          {caloriePercentage >= 80 && caloriePercentage <= 100 && (
+            <p className="text-center text-xs text-success mt-4 animate-fade-in">
+              ✨ Green zone — you're balanced beautifully!
+            </p>
+          )}
         </div>
 
         {/* Friend Waves */}

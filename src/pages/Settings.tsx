@@ -10,9 +10,11 @@ import { Label } from "@/components/ui/label";
 import { toast } from "@/hooks/use-toast";
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import { useThemeContext } from "@/contexts/ThemeContext";
 
 const Settings = () => {
   const navigate = useNavigate();
+  const { dashboardTheme, setDashboardTheme } = useThemeContext();
   const [notificationsEnabled, setNotificationsEnabled] = useState(true);
   const [profileVisibility, setProfileVisibility] = useState("friends");
   const [autoShareRecipes, setAutoShareRecipes] = useState(false);
@@ -66,9 +68,40 @@ const Settings = () => {
         {/* Theme Section */}
         <div className="bg-card rounded-3xl p-6 shadow-[0_8px_30px_rgb(0,0,0,0.08)] border-2 border-border space-y-4">
           <h2 className="text-base font-bold text-foreground">Appearance</h2>
+          
           <div className="flex items-center justify-between">
             <span className="text-sm text-muted-foreground">Dark Mode</span>
             <ThemeToggle />
+          </div>
+
+          <div className="space-y-2 pt-2">
+            <Label>Dashboard Mood</Label>
+            <Select value={dashboardTheme} onValueChange={(val: any) => setDashboardTheme(val)}>
+              <SelectTrigger>
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="fresh-start">
+                  <div className="flex items-center gap-2">
+                    <span>☀️</span>
+                    <span>Fresh Start — bright lavender + morning coral</span>
+                  </div>
+                </SelectItem>
+                <SelectItem value="encouraging-energy">
+                  <div className="flex items-center gap-2">
+                    <span>🌈</span>
+                    <span>Encouraging Energy — vibrant lilac + sparkles</span>
+                  </div>
+                </SelectItem>
+                <SelectItem value="reflective-calm">
+                  <div className="flex items-center gap-2">
+                    <span>🌿</span>
+                    <span>Reflective Calm — muted blue + journaling</span>
+                  </div>
+                </SelectItem>
+              </SelectContent>
+            </Select>
+            <p className="text-xs text-muted-foreground">Changes the dashboard's color mood and ambient lighting</p>
           </div>
         </div>
 

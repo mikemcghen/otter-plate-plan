@@ -9,6 +9,7 @@ import { DevAdminSidebar } from "@/components/DevAdminSidebar";
 import { AppProvider } from "@/contexts/AppContext";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { NotificationProvider, useNotifications } from "@/contexts/NotificationContext";
+import { ThemeProvider } from "@/contexts/ThemeContext";
 import { OfflineBanner } from "@/components/OfflineBanner";
 import { Button } from "@/components/ui/button";
 import { Menu, Wrench } from "lucide-react";
@@ -51,8 +52,9 @@ const AppContent = () => {
   return (
     <TooltipProvider>
       <BrowserRouter>
-        <AuthProvider>
-          <AppProvider>
+        <ThemeProvider>
+          <AuthProvider>
+            <AppProvider>
             <OfflineBanner />
             <Toaster />
             <Sonner />
@@ -118,8 +120,9 @@ const AppContent = () => {
           </SidebarProvider>
         </AppProvider>
       </AuthProvider>
-    </BrowserRouter>
-  </TooltipProvider>
+    </ThemeProvider>
+  </BrowserRouter>
+</TooltipProvider>
 );
 };
 
