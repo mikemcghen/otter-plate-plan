@@ -1,93 +1,35 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
-import { useThemeContext } from "@/contexts/ThemeContext";
-import { Button } from "@/components/ui/button";
-import { CircularProgress } from "@/components/CircularProgress";
-import { MacroRing } from "@/components/MacroRing";
-import { StreakCounter } from "@/components/StreakCounter";
-import { OttrTrail } from "@/components/OttrTrail";
 import { DailyFocus } from "@/components/DailyFocus";
 import { AmbientBackground } from "@/components/AmbientBackground";
-import { OttrDialogBubble } from "@/components/OttrDialogBubble";
-import { NotificationBanner } from "@/components/NotificationBanner";
-import { SnackPickerModal } from "@/components/SnackPickerModal";
-import { SuccessConfirmationModal } from "@/components/SuccessConfirmationModal";
-import { Confetti } from "@/components/Confetti";
-import { QuickLogPanel } from "@/components/QuickLogPanel";
-import { MobileBottomNav } from "@/components/MobileBottomNav";
-import { PullToRefresh } from "@/components/PullToRefresh";
-import { DailyGreetingModal } from "@/components/DailyGreetingModal";
-import { EndOfDaySummaryModal } from "@/components/EndOfDaySummaryModal";
-import { FloatingMascotButton } from "@/components/FloatingMascotButton";
-import { LevelUpModal } from "@/components/LevelUpModal";
-import { EmptyState } from "@/components/EmptyState";
 import { OtterMascot } from "@/components/OtterMascot";
 import type { OtterMood } from "@/components/OtterMascot";
 import { useAppContext } from "@/contexts/AppContext";
-import { Moon, UtensilsCrossed, Sparkles } from "lucide-react";
+import { MobileBottomNav } from "@/components/MobileBottomNav";
+import { PullToRefresh } from "@/components/PullToRefresh";
+import { QuickLogPanel } from "@/components/QuickLogPanel";
+import { Flame, Zap } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 import { useHaptics } from "@/hooks/useHaptics";
-import { useBadgeUnlock } from "@/hooks/useBadgeUnlock";
-import { BadgeUnlockModal } from "@/components/BadgeUnlockModal";
-import { AchievementCapsule } from "@/components/AchievementCapsule";
-import { FloatingBubble } from "@/components/FloatingBubble";
-import { useNotifications } from "@/contexts/NotificationContext";
-import otterPerfect from "@/assets/otter-perfect.png";
-import otterHappy from "@/assets/otter-happy.png";
-import otterSleepy from "@/assets/otter-sleepy.png";
-import otterConcerned from "@/assets/otter-concerned.png";
 
 const Dashboard = () => {
-  const navigate = useNavigate();
   const { user } = useAuth();
-  const { dashboardTheme } = useThemeContext();
-  const { impact, notification } = useHaptics();
+  const { impact } = useHaptics();
   const appContext = useAppContext();
-  const notifications = useNotifications();
   const {
     caloriesConsumed,
     caloriesTarget,
-    proteinConsumed,
-    proteinTarget,
-    carbsConsumed,
-    carbsTarget,
-    fatConsumed,
-    fatTarget,
-    xp,
     level,
     streak,
-    foodLogs,
     logFood,
-    getXPForNextLevel,
-    getCaloriesRemaining,
   } = appContext;
 
-  const [showConfetti, setShowConfetti] = useState(false);
-  const [showNotification, setShowNotification] = useState(false);
-  const [showSnackPicker, setShowSnackPicker] = useState(false);
-  const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [showQuickLog, setShowQuickLog] = useState(false);
-  const [loggedSnack, setLoggedSnack] = useState<string>("");
-  const [showDailyGreeting, setShowDailyGreeting] = useState(false);
-  const [showLevelUp, setShowLevelUp] = useState(false);
-  const [previousLevel, setPreviousLevel] = useState(level);
-  const [showBadgeUnlock, setShowBadgeUnlock] = useState(false);
-  const [unlockedBadge, setUnlockedBadge] = useState<any>(null);
-  const [achievementToShow, setAchievementToShow] = useState<any>(null);
-  const [bubbleMessage, setBubbleMessage] = useState<string | null>(null);
-  const [ottrDialogMessage, setOttrDialogMessage] = useState<string | null>(null);
   const [userName, setUserName] = useState("Friend");
   const [focusCompleted, setFocusCompleted] = useState(false);
   const [showWaterRipple, setShowWaterRipple] = useState(false);
-
-
-  // Badge unlock hook
-  useBadgeUnlock(xp, level, streak, foodLogs.length, (badge) => {
-    setUnlockedBadge(badge);
-    setShowBadgeUnlock(true);
-  });
+  const [greetingMessage, setGreetingMessage] = useState<string | null>(null);
 
   // Load user profile
   useEffect(() => {
@@ -124,20 +66,16 @@ const Dashboard = () => {
   // Show Ottr greeting on mount
   useEffect(() => {
     const greetings = {
-      morning: `Morning, ${userName}! Ready to swim through today?`,
-      afternoon: `The tide feels calm today, ${userName}`,
-      evening: `Evening, ${userName}! Time to wind down`,
+      morning: `Good morning, ${userName}! Let's start the day gently 🌿`,
+      afternoon: `The tide feels calm today, ${userName} 💜`,
+      evening: `Evening, ${userName}! Time to wind down 🌙`,
       night: `Rest peacefully, ${userName} 🌙`,
     };
     
     setTimeout(() => {
-      setOttrDialogMessage(greetings[timeOfDay]);
-    }, 2000);
+      setGreetingMessage(greetings[timeOfDay]);
+    }, 1500);
   }, [timeOfDay, userName]);
-
-  const handleViewPost = () => {
-    navigate("/trends");
-  };
 
   // Focus completion handler
   const handleFocusComplete = () => {
@@ -146,7 +84,7 @@ const Dashboard = () => {
     
     // Show completion message
     setTimeout(() => {
-      setOttrDialogMessage("Ottr is resting peacefully — you've earned it 🦦💜");
+      setGreetingMessage("You did it — the cove feels peaceful again 💜🌊");
     }, 800);
     
     // Hide ripple effect
@@ -156,135 +94,30 @@ const Dashboard = () => {
     
     toast({
       title: "Daily Focus Complete! 🌊",
-      description: "You've made progress today",
+      description: "The cove feels peaceful again",
     });
   };
-
-  // Manual trigger functions for test panel
-  const handleTriggerDailyGreeting = () => setShowDailyGreeting(true);
-  const handleTriggerLevelUp = () => setShowLevelUp(true);
-  const handleTriggerBadgeUnlock = () => {
-    setUnlockedBadge({
-      name: "Test Badge",
-      description: "This is a test badge unlock!"
-    });
-    setShowBadgeUnlock(true);
-  };
-  const handleTriggerAchievement = () => {
-    setAchievementToShow({
-      id: "test-achievement",
-      title: "Test Achievement!",
-      description: "You manually triggered this achievement",
-      icon: "🎉"
-    });
-  };
-  const handleTriggerSnackPicker = () => setShowSnackPicker(true);
-  const handleTriggerSuccessModal = () => {
-    setLoggedSnack("Test Snack");
-    setShowSuccessModal(true);
-  };
-  const handleTriggerNotificationBanner = () => setShowNotification(true);
-
-  // Register handlers with notification context
-  useEffect(() => {
-    notifications.registerHandlers({
-      onDailyGreeting: handleTriggerDailyGreeting,
-      onLevelUp: handleTriggerLevelUp,
-      onBadgeUnlock: handleTriggerBadgeUnlock,
-      onAchievement: handleTriggerAchievement,
-      onSnackPicker: handleTriggerSnackPicker,
-      onSuccessModal: handleTriggerSuccessModal,
-      onNotificationBanner: handleTriggerNotificationBanner,
-      onQuickLog: () => setShowQuickLog(true),
-    });
-  }, []);
 
   const caloriePercentage = (caloriesConsumed / caloriesTarget) * 100;
-  const isPerfect = caloriePercentage >= 95 && caloriePercentage <= 105;
-  const caloriesRemaining = getCaloriesRemaining();
-  
-  // Check for level up
-  useEffect(() => {
-    if (level > previousLevel) {
-      setPreviousLevel(level);
-      setShowLevelUp(true);
-      setShowConfetti(true);
-      notification("success");
-      setTimeout(() => setShowConfetti(false), 3000);
-    }
-  }, [level, previousLevel, notification]);
-
-  // Check for daily greeting
-  useEffect(() => {
-    const lastVisit = localStorage.getItem("ottrcal_last_visit");
-    const today = new Date().toDateString();
-    
-    if (!lastVisit || lastVisit !== today) {
-      setShowDailyGreeting(true);
-      localStorage.setItem("ottrcal_last_visit", today);
-    }
-  }, []);
-
-  // Snack notification trigger - check time of day and calorie deficit
-  useEffect(() => {
-    const currentHour = new Date().getHours();
-    const isAfternoon = currentHour >= 14 && currentHour < 18;
-    const isEvening = currentHour >= 18;
-    
-    const timer = setTimeout(() => {
-      if ((isAfternoon || isEvening) && caloriePercentage < 85 && !showNotification) {
-        setShowNotification(true);
-      }
-    }, 3000);
-    
-    return () => clearTimeout(timer);
-  }, [caloriePercentage, showNotification]);
 
   // Dynamic otter mood based on time of day and completion
-  const getOtterState = (): { mood: OtterMood; message: string; image: string } => {
+  const getOtterState = (): { mood: OtterMood } => {
     if (focusCompleted && timeOfDay === "night") {
-      return { mood: "sleepy", message: "Rest well, swimmer", image: otterSleepy };
+      return { mood: "sleepy" };
     }
     if (focusCompleted) {
-      return { mood: "proud", message: "", image: otterPerfect };
+      return { mood: "proud" };
     }
     if (timeOfDay === "morning") {
-      return { mood: "happy", message: "", image: otterHappy };
+      return { mood: "happy" };
     }
     if (timeOfDay === "evening" || timeOfDay === "night") {
-      return { mood: "sleepy", message: "", image: otterSleepy };
+      return { mood: "sleepy" };
     }
-    return { mood: "happy", message: "", image: otterHappy };
+    return { mood: "encouraging" };
   };
 
   const otterState = getOtterState();
-
-  const snackOptions = [
-    { name: "Greek Yogurt with Berries", calories: 150, protein: 15, emoji: "berry" },
-    { name: "Apple with Almond Butter", calories: 180, protein: 8, emoji: "apple" },
-    { name: "Protein Smoothie", calories: 200, protein: 20, emoji: "cup-soda" },
-  ];
-
-  const handleLogSnack = async (snack: typeof snackOptions[0]) => {
-    await notification("success");
-    
-    logFood({
-      name: snack.name,
-      calories: snack.calories,
-      protein: snack.protein,
-      carbs: 0,
-      fat: 0,
-    });
-    
-    setLoggedSnack(snack.name);
-    setShowSuccessModal(true);
-    setShowNotification(false);
-    
-    toast({
-      title: "Snack logged! 🌊",
-      description: `${snack.name} added • +15 XP`,
-    });
-  };
 
   const handleQuickLog = async () => {
     await impact();
@@ -292,8 +125,6 @@ const Dashboard = () => {
   };
 
   const handleQuickLogFood = async (food: any) => {
-    await notification("success");
-    
     logFood({
       name: food.name,
       calories: food.calories,
@@ -309,7 +140,6 @@ const Dashboard = () => {
   };
 
   const handleRefresh = async () => {
-    // Simulate data refresh
     await new Promise(resolve => setTimeout(resolve, 1000));
     toast({
       title: "Refreshed!",
@@ -319,7 +149,7 @@ const Dashboard = () => {
 
   return (
     <div className="min-h-screen relative pb-24 overflow-hidden">
-      {/* Ambient background - The Daily Cove */}
+      {/* Environment Layer - Ambient background */}
       <AmbientBackground timeOfDay={timeOfDay} progressPercentage={caloriePercentage} />
       
       {/* Water ripple completion effect */}
@@ -333,72 +163,6 @@ const Dashboard = () => {
           />
         </div>
       )}
-      
-      <Confetti active={showConfetti} />
-
-      {/* Ottr dialog bubbles */}
-      {ottrDialogMessage && (
-        <OttrDialogBubble 
-          message={ottrDialogMessage} 
-          mood="happy"
-          onDismiss={() => setOttrDialogMessage(null)}
-        />
-      )}
-      
-      {/* Daily Greeting Modal */}
-      <DailyGreetingModal
-        open={showDailyGreeting}
-        onOpenChange={setShowDailyGreeting}
-        streak={streak}
-        onStart={() => setShowDailyGreeting(false)}
-      />
-
-      {/* Level Up Modal */}
-      <LevelUpModal
-        open={showLevelUp}
-        onOpenChange={setShowLevelUp}
-        level={level}
-      />
-
-      {/* Badge Unlock Modal */}
-      {unlockedBadge && (
-        <BadgeUnlockModal
-          open={showBadgeUnlock}
-          onOpenChange={setShowBadgeUnlock}
-          badgeName={unlockedBadge.name}
-          badgeDescription={unlockedBadge.description}
-        />
-      )}
-
-      {/* Floating Mascot Button */}
-      <FloatingMascotButton caloriesRemaining={caloriesRemaining} />
-      
-      {/* Push Notification Banner */}
-      <NotificationBanner
-        visible={showNotification}
-        message={`You're ${caloriesRemaining} calories short — Ottr suggests a snack!`}
-        onOpen={() => {
-          setShowSnackPicker(true);
-          setShowNotification(false);
-        }}
-        onDismiss={() => setShowNotification(false)}
-      />
-
-      {/* Snack Picker Modal */}
-      <SnackPickerModal
-        open={showSnackPicker}
-        onOpenChange={setShowSnackPicker}
-        snacks={snackOptions}
-        onLog={handleLogSnack}
-        otterImage={otterState.image}
-      />
-
-      {/* Success Confirmation Modal */}
-      <SuccessConfirmationModal
-        open={showSuccessModal}
-        onOpenChange={setShowSuccessModal}
-        snackName={loggedSnack}
-      />
 
       {/* Quick Log Panel */}
       <QuickLogPanel
@@ -408,34 +172,48 @@ const Dashboard = () => {
       />
 
       <PullToRefresh onRefresh={handleRefresh}>
-        {/* The Daily Cove Header - Minimal & Elegant */}
-        <header className="bg-transparent backdrop-blur-sm sticky top-0 z-40">
-          <div className="max-w-md mx-auto px-6 py-4">
-            <div className="flex items-center justify-between mb-3">
-              <h1 className="text-xl font-bold text-foreground/80">
-                The Daily Cove
-              </h1>
-              <StreakCounter days={streak} />
+        {/* Interface Layer - Minimal Header with Icon Indicators */}
+        <header className="absolute top-0 left-0 right-0 z-40 px-6 py-4">
+          <div className="max-w-md mx-auto flex items-center justify-between">
+            {/* Tiny XP indicator */}
+            <div className="flex items-center gap-2 bg-card/40 backdrop-blur-md rounded-full px-3 py-1.5 border border-border/30">
+              <Zap className="w-3.5 h-3.5 text-primary" />
+              <span className="text-xs font-medium text-foreground/80">Lv.{level}</span>
             </div>
-            <OttrTrail progress={caloriePercentage} level={level} />
+            
+            {/* Tiny Streak indicator */}
+            <div className="flex items-center gap-2 bg-card/40 backdrop-blur-md rounded-full px-3 py-1.5 border border-border/30">
+              <Flame className="w-3.5 h-3.5 text-orange-500" />
+              <span className="text-xs font-medium text-foreground/80">{streak}</span>
+            </div>
           </div>
         </header>
 
-        {/* The Daily Cove - Living Environment */}
-        <main className="relative max-w-md mx-auto px-6 py-8 space-y-8">
+        {/* Character Layer - Ottr Mascot centered in scene */}
+        <main className="relative max-w-md mx-auto px-6 pt-24 pb-8 space-y-8">
           
-          {/* Center: Ottr Mascot (Living companion) */}
-          <div className="flex justify-center items-center min-h-[200px] transition-all duration-[3000ms]">
+          {/* Greeting bubble from Ottr */}
+          {greetingMessage && (
+            <div className="text-center animate-fade-in">
+              <p className="text-sm font-medium text-foreground/70 px-4">
+                {greetingMessage}
+              </p>
+            </div>
+          )}
+          
+          {/* Ottr Mascot (Living companion) - centered */}
+          <div className="flex justify-center items-center min-h-[240px] transition-all duration-[3000ms]">
             <OtterMascot 
-              mood={otterState.mood} 
-              message={otterState.message}
+              mood={otterState.mood}
               animate={true}
             />
           </div>
 
-          {/* Daily Focus Card */}
+          {/* Interface Layer - Daily Focus Bubble */}
           {!focusCompleted && (
-            <DailyFocus onComplete={handleFocusComplete} />
+            <div className="animate-fade-in">
+              <DailyFocus onComplete={handleFocusComplete} />
+            </div>
           )}
 
           {/* Completion Message */}
@@ -453,21 +231,7 @@ const Dashboard = () => {
         </main>
       </PullToRefresh>
 
-      {/* Achievement Capsule */}
-      <AchievementCapsule
-        achievement={achievementToShow}
-        onDismiss={() => setAchievementToShow(null)}
-      />
-
-      {/* Floating Bubble Notification */}
-      {bubbleMessage && (
-        <FloatingBubble
-          message={bubbleMessage}
-          onDismiss={() => setBubbleMessage(null)}
-        />
-      )}
-
-      {/* Mobile Bottom Navigation */}
+      {/* Interface Layer - Floating Action Button (handled by MobileBottomNav) */}
       <MobileBottomNav onQuickLog={handleQuickLog} />
     </div>
   );

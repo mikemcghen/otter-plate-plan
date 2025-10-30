@@ -68,26 +68,32 @@ export const OtterMascot = ({
 
   return (
     <div 
-      className={`flex flex-col items-center gap-3 ${
+      className={`flex flex-col items-center gap-4 ${
         animate ? "animate-pop-in" : ""
       } ${className}`}
     >
       <div className={`relative transition-all duration-[2500ms] ${getAnimationClass()}`}>
+        {/* Shadow layer for depth */}
+        <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-24 h-4 bg-foreground/5 rounded-full blur-md" />
+        
+        {/* Ottr image */}
         <img
           src={otterImages[mood]}
           alt={`Otter is ${mood}`}
-          className="w-32 h-32 object-contain drop-shadow-lg"
+          className="w-40 h-40 object-contain drop-shadow-2xl relative z-10"
           style={{
             filter: mood === "sleepy" ? "brightness(0.9)" : "brightness(1)",
           }}
         />
+        
         {/* Glow effect for proud/joyful moods */}
         {(mood === "proud" || mood === "joyful") && (
-          <div className="absolute inset-0 bg-primary/20 rounded-full blur-2xl -z-10 animate-glow-pulse" />
+          <div className="absolute inset-0 bg-primary/20 rounded-full blur-3xl -z-10 animate-glow-pulse" />
         )}
+        
         {/* Resting moonlight for sleepy mood */}
         {mood === "sleepy" && (
-          <div className="absolute inset-0 bg-blue-400/10 rounded-full blur-xl -z-10 animate-breathing" />
+          <div className="absolute inset-0 bg-blue-400/10 rounded-full blur-2xl -z-10 animate-breathing" />
         )}
       </div>
       

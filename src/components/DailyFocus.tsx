@@ -31,51 +31,51 @@ export const DailyFocus = ({ onComplete }: DailyFocusProps) => {
   return (
     <div 
       className={`
-        bg-card/60 backdrop-blur-md rounded-3xl p-6 
-        shadow-[0_8px_30px_rgba(0,0,0,0.08)] dark:shadow-[0_8px_30px_rgba(0,0,0,0.3)]
-        border-2 border-border/50
+        bg-card/50 backdrop-blur-xl rounded-[32px] p-8
+        shadow-[0_12px_40px_rgba(0,0,0,0.06)] dark:shadow-[0_12px_40px_rgba(0,0,0,0.25)]
+        border border-border/30
         transition-all duration-[2000ms] ease-out
         ${isCompleted ? "scale-95 opacity-70" : ""}
       `}
     >
-      <div className="flex items-start justify-between gap-4">
-        <div className="flex-1 space-y-2">
-          <div className="flex items-center gap-2">
-            <span className="text-3xl animate-breathing">{todaysFocus.icon}</span>
-            <div>
-              <h3 className="text-lg font-bold text-foreground">Today's Focus</h3>
-              <p className="text-sm text-muted-foreground">{todaysFocus.subtitle}</p>
-            </div>
+      <div className="text-center space-y-6">
+        <div className="flex flex-col items-center gap-3">
+          <span className="text-5xl animate-breathing">{todaysFocus.icon}</span>
+          <div>
+            <h3 className="text-xl font-bold text-foreground/90">Today's Focus</h3>
+            <p className="text-sm text-muted-foreground mt-1">{todaysFocus.subtitle}</p>
           </div>
-          <p className="text-base font-medium text-foreground/80 pl-11">
-            {todaysFocus.text}
-          </p>
         </div>
+        
+        <p className="text-base font-medium text-foreground/70">
+          {todaysFocus.text}
+        </p>
         
         <Button
           onClick={handleComplete}
           disabled={isCompleted}
+          size="lg"
           className={`
-            min-w-[80px] rounded-full transition-all duration-[1500ms]
+            w-full rounded-full transition-all duration-[1500ms] font-medium
             ${isCompleted 
-              ? "bg-success hover:bg-success text-white" 
-              : "bg-primary/10 hover:bg-primary/20 text-primary hover:text-primary"
+              ? "bg-success hover:bg-success text-white shadow-lg shadow-success/30" 
+              : "bg-primary hover:bg-primary/90 text-primary-foreground shadow-lg shadow-primary/30"
             }
           `}
         >
           {isCompleted ? (
-            <span className="flex items-center gap-1 animate-pop-in">
-              <Check className="w-4 h-4" />
-              Done
+            <span className="flex items-center gap-2 animate-pop-in">
+              <Check className="w-5 h-5" />
+              Complete
             </span>
           ) : (
-            "Complete"
+            "Complete Focus"
           )}
         </Button>
       </div>
       
       {isCompleted && (
-        <p className="text-center text-sm text-success mt-4 animate-fade-in">
+        <p className="text-center text-sm text-success mt-6 animate-fade-in font-medium">
           🌊 The water ripples with your progress...
         </p>
       )}
