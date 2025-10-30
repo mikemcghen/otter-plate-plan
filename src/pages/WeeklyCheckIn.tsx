@@ -269,60 +269,159 @@ const WeeklyCheckIn = () => {
               Log Today - {weeklyLogs[currentDayIndex].day}
             </h2>
 
-            {/* Nutrition Balance Slider */}
+            {/* Nutrition Balance Overview */}
             <div className="bg-card rounded-3xl p-5 shadow-[0_8px_30px_rgb(0,0,0,0.08)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.4)] border border-border">
               <div className="flex items-center justify-between mb-4">
                 <div className="flex items-center gap-2">
                   <span className="text-xl">🥗</span>
-                  <h3 className="text-sm font-semibold text-foreground">Nutrition Balance</h3>
+                  <div>
+                    <h3 className="text-sm font-semibold text-foreground">Nutrition Balance</h3>
+                    <p className="text-xs text-muted-foreground">From food logging</p>
+                  </div>
                 </div>
-                <span className="text-lg font-bold text-primary">{todayNutrition}%</span>
+                <span className="text-2xl font-bold text-primary">{todayNutrition}%</span>
               </div>
-              <Slider
-                value={[todayNutrition]}
-                onValueChange={(v) => setTodayNutrition(v[0])}
-                max={100}
-                step={5}
-                className="mb-2"
-              />
-              <p className="text-xs text-muted-foreground">
-                How balanced did your meals feel today?
-              </p>
+              
+              {/* Macro Breakdown */}
+              <div className="space-y-2 mb-3">
+                <div className="flex items-center justify-between text-xs">
+                  <span className="text-muted-foreground">Protein</span>
+                  <span className="font-medium text-foreground">28g / 30%</span>
+                </div>
+                <div className="flex gap-1">
+                  <div className="h-1.5 rounded-full bg-primary" style={{ width: '30%' }} />
+                  <div className="h-1.5 rounded-full bg-muted flex-1" />
+                </div>
+                
+                <div className="flex items-center justify-between text-xs">
+                  <span className="text-muted-foreground">Carbs</span>
+                  <span className="font-medium text-foreground">85g / 45%</span>
+                </div>
+                <div className="flex gap-1">
+                  <div className="h-1.5 rounded-full bg-accent" style={{ width: '45%' }} />
+                  <div className="h-1.5 rounded-full bg-muted flex-1" />
+                </div>
+                
+                <div className="flex items-center justify-between text-xs">
+                  <span className="text-muted-foreground">Fats</span>
+                  <span className="font-medium text-foreground">22g / 25%</span>
+                </div>
+                <div className="flex gap-1">
+                  <div className="h-1.5 rounded-full bg-success" style={{ width: '25%' }} />
+                  <div className="h-1.5 rounded-full bg-muted flex-1" />
+                </div>
+              </div>
+
+              <div className="pt-3 border-t border-border">
+                <p className="text-xs text-muted-foreground">
+                  📊 3 meals logged • 🍎 4 food items • 🥗 Good variety
+                </p>
+              </div>
             </div>
 
-            {/* Hydration Slider */}
+            {/* Hydration Overview */}
             <div className="bg-card rounded-3xl p-5 shadow-[0_8px_30px_rgb(0,0,0,0.08)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.4)] border border-border">
               <div className="flex items-center justify-between mb-4">
                 <div className="flex items-center gap-2">
                   <Droplets className="w-5 h-5 text-primary" />
-                  <h3 className="text-sm font-semibold text-foreground">Hydration</h3>
+                  <div>
+                    <h3 className="text-sm font-semibold text-foreground">Hydration</h3>
+                    <p className="text-xs text-muted-foreground">Tracked intake</p>
+                  </div>
                 </div>
-                <span className="text-lg font-bold text-primary">{todayHydration}%</span>
+                <span className="text-2xl font-bold text-primary">{todayHydration}%</span>
               </div>
-              <Slider
-                value={[todayHydration]}
-                onValueChange={(v) => setTodayHydration(v[0])}
-                max={100}
-                step={5}
-                className="mb-2"
-              />
-              <p className="text-xs text-muted-foreground">
-                Did you stay hydrated throughout the day?
-              </p>
+
+              {/* Water Intake Visual */}
+              <div className="mb-3">
+                <div className="flex items-center justify-between text-xs mb-2">
+                  <span className="text-muted-foreground">Daily goal: 2000ml</span>
+                  <span className="font-medium text-foreground">1600ml logged</span>
+                </div>
+                <div className="relative h-8 rounded-full bg-muted overflow-hidden">
+                  <div 
+                    className="absolute inset-y-0 left-0 bg-gradient-to-r from-primary/80 to-primary rounded-full transition-all duration-500"
+                    style={{ width: `${todayHydration}%` }}
+                  >
+                    <div className="absolute inset-0 animate-pulse bg-white/20" />
+                  </div>
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <span className="text-xs font-semibold text-foreground drop-shadow-sm">
+                      💧 💧 💧 💧
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              <div className="pt-3 border-t border-border grid grid-cols-3 gap-2 text-center">
+                <div>
+                  <p className="text-xs text-muted-foreground">Morning</p>
+                  <p className="text-sm font-semibold text-foreground">600ml</p>
+                </div>
+                <div>
+                  <p className="text-xs text-muted-foreground">Afternoon</p>
+                  <p className="text-sm font-semibold text-foreground">800ml</p>
+                </div>
+                <div>
+                  <p className="text-xs text-muted-foreground">Evening</p>
+                  <p className="text-sm font-semibold text-foreground">200ml</p>
+                </div>
+              </div>
             </div>
 
-            {/* Movement Toggle */}
+            {/* Movement Overview */}
             <div className="bg-card rounded-3xl p-5 shadow-[0_8px_30px_rgb(0,0,0,0.08)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.4)] border border-border">
-              <div className="flex items-center justify-between">
+              <div className="flex items-center justify-between mb-4">
                 <div className="flex items-center gap-2">
                   <Footprints className="w-5 h-5 text-accent" />
                   <div>
                     <h3 className="text-sm font-semibold text-foreground">Movement</h3>
-                    <p className="text-xs text-muted-foreground">Did you move today?</p>
+                    <p className="text-xs text-muted-foreground">From health apps</p>
                   </div>
                 </div>
                 <Switch checked={todayMovement} onCheckedChange={setTodayMovement} />
               </div>
+
+              {/* Activity Breakdown */}
+              {todayMovement && (
+                <div className="space-y-3 animate-fade-in">
+                  <div className="flex items-center justify-between text-sm">
+                    <div className="flex items-center gap-2">
+                      <span>🚶</span>
+                      <span className="text-foreground">Steps</span>
+                    </div>
+                    <span className="font-semibold text-foreground">8,432</span>
+                  </div>
+                  
+                  <div className="flex items-center justify-between text-sm">
+                    <div className="flex items-center gap-2">
+                      <span>🔥</span>
+                      <span className="text-foreground">Active mins</span>
+                    </div>
+                    <span className="font-semibold text-foreground">42 min</span>
+                  </div>
+                  
+                  <div className="flex items-center justify-between text-sm">
+                    <div className="flex items-center gap-2">
+                      <span>⚡</span>
+                      <span className="text-foreground">Calories</span>
+                    </div>
+                    <span className="font-semibold text-foreground">324 kcal</span>
+                  </div>
+
+                  <div className="pt-3 border-t border-border">
+                    <p className="text-xs text-muted-foreground">
+                      📱 Synced from Apple Health • Last updated 2h ago
+                    </p>
+                  </div>
+                </div>
+              )}
+
+              {!todayMovement && (
+                <p className="text-xs text-muted-foreground text-center py-2">
+                  Toggle on to log today's movement
+                </p>
+              )}
             </div>
 
             {/* Optional Weight Tracking */}
