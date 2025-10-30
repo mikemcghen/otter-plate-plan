@@ -1,7 +1,10 @@
 import { Button } from "@/components/ui/button";
-import { Plus, Apple, CupSoda, Cherry } from "lucide-react";
+import { Plus, Apple, CupSoda, Cherry, Heart, Sparkles, BookOpen } from "lucide-react";
 import useEmblaCarousel from "embla-carousel-react";
 import { useCallback, useEffect, useState } from "react";
+import { cn } from "@/lib/utils";
+
+type TabType = "favorites" | "discover" | "recipes";
 
 interface Snack {
   name: string;
@@ -19,6 +22,7 @@ interface SnackCarouselProps {
 export const SnackCarousel = ({ snacks, onLog, otterImage }: SnackCarouselProps) => {
   const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true, align: "center" });
   const [selectedIndex, setSelectedIndex] = useState(0);
+  const [activeTab, setActiveTab] = useState<TabType>("favorites");
 
   const onSelect = useCallback(() => {
     if (!emblaApi) return;
@@ -34,8 +38,14 @@ export const SnackCarousel = ({ snacks, onLog, otterImage }: SnackCarouselProps)
     };
   }, [emblaApi, onSelect]);
 
+  const tabs: { id: TabType; label: string; icon: React.ReactNode }[] = [
+    { id: "favorites", label: "Favorites", icon: <Heart className="w-4 h-4" /> },
+    { id: "discover", label: "Discover", icon: <Sparkles className="w-4 h-4" /> },
+    { id: "recipes", label: "My Recipes", icon: <BookOpen className="w-4 h-4" /> },
+  ];
+
   return (
-    <div className="space-y-3">
+    <div className="space-y-4">
       <div className="flex items-center gap-2 px-2">
         <div className="relative">
           <img
@@ -45,18 +55,38 @@ export const SnackCarousel = ({ snacks, onLog, otterImage }: SnackCarouselProps)
           />
           <div className="absolute inset-0 bg-primary/10 dark:bg-primary/20 rounded-full blur-xl -z-10" />
         </div>
-        <div>
+        <div className="flex-1">
           <h3 className="text-lg font-bold text-foreground">Snack Time!</h3>
           <p className="text-sm font-medium text-muted-foreground">Swipe for options</p>
         </div>
       </div>
 
-      <div className="overflow-hidden" ref={emblaRef}>
+      {/* Tabs */}
+      <div className="flex gap-2 bg-muted/50 rounded-2xl p-1">
+        {tabs.map((tab) => (
+          <button
+            key={tab.id}
+            onClick={() => setActiveTab(tab.id)}
+            className={cn(
+              "flex-1 flex items-center justify-center gap-1.5 py-2 px-3 rounded-xl text-xs font-semibold transition-all duration-500",
+              activeTab === tab.id
+                ? "bg-card text-foreground shadow-sm"
+                : "text-muted-foreground hover:text-foreground"
+            )}
+          >
+            {tab.icon}
+            <span>{tab.label}</span>
+          </button>
+        ))}
+      </div>
+
+      {/* Carousel */}
+      <div className="overflow-hidden transition-opacity duration-500" ref={emblaRef}>
         <div className="flex gap-3">
           {snacks.map((snack, index) => (
             <div
               key={index}
-              className="flex-[0_0_85%] min-w-0 bg-card rounded-2xl p-4 border-2 border-border shadow-[0_4px_20px_rgb(0,0,0,0.06)] dark:shadow-[0_4px_20px_rgb(0,0,0,0.3)] transition-all duration-300 hover:border-primary hover:shadow-[0_8px_30px_rgb(0,0,0,0.12)] dark:hover:shadow-[0_8px_30px_rgb(0,0,0,0.5)] group cursor-pointer"
+              className="flex-[0_0_85%] min-w-0 bg-card rounded-2xl p-4 border-2 border-border shadow-[0_4px_20px_rgb(0,0,0,0.06)] dark:shadow-[0_4px_20px_rgb(0,0,0,0.3)] transition-all duration-500 hover:border-primary hover:shadow-[0_8px_30px_rgb(0,0,0,0.12)] dark:hover:shadow-[0_8px_30px_rgb(0,0,0,0.5)] group cursor-pointer"
               style={{
                 opacity: selectedIndex === index ? 1 : 0.6,
                 transform: selectedIndex === index ? "scale(1)" : "scale(0.95)",
@@ -76,8 +106,14 @@ export const SnackCarousel = ({ snacks, onLog, otterImage }: SnackCarouselProps)
                   </div>
                 </div>
                 <Button
-                  onClick={() => onLog(snack)}
-                  className="w-full bg-gradient-to-r from-primary to-accent hover:opacity-90 focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 transition-all font-semibold"
+                  onClick={() => {
+                    onLog(snack);
+                    // Shimmer effect on click
+                    const btn = document.activeElement as HTMLElement;
+                    btn?.classList.add('animate-shimmer-once');
+                    setTimeout(() => btn?.classList.remove('animate-shimmer-once'), 600);
+                  }}
+                  className="w-full bg-gradient-to-r from-primary to-accent hover:opacity-90 focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 transition-all duration-500 font-semibold"
                   size="sm"
                 >
                   <Plus className="w-4 h-4 mr-2" />

@@ -22,6 +22,11 @@ interface FriendWavesProps {
 }
 
 export const FriendWaves = ({ friends, onAddFriend, onFriendClick }: FriendWavesProps) => {
+  // Calculate pod streak (mock)
+  const podStreak = friends.length > 0 
+    ? Math.max(...friends.map(f => f.streak))
+    : 0;
+
   // Pick a random friend for spotlight (if any)
   const spotlightFriend = friends.length > 0 
     ? friends[Math.floor(Math.random() * friends.length)]
@@ -35,7 +40,7 @@ export const FriendWaves = ({ friends, onAddFriend, onFriendClick }: FriendWaves
   };
 
   return (
-    <div className="space-y-3 animate-fade-in">
+    <div className="space-y-4 animate-fade-in">
       <div className="flex items-center justify-between px-2">
         <h3 className="text-sm font-bold text-foreground flex items-center gap-2">
           <Sparkles className="w-4 h-4 text-primary" />
@@ -76,10 +81,15 @@ export const FriendWaves = ({ friends, onAddFriend, onFriendClick }: FriendWaves
         {friends.map((friend) => (
           <Card
             key={friend.id}
-            className="flex-shrink-0 w-[100px] p-3 snap-start cursor-pointer active:scale-95 transition-all duration-300 hover:shadow-lg"
+            className="flex-shrink-0 w-[100px] p-3 snap-start cursor-pointer active:scale-95 transition-all duration-500 hover:shadow-lg relative"
             onClick={() => onFriendClick(friend)}
           >
-            <div className="flex flex-col items-center gap-2">
+            {/* Soft pulse ring when active today */}
+            {friend.caloriePercentage && friend.caloriePercentage > 0 && (
+              <div className="absolute inset-0 rounded-xl border-2 border-primary/20 animate-ripple-slow" />
+            )}
+            
+            <div className="flex flex-col items-center gap-2 relative">
               {/* Activity Ring around Avatar */}
               <div className="relative">
                 <svg className="w-16 h-16 -rotate-90">
@@ -102,8 +112,8 @@ export const FriendWaves = ({ friends, onAddFriend, onFriendClick }: FriendWaves
                     strokeDasharray={`${((friend.caloriePercentage || 0) / 100) * 176} 176`}
                     strokeLinecap="round"
                     className={cn(
-                      "transition-all duration-500",
-                      friend.caloriePercentage && friend.caloriePercentage >= 95 && friend.caloriePercentage <= 105 && "animate-glow-pulse"
+                      "transition-all duration-[1500ms] ease-in-out",
+                      friend.caloriePercentage && friend.caloriePercentage >= 95 && friend.caloriePercentage <= 105 && "animate-breathing"
                     )}
                   />
                 </svg>
@@ -113,7 +123,7 @@ export const FriendWaves = ({ friends, onAddFriend, onFriendClick }: FriendWaves
                 </Avatar>
                 {/* Status indicator */}
                 {friend.caloriePercentage && friend.caloriePercentage >= 95 && friend.caloriePercentage <= 105 && (
-                  <div className="absolute -top-1 -right-1 w-4 h-4 bg-success rounded-full border-2 border-card flex items-center justify-center">
+                  <div className="absolute -top-1 -right-1 w-4 h-4 bg-success rounded-full border-2 border-card flex items-center justify-center animate-breathing">
                     <Sparkles className="w-2.5 h-2.5 text-success-foreground" />
                   </div>
                 )}
@@ -131,7 +141,7 @@ export const FriendWaves = ({ friends, onAddFriend, onFriendClick }: FriendWaves
 
         {/* Add Friend Card */}
         <Card
-          className="flex-shrink-0 w-[100px] p-3 snap-start cursor-pointer active:scale-95 transition-all duration-300 hover:shadow-lg border-dashed border-2 border-primary/30 bg-primary/5 hover:bg-primary/10"
+          className="flex-shrink-0 w-[100px] p-3 snap-start cursor-pointer active:scale-95 transition-all duration-500 hover:shadow-lg border-dashed border-2 border-primary/30 bg-primary/5 hover:bg-primary/10"
           onClick={onAddFriend}
         >
           <div className="flex flex-col items-center justify-center gap-2 h-full">
@@ -144,6 +154,29 @@ export const FriendWaves = ({ friends, onAddFriend, onFriendClick }: FriendWaves
           </div>
         </Card>
       </div>
+
+      {/* Pod Streak Summary */}
+      {friends.length > 0 && podStreak > 0 && (
+        <div className="bg-gradient-to-br from-primary/10 to-accent/5 rounded-2xl p-4 border border-primary/20">
+          <div className="flex items-center gap-3">
+            <div className="text-3xl">🌊</div>
+            <div className="flex-1">
+              <p className="text-sm font-bold text-foreground">
+                Your pod is on a {podStreak}-day streak!
+              </p>
+              <p className="text-xs text-muted-foreground">
+                Keep riding the wave together
+              </p>
+            </div>
+            <Flame className="w-6 h-6 text-streak animate-breathing" />
+          </div>
+          
+          {/* Animated wave line */}
+          <div className="mt-3 h-1 bg-muted/30 rounded-full overflow-hidden relative">
+            <div className="absolute inset-0 bg-gradient-to-r from-primary via-accent to-primary animate-wave-flow" />
+          </div>
+        </div>
+      )}
     </div>
   );
 };

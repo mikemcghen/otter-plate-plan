@@ -31,6 +31,10 @@ import { AddFriendModal } from "@/components/AddFriendModal";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { OttrDailyRecap } from "@/components/OttrDailyRecap";
+import { DailyMissionCard } from "@/components/DailyMissionCard";
+import { AchievementCapsule } from "@/components/AchievementCapsule";
+import { WeeklyTrendMini } from "@/components/WeeklyTrendMini";
+import { FriendWaveModal } from "@/components/FriendWaveModal";
 import otterPerfect from "@/assets/otter-perfect.png";
 import otterHappy from "@/assets/otter-happy.png";
 import otterSleepy from "@/assets/otter-sleepy.png";
@@ -74,6 +78,9 @@ const Dashboard = () => {
   const [unlockedBadge, setUnlockedBadge] = useState<any>(null);
   const [friends, setFriends] = useState<any[]>([]);
   const [showAddFriend, setShowAddFriend] = useState(false);
+  const [achievementToShow, setAchievementToShow] = useState<any>(null);
+  const [selectedFriend, setSelectedFriend] = useState<any>(null);
+  const [showFriendModal, setShowFriendModal] = useState(false);
 
   // Badge unlock hook
   useBadgeUnlock(xp, level, streak, foodLogs.length, (badge) => {
@@ -175,11 +182,35 @@ const Dashboard = () => {
   };
 
   const handleFriendClick = (friend: any) => {
+    setSelectedFriend(friend);
+    setShowFriendModal(true);
+  };
+
+  const handleSendWave = () => {
     toast({
-      title: `${friend.display_name}'s Profile`,
-      description: `Level ${friend.level} • ${friend.streak} day streak`,
+      title: "Wave sent! 🌊",
+      description: `Your encouragement reached ${selectedFriend?.display_name}`,
     });
   };
+
+  const handleViewPost = () => {
+    navigate("/trends");
+  };
+
+  // Demo: trigger achievement after 5 seconds
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      if (foodLogs.length >= 3 && !achievementToShow) {
+        setAchievementToShow({
+          id: "snack-100",
+          title: "Century of Snacks!",
+          description: "You've logged 100 snacks - Ottr is proud!",
+          icon: "🎉"
+        });
+      }
+    }, 5000);
+    return () => clearTimeout(timer);
+  }, [foodLogs, achievementToShow]);
 
   const caloriePercentage = (caloriesConsumed / caloriesTarget) * 100;
   const isInMaintenanceZone = caloriePercentage >= 90 && caloriePercentage <= 110;
@@ -430,8 +461,11 @@ const Dashboard = () => {
         </header>
 
         <main className="max-w-md mx-auto px-4 py-6 space-y-6">
+        {/* Daily Mission Card */}
+        <DailyMissionCard />
+
         {/* Hero Section: Mascot + Progress */}
-        <div className={`bg-card/80 backdrop-blur-sm rounded-3xl p-6 shadow-[0_8px_30px_rgb(0,0,0,0.08)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.4)] border-2 border-border animate-fade-in ${logAnimation ? "animate-success-bounce" : ""}`}>
+        <div className={`bg-card/80 backdrop-blur-sm rounded-3xl p-6 shadow-[0_8px_30px_rgb(0,0,0,0.08)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.4)] border-2 border-border transition-all duration-[2000ms] ${logAnimation ? "animate-success-bounce" : ""}`}>
           <div className="flex flex-col items-center gap-4">
             {/* Mascot Integration */}
             <OtterMascot 
@@ -441,7 +475,7 @@ const Dashboard = () => {
             />
             
             {/* Calorie Progress Ring */}
-            <div className={`transition-transform duration-300 ${logAnimation ? "animate-pulse-scale" : ""}`}>
+            <div className={`transition-transform duration-[1500ms] ${logAnimation ? "animate-pulse-scale" : ""}`}>
               <CircularProgress
                 percentage={caloriePercentage}
                 size={200}
@@ -464,11 +498,11 @@ const Dashboard = () => {
               </p>
               {isPerfect && (
                 <div className="flex items-center justify-center gap-1">
-                  <Sparkles className="w-3 h-3 text-success animate-pulse" />
+                  <Sparkles className="w-3 h-3 text-success animate-breathing" />
                   <p className="text-xs text-success font-medium animate-shimmer bg-gradient-to-r from-success via-primary to-success bg-clip-text text-transparent bg-[length:200%_auto]">
                     You're in the perfect zone!
                   </p>
-                  <Sparkles className="w-3 h-3 text-success animate-pulse" />
+                  <Sparkles className="w-3 h-3 text-success animate-breathing" />
                 </div>
               )}
             </div>
@@ -476,7 +510,7 @@ const Dashboard = () => {
         </div>
 
         {/* Macro Rings */}
-        <div className={`bg-card/80 backdrop-blur-sm rounded-3xl p-6 shadow-[0_8px_30px_rgb(0,0,0,0.08)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.4)] border-2 border-border ${logAnimation ? "animate-pulse-scale" : ""}`}>
+        <div className={`bg-card/80 backdrop-blur-sm rounded-3xl p-6 shadow-[0_8px_30px_rgb(0,0,0,0.08)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.4)] border-2 border-border transition-all duration-[1500ms] ${logAnimation ? "animate-pulse-scale" : ""}`}>
           <h3 className="text-base font-bold text-foreground mb-4 px-2">
             Macros
           </h3>
@@ -511,9 +545,6 @@ const Dashboard = () => {
           />
         </div>
 
-        {/* Ottr's Daily Recap */}
-        {user && <OttrDailyRecap />}
-
         {/* Snack Carousel */}
         <div className="bg-card/80 backdrop-blur-sm rounded-3xl p-6 shadow-[0_8px_30px_rgb(0,0,0,0.08)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.4)] border-2 border-border">
           {foodLogs.length === 0 ? (
@@ -536,6 +567,12 @@ const Dashboard = () => {
           )}
         </div>
 
+        {/* Weekly Trend Mini */}
+        <WeeklyTrendMini />
+
+        {/* Ottr's Daily Recap */}
+        {user && <OttrDailyRecap />}
+
         </main>
       </PullToRefresh>
 
@@ -544,6 +581,21 @@ const Dashboard = () => {
         open={showAddFriend}
         onOpenChange={setShowAddFriend}
         onAddFriend={handleAddFriend}
+      />
+
+      {/* Friend Wave Modal */}
+      <FriendWaveModal
+        open={showFriendModal}
+        onOpenChange={setShowFriendModal}
+        friend={selectedFriend}
+        onSendWave={handleSendWave}
+        onViewPost={handleViewPost}
+      />
+
+      {/* Achievement Capsule */}
+      <AchievementCapsule
+        achievement={achievementToShow}
+        onDismiss={() => setAchievementToShow(null)}
       />
 
       {/* Mobile Bottom Navigation */}
