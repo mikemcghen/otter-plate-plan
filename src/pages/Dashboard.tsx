@@ -475,18 +475,6 @@ const Dashboard = () => {
           </div>
         </div>
 
-        {/* Friend Waves */}
-        <div className="bg-card/80 backdrop-blur-sm rounded-3xl p-5 shadow-[0_8px_30px_rgb(0,0,0,0.08)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.4)] border-2 border-border">
-          <FriendWaves
-            friends={friends}
-            onAddFriend={() => setShowAddFriend(true)}
-            onFriendClick={handleFriendClick}
-          />
-        </div>
-
-        {/* Ottr's Daily Recap */}
-        {user && <OttrDailyRecap />}
-
         {/* Macro Rings */}
         <div className={`bg-card/80 backdrop-blur-sm rounded-3xl p-6 shadow-[0_8px_30px_rgb(0,0,0,0.08)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.4)] border-2 border-border ${logAnimation ? "animate-pulse-scale" : ""}`}>
           <h3 className="text-base font-bold text-foreground mb-4 px-2">
@@ -513,6 +501,18 @@ const Dashboard = () => {
             />
           </div>
         </div>
+
+        {/* Friend Waves */}
+        <div className="bg-card/80 backdrop-blur-sm rounded-3xl p-5 shadow-[0_8px_30px_rgb(0,0,0,0.08)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.4)] border-2 border-border">
+          <FriendWaves
+            friends={friends}
+            onAddFriend={() => setShowAddFriend(true)}
+            onFriendClick={handleFriendClick}
+          />
+        </div>
+
+        {/* Ottr's Daily Recap */}
+        {user && <OttrDailyRecap />}
 
         {/* Snack Carousel */}
         <div className="bg-card/80 backdrop-blur-sm rounded-3xl p-6 shadow-[0_8px_30px_rgb(0,0,0,0.08)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.4)] border-2 border-border">
