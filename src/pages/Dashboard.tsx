@@ -30,6 +30,7 @@ import { FriendWaves } from "@/components/FriendWaves";
 import { AddFriendModal } from "@/components/AddFriendModal";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
+import { OttrDailyRecap } from "@/components/OttrDailyRecap";
 import otterPerfect from "@/assets/otter-perfect.png";
 import otterHappy from "@/assets/otter-happy.png";
 import otterSleepy from "@/assets/otter-sleepy.png";
