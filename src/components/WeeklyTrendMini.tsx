@@ -44,7 +44,6 @@ export const WeeklyTrendMini = () => {
             fill="none"
             stroke="hsl(var(--primary))"
             strokeWidth="2"
-            className="animate-breathing"
           />
 
           {/* Fill area */}
@@ -63,7 +62,6 @@ export const WeeklyTrendMini = () => {
               cy={40 - (val * 0.4)}
               r="2"
               fill="hsl(var(--primary))"
-              className="animate-breathing"
             />
           ))}
         </svg>
