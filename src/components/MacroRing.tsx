@@ -35,15 +35,15 @@ export const MacroRing = ({
         )}
         
         <svg width={size} height={size} className="transform -rotate-90 relative z-10">
-          {/* Background ring */}
+          {/* Background ring - darker for contrast */}
           <circle
             cx={size / 2}
             cy={size / 2}
             r={radius}
-            stroke="hsl(var(--muted))"
+            stroke="hsl(var(--muted-foreground))"
             strokeWidth={strokeWidth}
             fill="none"
-            opacity="0.3"
+            opacity="0.5"
           />
           {/* Progress ring with enhanced glow */}
           <circle

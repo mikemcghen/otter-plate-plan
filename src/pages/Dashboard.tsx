@@ -280,7 +280,7 @@ const Dashboard = () => {
                   label="Protein"
                   current={Math.round(appContext.proteinConsumed)}
                   target={appContext.proteinTarget}
-                  color="hsl(var(--chart-1))"
+                  color="#3b82f6"
                   unit="g"
                 />
               </button>
@@ -292,7 +292,7 @@ const Dashboard = () => {
                   label="Carbs"
                   current={Math.round(appContext.carbsConsumed)}
                   target={appContext.carbsTarget}
-                  color="hsl(var(--chart-2))"
+                  color="#f97316"
                   unit="g"
                 />
               </button>
@@ -304,7 +304,7 @@ const Dashboard = () => {
                   label="Fat"
                   current={Math.round(appContext.fatConsumed)}
                   target={appContext.fatTarget}
-                  color="hsl(var(--chart-3))"
+                  color="#eab308"
                   unit="g"
                 />
               </button>
