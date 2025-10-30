@@ -199,21 +199,6 @@ const Dashboard = () => {
     navigate("/trends");
   };
 
-  // Demo: trigger achievement after 5 seconds
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      if (foodLogs.length >= 3 && !achievementToShow) {
-        setAchievementToShow({
-          id: "snack-100",
-          title: "Century of Snacks!",
-          description: "You've logged 100 snacks - Ottr is proud!",
-          icon: "🎉"
-        });
-      }
-    }, 5000);
-    return () => clearTimeout(timer);
-  }, [foodLogs, achievementToShow]);
-
   // Manual trigger functions for test panel
   const handleTriggerDailyGreeting = () => setShowDailyGreeting(true);
   const handleTriggerEndOfDay = () => setShowEndOfDay(true);
