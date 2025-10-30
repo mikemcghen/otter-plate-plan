@@ -35,7 +35,7 @@ import { DailyMissionCard } from "@/components/DailyMissionCard";
 import { AchievementCapsule } from "@/components/AchievementCapsule";
 import { WeeklyTrendMini } from "@/components/WeeklyTrendMini";
 import { FriendWaveModal } from "@/components/FriendWaveModal";
-import { NotificationTestPanel } from "@/components/NotificationTestPanel";
+import { useNotifications } from "@/contexts/NotificationContext";
 import otterPerfect from "@/assets/otter-perfect.png";
 import otterHappy from "@/assets/otter-happy.png";
 import otterSleepy from "@/assets/otter-sleepy.png";
@@ -46,6 +46,7 @@ const Dashboard = () => {
   const { user } = useAuth();
   const { impact, notification } = useHaptics();
   const appContext = useAppContext();
+  const notifications = useNotifications();
   const {
     caloriesConsumed,
     caloriesTarget,
@@ -238,6 +239,21 @@ const Dashboard = () => {
     setShowSuccessModal(true);
   };
   const handleTriggerNotificationBanner = () => setShowNotification(true);
+
+  // Register handlers with notification context
+  useEffect(() => {
+    notifications.registerHandlers({
+      onDailyGreeting: handleTriggerDailyGreeting,
+      onEndOfDay: handleTriggerEndOfDay,
+      onLevelUp: handleTriggerLevelUp,
+      onBadgeUnlock: handleTriggerBadgeUnlock,
+      onAchievement: handleTriggerAchievement,
+      onSnackPicker: handleTriggerSnackPicker,
+      onSuccessModal: handleTriggerSuccessModal,
+      onNotificationBanner: handleTriggerNotificationBanner,
+      onQuickLog: () => setShowQuickLog(true),
+    });
+  }, []);
 
   const caloriePercentage = (caloriesConsumed / caloriesTarget) * 100;
   const isInMaintenanceZone = caloriePercentage >= 90 && caloriePercentage <= 110;
@@ -470,16 +486,6 @@ const Dashboard = () => {
               </h1>
               <div className="flex items-center gap-2">
                 <StreakCounter days={streak} />
-                <NotificationTestPanel
-                  onTriggerDailyGreeting={handleTriggerDailyGreeting}
-                  onTriggerEndOfDay={handleTriggerEndOfDay}
-                  onTriggerLevelUp={handleTriggerLevelUp}
-                  onTriggerBadgeUnlock={handleTriggerBadgeUnlock}
-                  onTriggerAchievement={handleTriggerAchievement}
-                  onTriggerSnackPicker={handleTriggerSnackPicker}
-                  onTriggerSuccessModal={handleTriggerSuccessModal}
-                  onTriggerNotificationBanner={handleTriggerNotificationBanner}
-                />
                 <Button
                   size="icon"
                   variant="ghost"

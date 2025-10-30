@@ -1,14 +1,17 @@
 import { NavLink } from "react-router-dom";
 import {
   Home,
-  TrendingUp,
-  Scale,
+  Waves,
+  Heart,
+  User,
   Settings,
   Sparkles,
   Menu,
   X,
   GitBranch,
   Wrench,
+  Bell,
+  Plus,
 } from "lucide-react";
 import {
   Sidebar,
@@ -25,14 +28,37 @@ import { Button } from "@/components/ui/button";
 
 const navItems = [
   { title: "Dashboard", url: "/", icon: Home },
-  { title: "Onboarding", url: "/onboarding", icon: Sparkles },
-  { title: "Weigh-In", url: "/check-in", icon: Scale },
-  { title: "Trends", url: "/trends", icon: TrendingUp },
+  { title: "Wellness", url: "/check-in", icon: Heart },
+  { title: "Social Cove", url: "/trends", icon: Waves },
+  { title: "Account", url: "/account", icon: User },
   { title: "Settings", url: "/settings", icon: Settings },
+  { title: "Onboarding", url: "/onboarding", icon: Sparkles },
   { title: "State Flow", url: "/state-flow", icon: GitBranch },
 ];
 
-export function DevAdminSidebar() {
+type DevAdminSidebarProps = {
+  onTriggerDailyGreeting?: () => void;
+  onTriggerEndOfDay?: () => void;
+  onTriggerLevelUp?: () => void;
+  onTriggerBadgeUnlock?: () => void;
+  onTriggerAchievement?: () => void;
+  onTriggerSnackPicker?: () => void;
+  onTriggerSuccessModal?: () => void;
+  onTriggerNotificationBanner?: () => void;
+  onTriggerQuickLog?: () => void;
+};
+
+export function DevAdminSidebar({
+  onTriggerDailyGreeting,
+  onTriggerEndOfDay,
+  onTriggerLevelUp,
+  onTriggerBadgeUnlock,
+  onTriggerAchievement,
+  onTriggerSnackPicker,
+  onTriggerSuccessModal,
+  onTriggerNotificationBanner,
+  onTriggerQuickLog,
+}: DevAdminSidebarProps) {
   const { state, toggleSidebar } = useSidebar();
   const isOpen = state === "expanded";
 
@@ -67,7 +93,7 @@ export function DevAdminSidebar() {
 
         <SidebarGroup>
           <SidebarGroupLabel className="text-warning-foreground">
-            All Pages
+            Navigation Pages
           </SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
@@ -90,6 +116,117 @@ export function DevAdminSidebar() {
                 </SidebarMenuItem>
               ))}
             </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
+
+        {/* Notification Controls */}
+        <SidebarGroup>
+          <SidebarGroupLabel className="text-warning-foreground flex items-center gap-2">
+            <Bell className="h-4 w-4" />
+            Notification Controls
+          </SidebarGroupLabel>
+          <SidebarGroupContent>
+            <div className="space-y-2 px-2">
+              {onTriggerDailyGreeting && (
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="w-full justify-start text-xs border-warning/30 hover:bg-warning/10"
+                  onClick={onTriggerDailyGreeting}
+                >
+                  <Sparkles className="h-3 w-3 mr-2" />
+                  Daily Greeting
+                </Button>
+              )}
+              {onTriggerEndOfDay && (
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="w-full justify-start text-xs border-warning/30 hover:bg-warning/10"
+                  onClick={onTriggerEndOfDay}
+                >
+                  <Sparkles className="h-3 w-3 mr-2" />
+                  End of Day Summary
+                </Button>
+              )}
+              {onTriggerLevelUp && (
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="w-full justify-start text-xs border-warning/30 hover:bg-warning/10"
+                  onClick={onTriggerLevelUp}
+                >
+                  <Sparkles className="h-3 w-3 mr-2" />
+                  Level Up Modal
+                </Button>
+              )}
+              {onTriggerBadgeUnlock && (
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="w-full justify-start text-xs border-warning/30 hover:bg-warning/10"
+                  onClick={onTriggerBadgeUnlock}
+                >
+                  <Sparkles className="h-3 w-3 mr-2" />
+                  Badge Unlock
+                </Button>
+              )}
+              {onTriggerAchievement && (
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="w-full justify-start text-xs border-warning/30 hover:bg-warning/10"
+                  onClick={onTriggerAchievement}
+                >
+                  <Sparkles className="h-3 w-3 mr-2" />
+                  Achievement Capsule
+                </Button>
+              )}
+              {onTriggerSnackPicker && (
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="w-full justify-start text-xs border-warning/30 hover:bg-warning/10"
+                  onClick={onTriggerSnackPicker}
+                >
+                  <Sparkles className="h-3 w-3 mr-2" />
+                  Snack Picker
+                </Button>
+              )}
+              {onTriggerSuccessModal && (
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="w-full justify-start text-xs border-warning/30 hover:bg-warning/10"
+                  onClick={onTriggerSuccessModal}
+                >
+                  <Sparkles className="h-3 w-3 mr-2" />
+                  Success Confirmation
+                </Button>
+              )}
+              {onTriggerNotificationBanner && (
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="w-full justify-start text-xs border-warning/30 hover:bg-warning/10"
+                  onClick={onTriggerNotificationBanner}
+                >
+                  <Sparkles className="h-3 w-3 mr-2" />
+                  Notification Banner
+                </Button>
+              )}
+              {onTriggerQuickLog && (
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="w-full justify-start text-xs border-warning/30 hover:bg-warning/10"
+                  onClick={onTriggerQuickLog}
+                >
+                  <Plus className="h-3 w-3 mr-2" />
+                  Quick Log Panel
+                </Button>
+              )}
+            </div>
           </SidebarGroupContent>
         </SidebarGroup>
 
