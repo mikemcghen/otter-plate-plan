@@ -1,5 +1,5 @@
 import { useNavigate, useLocation } from "react-router-dom";
-import { Home, Plus, Scale, TrendingUp, User } from "lucide-react";
+import { Home, Plus, Scale, Waves, User } from "lucide-react";
 import { useHaptics } from "@/hooks/useHaptics";
 import { cn } from "@/lib/utils";
 
@@ -23,7 +23,7 @@ export const MobileBottomNav = ({ onQuickLog }: MobileBottomNavProps) => {
     { icon: Home, label: "Home", path: "/" },
     { icon: Scale, label: "Weigh-In", path: "/check-in" },
     { icon: Plus, label: "Quick Log", path: "/quick-log", isQuickLog: true },
-    { icon: TrendingUp, label: "Trends", path: "/trends" },
+    { icon: Waves, label: "Social Cove", path: "/trends" },
     { icon: User, label: "Account", path: "/account" },
   ];
 
