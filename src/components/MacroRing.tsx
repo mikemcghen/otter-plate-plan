@@ -22,8 +22,20 @@ export const MacroRing = ({
 
   return (
     <div className="flex flex-col items-center gap-2 group">
-      <div className="relative transition-transform duration-200 group-hover:scale-105">
-        <svg width={size} height={size} className="transform -rotate-90">
+      <div className="relative transition-transform duration-300 group-hover:scale-110">
+        {/* Outer glow ring for reactive effect */}
+        {percentage > 50 && (
+          <div 
+            className="absolute inset-0 rounded-full transition-all duration-700"
+            style={{
+              background: `radial-gradient(circle, ${color}15 0%, transparent 70%)`,
+              transform: `scale(${1 + (percentage / 100) * 0.2})`,
+            }}
+          />
+        )}
+        
+        <svg width={size} height={size} className="transform -rotate-90 relative z-10">
+          {/* Background ring */}
           <circle
             cx={size / 2}
             cy={size / 2}
@@ -31,8 +43,9 @@ export const MacroRing = ({
             stroke="hsl(var(--muted))"
             strokeWidth={strokeWidth}
             fill="none"
-            opacity="0.4"
+            opacity="0.3"
           />
+          {/* Progress ring with enhanced glow */}
           <circle
             cx={size / 2}
             cy={size / 2}
@@ -45,19 +58,38 @@ export const MacroRing = ({
             strokeDashoffset={offset}
             className="transition-all duration-700 ease-out"
             style={{
-              filter: percentage > 90 ? "drop-shadow(0 0 4px currentColor)" : "none"
+              filter: percentage > 75 
+                ? `drop-shadow(0 0 6px ${color}) drop-shadow(0 0 12px ${color}50)` 
+                : percentage > 50 
+                ? `drop-shadow(0 0 3px ${color})` 
+                : "none"
             }}
           />
+          {/* Pulse animation ring when complete */}
+          {percentage >= 100 && (
+            <circle
+              cx={size / 2}
+              cy={size / 2}
+              r={radius + 2}
+              stroke={color}
+              strokeWidth={2}
+              fill="none"
+              opacity="0.4"
+              className="animate-pulse"
+            />
+          )}
         </svg>
-        <div className="absolute inset-0 flex flex-col items-center justify-center">
+        
+        <div className="absolute inset-0 flex flex-col items-center justify-center z-20">
           <span className="text-sm font-bold text-foreground transition-all duration-300">
             {current}
           </span>
           <span className="text-xs text-muted-foreground">/{target}{unit}</span>
         </div>
-        {/* Completion celebration */}
+        
+        {/* Completion celebration sparkle */}
         {percentage >= 100 && (
-          <div className="absolute -top-1 -right-1 w-3 h-3 bg-success rounded-full animate-bounce-subtle" />
+          <div className="absolute -top-1 -right-1 w-3 h-3 bg-success rounded-full animate-pulse shadow-lg shadow-success/50" />
         )}
       </div>
       <span className="text-xs font-medium text-muted-foreground">{label}</span>
