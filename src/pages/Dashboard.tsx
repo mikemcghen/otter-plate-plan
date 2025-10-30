@@ -194,11 +194,21 @@ const Dashboard = () => {
       <PullToRefresh onRefresh={handleRefresh}>
         <main className="relative max-w-md mx-auto px-6 pt-8 pb-8 space-y-6">
           
-          {/* Header Zone - Greeting + Ottr */}
-          <section className="text-center space-y-2 animate-fade-in">
+          {/* Header Zone - Greeting above Ottr */}
+          <section className="text-center space-y-4 animate-fade-in">
             {greetingMessage && (
               <>
-                <div className="flex justify-center mb-2">
+                <div className="space-y-1">
+                  <h1 className="text-xl font-semibold text-foreground">
+                    {greetingMessage}
+                  </h1>
+                  {subGreeting && (
+                    <p className="text-sm text-muted-foreground">
+                      {subGreeting}
+                    </p>
+                  )}
+                </div>
+                <div className="flex justify-center">
                   <div className="w-24 h-24">
                     <OtterMascot 
                       mood={otterState.mood}
@@ -206,16 +216,38 @@ const Dashboard = () => {
                     />
                   </div>
                 </div>
-                <h1 className="text-xl font-semibold text-foreground">
-                  {greetingMessage}
-                </h1>
-                {subGreeting && (
-                  <p className="text-sm text-muted-foreground">
-                    {subGreeting}
-                  </p>
-                )}
               </>
             )}
+          </section>
+          
+          {/* Level & Streak + XP Bar */}
+          <section className="space-y-2">
+            <div className="flex items-center justify-between px-2">
+              {/* Level indicator */}
+              <div className="flex items-center gap-2 bg-primary/10 rounded-full px-4 py-2 border border-primary/20">
+                <span className="text-sm font-semibold text-primary">Lv.{level}</span>
+              </div>
+              
+              {/* Streak indicator */}
+              <div className="flex items-center gap-2 bg-orange-500/10 rounded-full px-4 py-2 border border-orange-500/20">
+                <span className="text-sm font-semibold text-orange-500">{streak}🔥</span>
+              </div>
+            </div>
+            
+            {/* XP Progress Bar */}
+            <div className="px-2">
+              <div className="relative h-3 bg-secondary/50 rounded-full overflow-hidden border border-border/30">
+                <div 
+                  className="absolute inset-y-0 left-0 bg-gradient-to-r from-primary to-primary/80 rounded-full transition-all duration-500"
+                  style={{ width: `${(appContext.xp / appContext.getXPForNextLevel()) * 100}%` }}
+                />
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <span className="text-[10px] font-medium text-foreground/70">
+                    {appContext.xp} / {appContext.getXPForNextLevel()} XP
+                  </span>
+                </div>
+              </div>
+            </div>
           </section>
 
           {/* Core Tracker Zone - Calorie & Macro Rings */}
@@ -235,14 +267,6 @@ const Dashboard = () => {
                   status={caloriePercentage >= 100 ? "success" : "normal"}
                   showGlow={ringsComplete}
                 />
-                {/* XP/Streak integrated glow */}
-                {(streak > 0 || level > 1) && (
-                  <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 flex items-center gap-2 bg-card/80 backdrop-blur-sm rounded-full px-3 py-1 border border-primary/20">
-                    <span className="text-xs text-primary font-medium">Lv.{level}</span>
-                    <span className="text-xs text-muted-foreground">•</span>
-                    <span className="text-xs text-orange-500 font-medium">{streak}🔥</span>
-                  </div>
-                )}
               </div>
             </div>
 
