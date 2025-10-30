@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
-import { DailyFocus } from "@/components/DailyFocus";
 import { AmbientBackground } from "@/components/AmbientBackground";
 import { OtterMascot } from "@/components/OtterMascot";
 import type { OtterMood } from "@/components/OtterMascot";
@@ -9,9 +8,12 @@ import { useAppContext } from "@/contexts/AppContext";
 import { MobileBottomNav } from "@/components/MobileBottomNav";
 import { PullToRefresh } from "@/components/PullToRefresh";
 import { QuickLogPanel } from "@/components/QuickLogPanel";
-import { Flame, Zap } from "lucide-react";
+import { CircularProgress } from "@/components/CircularProgress";
+import { MacroRing } from "@/components/MacroRing";
+import { Droplet, Apple, BookOpen } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 import { useHaptics } from "@/hooks/useHaptics";
+import { cn } from "@/lib/utils";
 
 const Dashboard = () => {
   const { user } = useAuth();
@@ -27,9 +29,14 @@ const Dashboard = () => {
 
   const [showQuickLog, setShowQuickLog] = useState(false);
   const [userName, setUserName] = useState("Friend");
-  const [focusCompleted, setFocusCompleted] = useState(false);
   const [showWaterRipple, setShowWaterRipple] = useState(false);
   const [greetingMessage, setGreetingMessage] = useState<string | null>(null);
+  const [subGreeting, setSubGreeting] = useState<string | null>(null);
+  
+  // Micro-quest states
+  const [hydrationComplete, setHydrationComplete] = useState(false);
+  const [snackComplete, setSnackComplete] = useState(false);
+  const [reflectionComplete, setReflectionComplete] = useState(false);
 
   // Load user profile
   useEffect(() => {
@@ -66,46 +73,44 @@ const Dashboard = () => {
   // Show Ottr greeting on mount
   useEffect(() => {
     const greetings = {
-      morning: `Good morning, ${userName}! Let's start the day gently 🌿`,
-      afternoon: `The tide feels calm today, ${userName} 💜`,
-      evening: `Evening, ${userName}! Time to wind down 🌙`,
-      night: `Rest peacefully, ${userName} 🌙`,
+      morning: { main: `Good morning, ${userName} ☀️`, sub: "The tide feels balanced today." },
+      afternoon: { main: `Good afternoon, ${userName}`, sub: "The cove is peaceful and calm." },
+      evening: { main: `Evening, ${userName} 🌙`, sub: "Time to wind down gently." },
+      night: { main: `Rest well, ${userName}`, sub: "The stars are watching over you." },
     };
     
     setTimeout(() => {
-      setGreetingMessage(greetings[timeOfDay]);
+      setGreetingMessage(greetings[timeOfDay].main);
+      setSubGreeting(greetings[timeOfDay].sub);
     }, 1500);
   }, [timeOfDay, userName]);
 
-  // Focus completion handler
-  const handleFocusComplete = () => {
-    setFocusCompleted(true);
-    setShowWaterRipple(true);
-    
-    // Show completion message
-    setTimeout(() => {
-      setGreetingMessage("You did it — the cove feels peaceful again 💜🌊");
-    }, 800);
-    
-    // Hide ripple effect
-    setTimeout(() => {
-      setShowWaterRipple(false);
-    }, 3000);
-    
-    toast({
-      title: "Daily Focus Complete! 🌊",
-      description: "The cove feels peaceful again",
-    });
-  };
-
   const caloriePercentage = (caloriesConsumed / caloriesTarget) * 100;
+  const proteinPercentage = (appContext.proteinConsumed / appContext.proteinTarget) * 100;
+  const carbsPercentage = (appContext.carbsConsumed / appContext.carbsTarget) * 100;
+  const fatPercentage = (appContext.fatConsumed / appContext.fatTarget) * 100;
+
+  // Check if rings are complete
+  const ringsComplete = caloriePercentage >= 100 && proteinPercentage >= 100 && carbsPercentage >= 100 && fatPercentage >= 100;
+
+  // Trigger ripple when rings complete
+  useEffect(() => {
+    if (ringsComplete && !showWaterRipple) {
+      setShowWaterRipple(true);
+      setTimeout(() => setShowWaterRipple(false), 3000);
+      toast({
+        title: "Perfect Balance! 🌊",
+        description: "All rings complete — Ottr is proud of you!",
+      });
+    }
+  }, [ringsComplete]);
 
   // Dynamic otter mood based on time of day and completion
   const getOtterState = (): { mood: OtterMood } => {
-    if (focusCompleted && timeOfDay === "night") {
+    if (ringsComplete && timeOfDay === "night") {
       return { mood: "sleepy" };
     }
-    if (focusCompleted) {
+    if (ringsComplete) {
       return { mood: "proud" };
     }
     if (timeOfDay === "morning") {
@@ -147,6 +152,21 @@ const Dashboard = () => {
     });
   };
 
+  const handleMicroQuestComplete = async (quest: 'hydration' | 'snack' | 'reflection') => {
+    await impact();
+    
+    if (quest === 'hydration') {
+      setHydrationComplete(true);
+      toast({ title: "Hydration Hero! 💧", description: "+10 XP" });
+    } else if (quest === 'snack') {
+      setSnackComplete(true);
+      toast({ title: "Snack Explorer! 🍓", description: "+10 XP" });
+    } else {
+      setReflectionComplete(true);
+      toast({ title: "Reflection Ripple! 🌊", description: "+10 XP" });
+    }
+  };
+
   return (
     <div className="min-h-screen relative pb-24 overflow-hidden">
       {/* Environment Layer - Ambient background */}
@@ -172,61 +192,178 @@ const Dashboard = () => {
       />
 
       <PullToRefresh onRefresh={handleRefresh}>
-        {/* Interface Layer - Minimal Header with Icon Indicators */}
-        <header className="absolute top-0 left-0 right-0 z-40 px-6 py-4">
-          <div className="max-w-md mx-auto flex items-center justify-between">
-            {/* Tiny XP indicator */}
-            <div className="flex items-center gap-2 bg-card/40 backdrop-blur-md rounded-full px-3 py-1.5 border border-border/30">
-              <Zap className="w-3.5 h-3.5 text-primary" />
-              <span className="text-xs font-medium text-foreground/80">Lv.{level}</span>
-            </div>
-            
-            {/* Tiny Streak indicator */}
-            <div className="flex items-center gap-2 bg-card/40 backdrop-blur-md rounded-full px-3 py-1.5 border border-border/30">
-              <Flame className="w-3.5 h-3.5 text-orange-500" />
-              <span className="text-xs font-medium text-foreground/80">{streak}</span>
-            </div>
-          </div>
-        </header>
-
-        {/* Character Layer - Ottr Mascot centered in scene */}
-        <main className="relative max-w-md mx-auto px-6 pt-24 pb-8 space-y-8">
+        <main className="relative max-w-md mx-auto px-6 pt-8 pb-8 space-y-6">
           
-          {/* Greeting bubble from Ottr */}
-          {greetingMessage && (
-            <div className="text-center animate-fade-in">
-              <p className="text-sm font-medium text-foreground/70 px-4">
-                {greetingMessage}
-              </p>
-            </div>
-          )}
-          
-          {/* Ottr Mascot (Living companion) - centered */}
-          <div className="flex justify-center items-center min-h-[240px] transition-all duration-[3000ms]">
-            <OtterMascot 
-              mood={otterState.mood}
-              animate={true}
-            />
-          </div>
+          {/* Header Zone - Greeting + Ottr */}
+          <section className="text-center space-y-2 animate-fade-in">
+            {greetingMessage && (
+              <>
+                <div className="flex justify-center mb-2">
+                  <div className="w-24 h-24">
+                    <OtterMascot 
+                      mood={otterState.mood}
+                      animate={true}
+                    />
+                  </div>
+                </div>
+                <h1 className="text-xl font-semibold text-foreground">
+                  {greetingMessage}
+                </h1>
+                {subGreeting && (
+                  <p className="text-sm text-muted-foreground">
+                    {subGreeting}
+                  </p>
+                )}
+              </>
+            )}
+          </section>
 
-          {/* Interface Layer - Daily Focus Bubble */}
-          {!focusCompleted && (
-            <div className="animate-fade-in">
-              <DailyFocus onComplete={handleFocusComplete} />
+          {/* Core Tracker Zone - Calorie & Macro Rings */}
+          <section className="space-y-6 py-4">
+            {/* Main Calorie Ring */}
+            <div className="flex justify-center relative">
+              <div className={cn(
+                "relative transition-all duration-500",
+                ringsComplete && "animate-[glow-pulse_2s_ease-in-out_infinite]"
+              )}>
+                <CircularProgress
+                  percentage={caloriePercentage}
+                  size={220}
+                  strokeWidth={16}
+                  label="Calories"
+                  value={`${Math.round(caloriesConsumed)} / ${caloriesTarget}`}
+                  status={caloriePercentage >= 100 ? "success" : "normal"}
+                  showGlow={ringsComplete}
+                />
+                {/* XP/Streak integrated glow */}
+                {(streak > 0 || level > 1) && (
+                  <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 flex items-center gap-2 bg-card/80 backdrop-blur-sm rounded-full px-3 py-1 border border-primary/20">
+                    <span className="text-xs text-primary font-medium">Lv.{level}</span>
+                    <span className="text-xs text-muted-foreground">•</span>
+                    <span className="text-xs text-orange-500 font-medium">{streak}🔥</span>
+                  </div>
+                )}
+              </div>
             </div>
-          )}
 
-          {/* Completion Message */}
-          {focusCompleted && (
-            <div className="text-center space-y-2 animate-fade-in">
-              <p className="text-lg font-medium text-foreground/90">
-                Ottr is resting peacefully
-              </p>
-              <p className="text-sm text-muted-foreground">
-                You've earned it 🌙
-              </p>
+            {/* Orbiting Macro Rings */}
+            <div className="grid grid-cols-3 gap-3 px-4">
+              <button 
+                onClick={handleQuickLog}
+                className="transition-transform active:scale-95"
+              >
+                <MacroRing
+                  label="Protein"
+                  current={Math.round(appContext.proteinConsumed)}
+                  target={appContext.proteinTarget}
+                  color="hsl(var(--chart-1))"
+                  unit="g"
+                />
+              </button>
+              <button 
+                onClick={handleQuickLog}
+                className="transition-transform active:scale-95"
+              >
+                <MacroRing
+                  label="Carbs"
+                  current={Math.round(appContext.carbsConsumed)}
+                  target={appContext.carbsTarget}
+                  color="hsl(var(--chart-2))"
+                  unit="g"
+                />
+              </button>
+              <button 
+                onClick={handleQuickLog}
+                className="transition-transform active:scale-95"
+              >
+                <MacroRing
+                  label="Fat"
+                  current={Math.round(appContext.fatConsumed)}
+                  target={appContext.fatTarget}
+                  color="hsl(var(--chart-3))"
+                  unit="g"
+                />
+              </button>
             </div>
-          )}
+          </section>
+
+          {/* Micro-Quests Section */}
+          <section className="space-y-3">
+            <h2 className="text-sm font-medium text-muted-foreground px-2">Daily Focus</h2>
+            <div className="grid grid-cols-1 gap-3">
+              {/* Hydration Quest */}
+              <button
+                onClick={() => !hydrationComplete && handleMicroQuestComplete('hydration')}
+                disabled={hydrationComplete}
+                className={cn(
+                  "flex items-center gap-4 p-4 rounded-2xl border-2 transition-all duration-300",
+                  hydrationComplete 
+                    ? "bg-primary/10 border-primary/30 opacity-60" 
+                    : "bg-card border-border hover:border-primary/50 active:scale-[0.98]"
+                )}
+              >
+                <div className={cn(
+                  "w-10 h-10 rounded-full flex items-center justify-center transition-colors",
+                  hydrationComplete ? "bg-primary/20" : "bg-primary/10"
+                )}>
+                  <Droplet className={cn("w-5 h-5", hydrationComplete ? "text-primary" : "text-primary/70")} />
+                </div>
+                <div className="flex-1 text-left">
+                  <p className="font-medium text-sm text-foreground">Hydration Hero</p>
+                  <p className="text-xs text-muted-foreground">Log 8 glasses today</p>
+                </div>
+                {hydrationComplete && <span className="text-lg">✨</span>}
+              </button>
+
+              {/* Snack Quest */}
+              <button
+                onClick={() => !snackComplete && handleMicroQuestComplete('snack')}
+                disabled={snackComplete}
+                className={cn(
+                  "flex items-center gap-4 p-4 rounded-2xl border-2 transition-all duration-300",
+                  snackComplete 
+                    ? "bg-primary/10 border-primary/30 opacity-60" 
+                    : "bg-card border-border hover:border-primary/50 active:scale-[0.98]"
+                )}
+              >
+                <div className={cn(
+                  "w-10 h-10 rounded-full flex items-center justify-center transition-colors",
+                  snackComplete ? "bg-primary/20" : "bg-primary/10"
+                )}>
+                  <Apple className={cn("w-5 h-5", snackComplete ? "text-primary" : "text-primary/70")} />
+                </div>
+                <div className="flex-1 text-left">
+                  <p className="font-medium text-sm text-foreground">Snack Explorer</p>
+                  <p className="text-xs text-muted-foreground">Try a new healthy snack</p>
+                </div>
+                {snackComplete && <span className="text-lg">✨</span>}
+              </button>
+
+              {/* Reflection Quest */}
+              <button
+                onClick={() => !reflectionComplete && handleMicroQuestComplete('reflection')}
+                disabled={reflectionComplete}
+                className={cn(
+                  "flex items-center gap-4 p-4 rounded-2xl border-2 transition-all duration-300",
+                  reflectionComplete 
+                    ? "bg-primary/10 border-primary/30 opacity-60" 
+                    : "bg-card border-border hover:border-primary/50 active:scale-[0.98]"
+                )}
+              >
+                <div className={cn(
+                  "w-10 h-10 rounded-full flex items-center justify-center transition-colors",
+                  reflectionComplete ? "bg-primary/20" : "bg-primary/10"
+                )}>
+                  <BookOpen className={cn("w-5 h-5", reflectionComplete ? "text-primary" : "text-primary/70")} />
+                </div>
+                <div className="flex-1 text-left">
+                  <p className="font-medium text-sm text-foreground">Reflection Ripple</p>
+                  <p className="text-xs text-muted-foreground">Add one positive note</p>
+                </div>
+                {reflectionComplete && <span className="text-lg">✨</span>}
+              </button>
+            </div>
+          </section>
 
         </main>
       </PullToRefresh>
