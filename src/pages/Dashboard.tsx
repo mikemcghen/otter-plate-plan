@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { CircularProgress } from "@/components/CircularProgress";
 import { MacroRing } from "@/components/MacroRing";
 import { StreakCounter } from "@/components/StreakCounter";
-import { XPBar } from "@/components/XPBar";
+import { OttrTrail } from "@/components/OttrTrail";
 import { SnackCarousel } from "@/components/SnackCarousel";
 import { NotificationBanner } from "@/components/NotificationBanner";
 import { SnackPickerModal } from "@/components/SnackPickerModal";
@@ -31,8 +31,10 @@ import { AddFriendModal } from "@/components/AddFriendModal";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { OttrDailyRecap } from "@/components/OttrDailyRecap";
-import { DailyMissionCard } from "@/components/DailyMissionCard";
+import { OttrJournal } from "@/components/OttrJournal";
 import { AchievementCapsule } from "@/components/AchievementCapsule";
+import { FloatingBubble } from "@/components/FloatingBubble";
+import { SnackBadgeTracker } from "@/components/SnackBadgeTracker";
 import { WeeklyTrendMini } from "@/components/WeeklyTrendMini";
 import { FriendWaveModal } from "@/components/FriendWaveModal";
 import { useNotifications } from "@/contexts/NotificationContext";
@@ -83,6 +85,26 @@ const Dashboard = () => {
   const [achievementToShow, setAchievementToShow] = useState<any>(null);
   const [selectedFriend, setSelectedFriend] = useState<any>(null);
   const [showFriendModal, setShowFriendModal] = useState(false);
+  const [bubbleMessage, setBubbleMessage] = useState<string | null>(null);
+
+  // Badge state
+  const [snackBadges] = useState([
+    { id: "berry", name: "Berry Lover", emoji: "🫐", earned: true, description: "10 berry snacks" },
+    { id: "protein", name: "Protein Pro", emoji: "🥚", earned: true, description: "20g protein day" },
+    { id: "hydration", name: "Water Wizard", emoji: "💧", earned: false, description: "8 glasses today" },
+    { id: "balanced", name: "Balance Master", emoji: "⚖️", earned: false, description: "Perfect macros" },
+    { id: "streak", name: "Streak Star", emoji: "⭐", earned: false, description: "7-day streak" },
+    { id: "veggie", name: "Veggie Victory", emoji: "🥗", earned: false, description: "5 veggie snacks" },
+    { id: "mindful", name: "Mindful Muncher", emoji: "🧘", earned: false, description: "Slow eating" },
+    { id: "variety", name: "Flavor Explorer", emoji: "🌈", earned: false, description: "Try 10 foods" },
+  ]);
+
+  const [dailyChallenge] = useState({
+    flavor: "Berry Blast",
+    emoji: "🍓",
+    progress: 2,
+    target: 3,
+  });
 
   // Badge unlock hook
   useBadgeUnlock(xp, level, streak, foodLogs.length, (badge) => {
@@ -189,11 +211,23 @@ const Dashboard = () => {
   };
 
   const handleSendWave = () => {
+    setBubbleMessage(`${selectedFriend?.display_name} received your wave! 🌊`);
     toast({
       title: "Wave sent! 🌊",
       description: `Your encouragement reached ${selectedFriend?.display_name}`,
     });
   };
+
+  // Demo: Random friend wave after 10 seconds
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      if (friends.length > 0) {
+        const randomFriend = friends[Math.floor(Math.random() * friends.length)];
+        setBubbleMessage(`${randomFriend.display_name} sent you a wave! 👋`);
+      }
+    }, 10000);
+    return () => clearTimeout(timer);
+  }, [friends]);
 
   const handleViewPost = () => {
     navigate("/trends");
@@ -247,13 +281,27 @@ const Dashboard = () => {
   const isOver = caloriePercentage > 110;
   const caloriesRemaining = getCaloriesRemaining();
 
-  // Dynamic background based on status
-  const getBackgroundGradient = () => {
-    if (isPerfect) return "bg-perfect-gradient";
-    if (isInMaintenanceZone) return "bg-maintenance-gradient";
-    if (isUnder) return "bg-under-gradient";
-    if (isOver) return "bg-over-gradient";
-    return "bg-default-gradient";
+  // Dynamic environment based on time and progress
+  const getEnvironmentGradient = () => {
+    const hour = new Date().getHours();
+    
+    // Morning (5am-11am)
+    if (hour >= 5 && hour < 12) {
+      return "bg-gradient-to-b from-orange-50/30 via-yellow-50/20 to-background dark:from-orange-950/20 dark:via-yellow-950/10 dark:to-background";
+    }
+    // Balanced day (12pm-5pm)
+    if (hour >= 12 && hour < 17) {
+      if (isPerfect || isInMaintenanceZone) {
+        return "bg-gradient-to-b from-green-50/30 via-emerald-50/20 to-background dark:from-green-950/20 dark:via-emerald-950/10 dark:to-background";
+      }
+      return "bg-gradient-to-b from-blue-50/30 via-sky-50/20 to-background dark:from-blue-950/20 dark:via-sky-950/10 dark:to-background";
+    }
+    // Resting evening (5pm-10pm)
+    if (hour >= 17 && hour < 22) {
+      return "bg-gradient-to-b from-purple-50/30 via-indigo-50/20 to-background dark:from-purple-950/20 dark:via-indigo-950/10 dark:to-background";
+    }
+    // Night (10pm-5am)
+    return "bg-gradient-to-b from-slate-100/30 via-slate-50/20 to-background dark:from-slate-900/30 dark:via-slate-950/20 dark:to-background";
   };
   
   // Check for level up
@@ -387,7 +435,7 @@ const Dashboard = () => {
   };
 
   return (
-    <div className={`min-h-screen pb-24 transition-all duration-700 ${getBackgroundGradient()}`}>
+    <div className={`min-h-screen pb-24 transition-all duration-[2500ms] ${getEnvironmentGradient()}`}>
       <Confetti active={showConfetti} />
       
       {/* Daily Greeting Modal */}
@@ -484,13 +532,13 @@ const Dashboard = () => {
                 </Button>
               </div>
             </div>
-            <XPBar current={xp} max={getXPForNextLevel()} level={level} />
+            <OttrTrail progress={caloriePercentage} level={level} />
           </div>
         </header>
 
         <main className="max-w-md mx-auto px-4 py-6 space-y-6">
-        {/* Daily Mission Card */}
-        <DailyMissionCard />
+        {/* Ottr's Journal - Daily Quests */}
+        <OttrJournal />
 
         {/* Hero Section: Mascot + Progress */}
         <div className={`bg-card/80 backdrop-blur-sm rounded-3xl p-6 shadow-[0_8px_30px_rgb(0,0,0,0.08)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.4)] border-2 border-border transition-all duration-[2000ms] ${logAnimation ? "animate-success-bounce" : ""}`}>
@@ -595,6 +643,9 @@ const Dashboard = () => {
           )}
         </div>
 
+        {/* Snack Badge Tracker */}
+        <SnackBadgeTracker badges={snackBadges} dailyChallenge={dailyChallenge} />
+
         {/* Weekly Trend Mini */}
         <WeeklyTrendMini />
 
@@ -625,6 +676,14 @@ const Dashboard = () => {
         achievement={achievementToShow}
         onDismiss={() => setAchievementToShow(null)}
       />
+
+      {/* Floating Bubble Notification */}
+      {bubbleMessage && (
+        <FloatingBubble
+          message={bubbleMessage}
+          onDismiss={() => setBubbleMessage(null)}
+        />
+      )}
 
       {/* Mobile Bottom Navigation */}
       <MobileBottomNav onQuickLog={handleQuickLog} />
