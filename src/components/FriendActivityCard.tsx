@@ -116,13 +116,23 @@ export const FriendActivityCard = ({
               Lvl {activity.friend.level}
             </span>
           </div>
-          <div className="flex items-center gap-2">
-            <StreakCounter days={activity.friend.streak} />
-          </div>
+          {/* Badges under name */}
+          {activity.friend.badges && activity.friend.badges.length > 0 && (
+            <div className="flex gap-1 flex-wrap">
+              {activity.friend.badges.slice(0, 2).map((badge, idx) => (
+                <Badge key={idx} variant="secondary" className="text-xs">
+                  {badge}
+                </Badge>
+              ))}
+            </div>
+          )}
         </div>
-        <span className="text-xs text-muted-foreground">
-          {activity.timestamp}
-        </span>
+        <div className="flex flex-col items-end gap-1">
+          <span className="text-xs text-muted-foreground">
+            {activity.timestamp}
+          </span>
+          <StreakCounter days={activity.friend.streak} />
+        </div>
       </div>
 
       {/* Content */}
@@ -130,16 +140,6 @@ export const FriendActivityCard = ({
         {renderContent()}
       </div>
 
-      {/* Badges (if any) */}
-      {activity.friend.badges && activity.friend.badges.length > 0 && (
-        <div className="flex gap-1 mb-3 flex-wrap">
-          {activity.friend.badges.slice(0, 2).map((badge, idx) => (
-            <Badge key={idx} variant="secondary" className="text-xs">
-              {badge}
-            </Badge>
-          ))}
-        </div>
-      )}
 
       {/* Interaction Bar */}
       <div className="flex items-center gap-4 pt-3 border-t border-border">
