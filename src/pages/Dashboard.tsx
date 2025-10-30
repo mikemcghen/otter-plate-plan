@@ -8,10 +8,9 @@ import { CircularProgress } from "@/components/CircularProgress";
 import { MacroRing } from "@/components/MacroRing";
 import { StreakCounter } from "@/components/StreakCounter";
 import { OttrTrail } from "@/components/OttrTrail";
-import { OttrJournal } from "@/components/OttrJournal";
+import { DailyFocus } from "@/components/DailyFocus";
 import { AmbientBackground } from "@/components/AmbientBackground";
 import { OttrDialogBubble } from "@/components/OttrDialogBubble";
-import { SnackCarousel } from "@/components/SnackCarousel";
 import { NotificationBanner } from "@/components/NotificationBanner";
 import { SnackPickerModal } from "@/components/SnackPickerModal";
 import { SuccessConfirmationModal } from "@/components/SuccessConfirmationModal";
@@ -32,14 +31,8 @@ import { toast } from "@/hooks/use-toast";
 import { useHaptics } from "@/hooks/useHaptics";
 import { useBadgeUnlock } from "@/hooks/useBadgeUnlock";
 import { BadgeUnlockModal } from "@/components/BadgeUnlockModal";
-import { FriendWaves } from "@/components/FriendWaves";
-import { AddFriendModal } from "@/components/AddFriendModal";
-import { OttrDailyRecap } from "@/components/OttrDailyRecap";
 import { AchievementCapsule } from "@/components/AchievementCapsule";
 import { FloatingBubble } from "@/components/FloatingBubble";
-import { SnackBadgeTracker } from "@/components/SnackBadgeTracker";
-import { WeeklyTrendMini } from "@/components/WeeklyTrendMini";
-import { FriendWaveModal } from "@/components/FriendWaveModal";
 import { useNotifications } from "@/contexts/NotificationContext";
 import otterPerfect from "@/assets/otter-perfect.png";
 import otterHappy from "@/assets/otter-happy.png";
@@ -78,40 +71,17 @@ const Dashboard = () => {
   const [showQuickLog, setShowQuickLog] = useState(false);
   const [loggedSnack, setLoggedSnack] = useState<string>("");
   const [showDailyGreeting, setShowDailyGreeting] = useState(false);
-  const [showEndOfDay, setShowEndOfDay] = useState(false);
   const [showLevelUp, setShowLevelUp] = useState(false);
   const [previousLevel, setPreviousLevel] = useState(level);
-  const [logAnimation, setLogAnimation] = useState(false);
   const [showBadgeUnlock, setShowBadgeUnlock] = useState(false);
   const [unlockedBadge, setUnlockedBadge] = useState<any>(null);
-  const [friends, setFriends] = useState<any[]>([]);
-  const [showAddFriend, setShowAddFriend] = useState(false);
   const [achievementToShow, setAchievementToShow] = useState<any>(null);
-  const [selectedFriend, setSelectedFriend] = useState<any>(null);
-  const [showFriendModal, setShowFriendModal] = useState(false);
   const [bubbleMessage, setBubbleMessage] = useState<string | null>(null);
   const [ottrDialogMessage, setOttrDialogMessage] = useState<string | null>(null);
   const [userName, setUserName] = useState("Friend");
-  const [profile, setProfile] = useState<any>(null);
+  const [focusCompleted, setFocusCompleted] = useState(false);
+  const [showWaterRipple, setShowWaterRipple] = useState(false);
 
-  // Badge state
-  const [snackBadges] = useState([
-    { id: "berry", name: "Berry Lover", emoji: "🫐", earned: true, description: "10 berry snacks" },
-    { id: "protein", name: "Protein Pro", emoji: "🥚", earned: true, description: "20g protein day" },
-    { id: "hydration", name: "Water Wizard", emoji: "💧", earned: false, description: "8 glasses today" },
-    { id: "balanced", name: "Balance Master", emoji: "⚖️", earned: false, description: "Perfect macros" },
-    { id: "streak", name: "Streak Star", emoji: "⭐", earned: false, description: "7-day streak" },
-    { id: "veggie", name: "Veggie Victory", emoji: "🥗", earned: false, description: "5 veggie snacks" },
-    { id: "mindful", name: "Mindful Muncher", emoji: "🧘", earned: false, description: "Slow eating" },
-    { id: "variety", name: "Flavor Explorer", emoji: "🌈", earned: false, description: "Try 10 foods" },
-  ]);
-
-  const [dailyChallenge] = useState({
-    flavor: "Berry Blast",
-    emoji: "🍓",
-    progress: 2,
-    target: 3,
-  });
 
   // Badge unlock hook
   useBadgeUnlock(xp, level, streak, foodLogs.length, (badge) => {
@@ -119,14 +89,10 @@ const Dashboard = () => {
     setShowBadgeUnlock(true);
   });
 
-  // Load user profile and friends
+  // Load user profile
   useEffect(() => {
     if (user) {
       loadUserProfile();
-      loadFriends();
-    } else {
-      // Show placeholder friends when not logged in
-      setFriends(placeholderFriends);
     }
   }, [user]);
 
@@ -140,7 +106,6 @@ const Dashboard = () => {
       .single();
 
     if (data) {
-      setProfile(data);
       setUserName(data.display_name || "Friend");
     }
   };
@@ -156,144 +121,47 @@ const Dashboard = () => {
 
   const timeOfDay = getTimeOfDay();
 
-  // Show Ottr dialog on mount
+  // Show Ottr greeting on mount
   useEffect(() => {
     const greetings = {
       morning: `Morning, ${userName}! Ready to swim through today?`,
-      afternoon: `Good afternoon, ${userName}! You're flowing beautifully`,
-      evening: `Evening, ${userName}! Time to wind down gently`,
-      night: `Goodnight, ${userName}! Rest well, swimmer`,
+      afternoon: `The tide feels calm today, ${userName}`,
+      evening: `Evening, ${userName}! Time to wind down`,
+      night: `Rest peacefully, ${userName} 🌙`,
     };
     
     setTimeout(() => {
       setOttrDialogMessage(greetings[timeOfDay]);
-    }, 1500);
+    }, 2000);
   }, [timeOfDay, userName]);
-
-  // Show encouraging dialogs on progress milestones
-  useEffect(() => {
-    if (caloriePercentage >= 80 && caloriePercentage < 85) {
-      setOttrDialogMessage("That balance looks great today 🦦💜");
-    } else if (streak > 0 && streak % 7 === 0) {
-      setOttrDialogMessage("You're staying steady as a river!");
-    }
-  }, [caloriesConsumed, caloriesTarget, streak]);
-
-  const placeholderFriends = [
-    {
-      id: "1",
-      display_name: "Emma",
-      avatar_url: "https://api.dicebear.com/7.x/avataaars/svg?seed=Emma",
-      level: 8,
-      xp: 420,
-      streak: 12,
-      caloriePercentage: 98,
-    },
-    {
-      id: "2",
-      display_name: "Marcus",
-      avatar_url: "https://api.dicebear.com/7.x/avataaars/svg?seed=Marcus",
-      level: 5,
-      xp: 280,
-      streak: 7,
-      caloriePercentage: 102,
-    },
-    {
-      id: "3",
-      display_name: "Sofia",
-      avatar_url: "https://api.dicebear.com/7.x/avataaars/svg?seed=Sofia",
-      level: 12,
-      xp: 750,
-      streak: 21,
-      caloriePercentage: 95,
-    },
-    {
-      id: "4",
-      display_name: "Alex",
-      avatar_url: "https://api.dicebear.com/7.x/avataaars/svg?seed=Alex",
-      level: 3,
-      xp: 150,
-      streak: 4,
-      caloriePercentage: 88,
-    },
-    {
-      id: "5",
-      display_name: "Jasmine",
-      avatar_url: "https://api.dicebear.com/7.x/avataaars/svg?seed=Jasmine",
-      level: 15,
-      xp: 920,
-      streak: 30,
-      caloriePercentage: 100,
-    },
-  ];
-
-  const loadFriends = async () => {
-    if (!user) return;
-    
-    const { data } = await supabase
-      .from("friendships")
-      .select(`
-        *,
-        friend:profiles!friendships_friend_id_fkey(*)
-      `)
-      .eq("user_id", user.id)
-      .eq("status", "accepted");
-
-    if (data && data.length > 0) {
-      const friendProfiles = data.map(f => ({
-        ...f.friend,
-        level: Math.floor(Math.random() * 10) + 1,
-        xp: Math.floor(Math.random() * 500),
-        streak: Math.floor(Math.random() * 30),
-        caloriePercentage: Math.floor(Math.random() * 120) + 50,
-      }));
-      setFriends(friendProfiles);
-    } else {
-      // Use placeholders if no friends found
-      setFriends(placeholderFriends);
-    }
-  };
-
-  const handleAddFriend = async (method: string, value: string) => {
-    toast({
-      title: "Friend request sent!",
-      description: `Request sent via ${method}`,
-    });
-    setShowAddFriend(false);
-  };
-
-  const handleFriendClick = (friend: any) => {
-    setSelectedFriend(friend);
-    setShowFriendModal(true);
-  };
-
-  const handleSendWave = () => {
-    setBubbleMessage(`${selectedFriend?.display_name} received your wave! 🌊`);
-    toast({
-      title: "Wave sent! 🌊",
-      description: `Your encouragement reached ${selectedFriend?.display_name}`,
-    });
-    setShowFriendModal(false);
-  };
-
-  // Demo: Random friend wave after 10 seconds
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      if (friends.length > 0) {
-        const randomFriend = friends[Math.floor(Math.random() * friends.length)];
-        setBubbleMessage(`${randomFriend.display_name} sent you a wave! 👋`);
-      }
-    }, 10000);
-    return () => clearTimeout(timer);
-  }, [friends]);
 
   const handleViewPost = () => {
     navigate("/trends");
   };
 
+  // Focus completion handler
+  const handleFocusComplete = () => {
+    setFocusCompleted(true);
+    setShowWaterRipple(true);
+    
+    // Show completion message
+    setTimeout(() => {
+      setOttrDialogMessage("Ottr is resting peacefully — you've earned it 🦦💜");
+    }, 800);
+    
+    // Hide ripple effect
+    setTimeout(() => {
+      setShowWaterRipple(false);
+    }, 3000);
+    
+    toast({
+      title: "Daily Focus Complete! 🌊",
+      description: "You've made progress today",
+    });
+  };
+
   // Manual trigger functions for test panel
   const handleTriggerDailyGreeting = () => setShowDailyGreeting(true);
-  const handleTriggerEndOfDay = () => setShowEndOfDay(true);
   const handleTriggerLevelUp = () => setShowLevelUp(true);
   const handleTriggerBadgeUnlock = () => {
     setUnlockedBadge({
@@ -321,7 +189,6 @@ const Dashboard = () => {
   useEffect(() => {
     notifications.registerHandlers({
       onDailyGreeting: handleTriggerDailyGreeting,
-      onEndOfDay: handleTriggerEndOfDay,
       onLevelUp: handleTriggerLevelUp,
       onBadgeUnlock: handleTriggerBadgeUnlock,
       onAchievement: handleTriggerAchievement,
@@ -333,34 +200,8 @@ const Dashboard = () => {
   }, []);
 
   const caloriePercentage = (caloriesConsumed / caloriesTarget) * 100;
-  const isInMaintenanceZone = caloriePercentage >= 90 && caloriePercentage <= 110;
   const isPerfect = caloriePercentage >= 95 && caloriePercentage <= 105;
-  const isUnder = caloriePercentage < 90;
-  const isOver = caloriePercentage > 110;
   const caloriesRemaining = getCaloriesRemaining();
-
-  // Dynamic environment based on time and progress
-  const getEnvironmentGradient = () => {
-    const hour = new Date().getHours();
-    
-    // Morning (5am-11am)
-    if (hour >= 5 && hour < 12) {
-      return "bg-gradient-to-b from-orange-50/30 via-yellow-50/20 to-background dark:from-orange-950/20 dark:via-yellow-950/10 dark:to-background";
-    }
-    // Balanced day (12pm-5pm)
-    if (hour >= 12 && hour < 17) {
-      if (isPerfect || isInMaintenanceZone) {
-        return "bg-gradient-to-b from-green-50/30 via-emerald-50/20 to-background dark:from-green-950/20 dark:via-emerald-950/10 dark:to-background";
-      }
-      return "bg-gradient-to-b from-blue-50/30 via-sky-50/20 to-background dark:from-blue-950/20 dark:via-sky-950/10 dark:to-background";
-    }
-    // Resting evening (5pm-10pm)
-    if (hour >= 17 && hour < 22) {
-      return "bg-gradient-to-b from-purple-50/30 via-indigo-50/20 to-background dark:from-purple-950/20 dark:via-indigo-950/10 dark:to-background";
-    }
-    // Night (10pm-5am)
-    return "bg-gradient-to-b from-slate-100/30 via-slate-50/20 to-background dark:from-slate-900/30 dark:via-slate-950/20 dark:to-background";
-  };
   
   // Check for level up
   useEffect(() => {
@@ -399,13 +240,21 @@ const Dashboard = () => {
     return () => clearTimeout(timer);
   }, [caloriePercentage, showNotification]);
 
-  // Dynamic otter mood and message based on status
+  // Dynamic otter mood based on time of day and completion
   const getOtterState = (): { mood: OtterMood; message: string; image: string } => {
-    if (isPerfect) return { mood: "proud", message: "Perfect balance! You're crushing it!", image: otterPerfect };
-    if (isInMaintenanceZone) return { mood: "happy", message: "Great job! Right in the zone!", image: otterHappy };
-    if (isUnder) return { mood: "hungry", message: "You need more energy! Let's add a snack", image: otterSleepy };
-    if (isOver) return { mood: "encouraging", message: "A bit high today, but that's okay!", image: otterConcerned };
-    return { mood: "happy", message: "Keep going! You're doing great!", image: otterHappy };
+    if (focusCompleted && timeOfDay === "night") {
+      return { mood: "sleepy", message: "Rest well, swimmer", image: otterSleepy };
+    }
+    if (focusCompleted) {
+      return { mood: "proud", message: "", image: otterPerfect };
+    }
+    if (timeOfDay === "morning") {
+      return { mood: "happy", message: "", image: otterHappy };
+    }
+    if (timeOfDay === "evening" || timeOfDay === "night") {
+      return { mood: "sleepy", message: "", image: otterSleepy };
+    }
+    return { mood: "happy", message: "", image: otterHappy };
   };
 
   const otterState = getOtterState();
@@ -419,11 +268,6 @@ const Dashboard = () => {
   const handleLogSnack = async (snack: typeof snackOptions[0]) => {
     await notification("success");
     
-    // Trigger animation
-    setLogAnimation(true);
-    setTimeout(() => setLogAnimation(false), 600);
-    
-    // Log to context
     logFood({
       name: snack.name,
       calories: snack.calories,
@@ -436,18 +280,10 @@ const Dashboard = () => {
     setShowSuccessModal(true);
     setShowNotification(false);
     
-    // Show toast after modal closes
-    setTimeout(() => {
-      toast({
-        title: "Snack logged!",
-        description: `${snack.name} added • +15 XP`,
-      });
-    }, 500);
-
-    if (isPerfect) {
-      setShowConfetti(true);
-      setTimeout(() => setShowConfetti(false), 3000);
-    }
+    toast({
+      title: "Snack logged! 🌊",
+      description: `${snack.name} added • +15 XP`,
+    });
   };
 
   const handleQuickLog = async () => {
@@ -458,11 +294,6 @@ const Dashboard = () => {
   const handleQuickLogFood = async (food: any) => {
     await notification("success");
     
-    // Trigger animation
-    setLogAnimation(true);
-    setTimeout(() => setLogAnimation(false), 600);
-    
-    // Log to context
     logFood({
       name: food.name,
       calories: food.calories,
@@ -471,16 +302,10 @@ const Dashboard = () => {
       fat: food.fat || 0,
     });
     
-    setLoggedSnack(food.name);
     toast({
-      title: "Food logged!",
+      title: "Food logged! 🌊",
       description: `${food.name} added • +15 XP`,
     });
-
-    if (isPerfect) {
-      setShowConfetti(true);
-      setTimeout(() => setShowConfetti(false), 3000);
-    }
   };
 
   const handleRefresh = async () => {
@@ -493,9 +318,21 @@ const Dashboard = () => {
   };
 
   return (
-    <div className="min-h-screen relative pb-24">
-      {/* Ambient background with dynamic time/progress states */}
+    <div className="min-h-screen relative pb-24 overflow-hidden">
+      {/* Ambient background - The Daily Cove */}
       <AmbientBackground timeOfDay={timeOfDay} progressPercentage={caloriePercentage} />
+      
+      {/* Water ripple completion effect */}
+      {showWaterRipple && (
+        <div className="fixed inset-0 pointer-events-none z-50">
+          <div className="absolute inset-0 bg-primary/5 animate-[ripple-expand_3s_ease-out]" 
+            style={{
+              background: "radial-gradient(circle at center, rgba(139, 92, 246, 0.15) 0%, transparent 70%)",
+              animation: "ripple-expand 3s ease-out forwards",
+            }}
+          />
+        </div>
+      )}
       
       <Confetti active={showConfetti} />
 
@@ -532,15 +369,6 @@ const Dashboard = () => {
           badgeDescription={unlockedBadge.description}
         />
       )}
-
-      {/* End of Day Summary Modal */}
-      <EndOfDaySummaryModal
-        open={showEndOfDay}
-        onOpenChange={setShowEndOfDay}
-        xpGained={xp}
-        foodsLogged={foodLogs.length}
-        isPerfect={isPerfect}
-      />
 
       {/* Floating Mascot Button */}
       <FloatingMascotButton caloriesRemaining={caloriesRemaining} />
@@ -580,178 +408,50 @@ const Dashboard = () => {
       />
 
       <PullToRefresh onRefresh={handleRefresh}>
-        {/* Header with XP and Streak */}
-        <header className="bg-card border-b border-border shadow-sm sticky top-0 z-40">
-          <div className="max-w-md mx-auto px-4 py-4 space-y-3">
-            <div className="flex items-center justify-between">
-              <h1 className="text-2xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
-                OttrCal
+        {/* The Daily Cove Header - Minimal & Elegant */}
+        <header className="bg-transparent backdrop-blur-sm sticky top-0 z-40">
+          <div className="max-w-md mx-auto px-6 py-4">
+            <div className="flex items-center justify-between mb-3">
+              <h1 className="text-xl font-bold text-foreground/80">
+                The Daily Cove
               </h1>
-              <div className="flex items-center gap-2">
-                <StreakCounter days={streak} />
-                <Button
-                  size="icon"
-                  variant="ghost"
-                  className="w-10 h-10 rounded-full active:scale-95 transition-transform"
-                  onClick={async () => {
-                    await impact();
-                    setShowEndOfDay(true);
-                  }}
-                >
-                  <Moon className="w-5 h-5 text-muted-foreground" />
-                </Button>
-              </div>
+              <StreakCounter days={streak} />
             </div>
             <OttrTrail progress={caloriePercentage} level={level} />
           </div>
         </header>
 
-        <main className="relative max-w-md mx-auto px-4 py-6 space-y-6">
-        {/* Ottr's Journal - Daily Quests */}
-        <OttrJournal />
-
-        {/* Hero Section: Mascot + Progress */}
-        <div className={`bg-card/80 backdrop-blur-sm rounded-3xl p-6 shadow-[0_8px_30px_rgb(0,0,0,0.08)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.4)] border-2 border-border transition-all duration-[2000ms] ${logAnimation ? "animate-success-bounce" : ""}`}>
-          <div className="flex flex-col items-center gap-4">
-            {/* Mascot Integration */}
+        {/* The Daily Cove - Living Environment */}
+        <main className="relative max-w-md mx-auto px-6 py-8 space-y-8">
+          
+          {/* Center: Ottr Mascot (Living companion) */}
+          <div className="flex justify-center items-center min-h-[200px] transition-all duration-[3000ms]">
             <OtterMascot 
               mood={otterState.mood} 
               message={otterState.message}
               animate={true}
             />
-            
-            {/* Calorie Progress Ring */}
-            <div className={`transition-transform duration-[1500ms] ${logAnimation ? "animate-pulse-scale" : ""}`}>
-              <CircularProgress
-                percentage={caloriePercentage}
-                size={200}
-                strokeWidth={14}
-                value={`${caloriesConsumed}`}
-                label={`of ${caloriesTarget} cal`}
-                status={isPerfect ? "success" : isInMaintenanceZone ? "normal" : "warning"}
-                showGlow={isPerfect}
-              />
-            </div>
+          </div>
 
-            {/* Encouraging Status Text */}
-            <div className="text-center space-y-1">
-              <p className="text-sm font-semibold text-muted-foreground">
-                {caloriesRemaining > 0 
-                  ? `${caloriesRemaining} cal to go` 
-                  : caloriesRemaining === 0 
-                  ? "Perfect! You hit your target!" 
-                  : `${Math.abs(caloriesRemaining)} cal over`}
+          {/* Daily Focus Card */}
+          {!focusCompleted && (
+            <DailyFocus onComplete={handleFocusComplete} />
+          )}
+
+          {/* Completion Message */}
+          {focusCompleted && (
+            <div className="text-center space-y-2 animate-fade-in">
+              <p className="text-lg font-medium text-foreground/90">
+                Ottr is resting peacefully
               </p>
-              {isPerfect && (
-                <div className="flex items-center justify-center gap-1">
-                  <Sparkles className="w-3 h-3 text-success animate-breathing" />
-                  <p className="text-xs text-success font-medium animate-shimmer bg-gradient-to-r from-success via-primary to-success bg-clip-text text-transparent bg-[length:200%_auto]">
-                    You're in the perfect zone!
-                  </p>
-                  <Sparkles className="w-3 h-3 text-success animate-breathing" />
-                </div>
-              )}
+              <p className="text-sm text-muted-foreground">
+                You've earned it 🌙
+              </p>
             </div>
-          </div>
-        </div>
-
-        {/* Macro Rings - pulses when in green zone */}
-        <div className={`bg-card/80 backdrop-blur-sm rounded-3xl p-6 shadow-[0_8px_30px_rgb(0,0,0,0.08)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.4)] border-2 border-border transition-all duration-[2000ms] ${
-          logAnimation ? "animate-pulse-scale" : ""
-        } ${
-          caloriePercentage >= 80 && caloriePercentage <= 100 
-            ? "ring-2 ring-success/30 shadow-[0_0_30px_rgba(34,197,94,0.2)]" 
-            : ""
-        }`}>
-          <h3 className="text-base font-bold text-foreground mb-4 px-2">
-            Macros
-          </h3>
-          <div className="grid grid-cols-3 gap-4">
-            <MacroRing
-              label="Protein"
-              current={proteinConsumed}
-              target={proteinTarget}
-              color="hsl(var(--primary))"
-            />
-            <MacroRing
-              label="Carbs"
-              current={carbsConsumed}
-              target={carbsTarget}
-              color="hsl(var(--accent))"
-            />
-            <MacroRing
-              label="Fat"
-              current={fatConsumed}
-              target={fatTarget}
-              color="hsl(var(--success))"
-            />
-          </div>
-          
-          {caloriePercentage >= 80 && caloriePercentage <= 100 && (
-            <p className="text-center text-xs text-success mt-4 animate-fade-in">
-              ✨ Green zone — you're balanced beautifully!
-            </p>
           )}
-        </div>
-
-        {/* Friend Waves */}
-        <div className="bg-card/80 backdrop-blur-sm rounded-3xl p-5 shadow-[0_8px_30px_rgb(0,0,0,0.08)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.4)] border-2 border-border">
-          <FriendWaves
-            friends={friends}
-            onAddFriend={() => setShowAddFriend(true)}
-            onFriendClick={handleFriendClick}
-          />
-        </div>
-
-        {/* Snack Carousel */}
-        <div className="bg-card/80 backdrop-blur-sm rounded-3xl p-6 shadow-[0_8px_30px_rgb(0,0,0,0.08)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.4)] border-2 border-border">
-          {foodLogs.length === 0 ? (
-            <EmptyState
-              variant="encourage"
-              title="Ottr's waiting for your first splash!"
-              description="Start your day by logging your first meal. Every journey begins with a single bite!"
-              action={{
-                label: "Log Your First Food",
-                onClick: handleQuickLog,
-              }}
-              icon={<UtensilsCrossed className="w-12 h-12" />}
-            />
-          ) : (
-            <SnackCarousel
-              snacks={snackOptions}
-              onLog={handleLogSnack}
-              otterImage={otterState.image}
-            />
-          )}
-        </div>
-
-        {/* Snack Badge Tracker */}
-        <SnackBadgeTracker badges={snackBadges} dailyChallenge={dailyChallenge} />
-
-        {/* Weekly Trend Mini */}
-        <WeeklyTrendMini />
-
-        {/* Ottr's Daily Recap */}
-        {user && <OttrDailyRecap />}
 
         </main>
       </PullToRefresh>
-
-      {/* Add Friend Modal */}
-      <AddFriendModal
-        open={showAddFriend}
-        onOpenChange={setShowAddFriend}
-        onAddFriend={handleAddFriend}
-      />
-
-      {/* Friend Wave Modal */}
-      <FriendWaveModal
-        open={showFriendModal}
-        onOpenChange={setShowFriendModal}
-        friend={selectedFriend}
-        onSendWave={handleSendWave}
-        onViewPost={handleViewPost}
-      />
 
       {/* Achievement Capsule */}
       <AchievementCapsule
