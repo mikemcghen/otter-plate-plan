@@ -128,10 +128,10 @@ export const FriendActivityCard = ({
           )}
         </div>
         <div className="flex flex-col items-end gap-1">
-          <StreakCounter days={activity.friend.streak} />
           <span className="text-xs text-muted-foreground">
             {activity.timestamp}
           </span>
+          <StreakCounter days={activity.friend.streak} />
         </div>
       </div>
 
