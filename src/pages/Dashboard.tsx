@@ -10,6 +10,9 @@ import { PullToRefresh } from "@/components/PullToRefresh";
 import { QuickLogPanel } from "@/components/QuickLogPanel";
 import { CircularProgress } from "@/components/CircularProgress";
 import { MacroRing } from "@/components/MacroRing";
+import { SnackSuggestionBubble } from "@/components/SnackSuggestionBubble";
+import { FriendWaveChip } from "@/components/FriendWaveChip";
+import { OttrAffirmation } from "@/components/OttrAffirmation";
 import { Droplet, Apple, BookOpen } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 import { useHaptics } from "@/hooks/useHaptics";
@@ -220,18 +223,23 @@ const Dashboard = () => {
             )}
           </section>
           
-          {/* Level & Streak + XP Bar */}
+          {/* Level & Streak + XP Bar + Friend Wave Chip */}
           <section className="space-y-2">
             <div className="flex items-center justify-between px-2">
               {/* Level indicator */}
-              <div className="flex items-center gap-2 bg-primary/10 rounded-full px-4 py-2 border border-primary/20">
+              <div className="flex items-center gap-2 bg-primary/10 rounded-full px-4 py-2 border border-primary/20 transition-all duration-300">
                 <span className="text-sm font-semibold text-primary">Lv.{level}</span>
               </div>
               
               {/* Streak indicator */}
-              <div className="flex items-center gap-2 bg-orange-500/10 rounded-full px-4 py-2 border border-orange-500/20">
+              <div className="flex items-center gap-2 bg-orange-500/10 rounded-full px-4 py-2 border border-orange-500/20 transition-all duration-300">
                 <span className="text-sm font-semibold text-orange-500">{streak}🔥</span>
               </div>
+            </div>
+            
+            {/* Friend Wave Chip */}
+            <div className="flex justify-center">
+              <FriendWaveChip waveCount={3} friendName="Alex" />
             </div>
             
             {/* XP Progress Bar */}
@@ -255,7 +263,7 @@ const Dashboard = () => {
             {/* Main Calorie Ring */}
             <div className="flex justify-center relative">
               <div className={cn(
-                "relative transition-all duration-500",
+                "relative transition-all duration-400",
                 ringsComplete && "animate-[glow-pulse_2s_ease-in-out_infinite]"
               )}>
                 <CircularProgress
@@ -270,8 +278,8 @@ const Dashboard = () => {
               </div>
             </div>
 
-            {/* Orbiting Macro Rings */}
-            <div className="grid grid-cols-3 gap-3 px-4">
+            {/* Orbiting Macro Rings + Snack Suggestion Bubble */}
+            <div className="grid grid-cols-3 gap-3 px-4 relative">
               <button 
                 onClick={handleQuickLog}
                 className="transition-transform active:scale-95"
@@ -298,7 +306,7 @@ const Dashboard = () => {
               </button>
               <button 
                 onClick={handleQuickLog}
-                className="transition-transform active:scale-95"
+                className="transition-transform duration-300 active:scale-95"
               >
                 <MacroRing
                   label="Fat"
@@ -308,6 +316,12 @@ const Dashboard = () => {
                   unit="g"
                 />
               </button>
+              
+              {/* Snack Suggestion Bubble */}
+              <SnackSuggestionBubble 
+                caloriesConsumed={caloriesConsumed}
+                caloriesTarget={caloriesTarget}
+              />
             </div>
           </section>
 
@@ -391,6 +405,9 @@ const Dashboard = () => {
 
         </main>
       </PullToRefresh>
+
+      {/* Ottr Affirmation */}
+      <OttrAffirmation />
 
       {/* Interface Layer - Floating Action Button (handled by MobileBottomNav) */}
       <MobileBottomNav onQuickLog={handleQuickLog} />

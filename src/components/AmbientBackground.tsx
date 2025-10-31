@@ -17,36 +17,34 @@ export const AmbientBackground = ({ timeOfDay, progressPercentage }: AmbientBack
   const getGradient = () => {
     const isHighProgress = progressPercentage >= 80;
 
-    // Theme-specific color adjustments
-    const themeColors = {
-      "fresh-start": {
-        morning: "from-purple-100/40 via-coral-100/30 to-purple-50/20",
-        afternoon: "from-purple-200/50 via-purple-100/40 to-blue-100/30",
-        evening: "from-blue-200/40 via-purple-100/30 to-indigo-100/20",
-        night: "from-indigo-900/30 via-purple-900/20 to-slate-900/10",
+    // Enhanced time-of-day gradients (more vivid, better contrast)
+    const timeGradients = {
+      morning: {
+        base: "from-purple-200/50 via-orange-100/40 to-pink-100/30",
+        dark: "dark:from-purple-900/25 dark:via-orange-900/20 dark:to-purple-800/15",
       },
-      "encouraging-energy": {
-        morning: "from-purple-200/60 via-pink-100/50 to-orange-100/40",
-        afternoon: "from-purple-300/60 via-pink-200/50 to-purple-200/40",
-        evening: "from-purple-300/50 via-blue-200/40 to-purple-200/30",
-        night: "from-purple-800/40 via-indigo-900/30 to-purple-900/20",
+      afternoon: {
+        base: "from-blue-100/40 via-purple-100/35 to-blue-200/30",
+        dark: "dark:from-blue-900/20 dark:via-purple-900/15 dark:to-blue-800/10",
       },
-      "reflective-calm": {
-        morning: "from-blue-100/30 via-purple-50/20 to-slate-100/15",
-        afternoon: "from-blue-200/35 via-purple-100/25 to-blue-100/20",
-        evening: "from-blue-300/40 via-slate-200/30 to-blue-200/25",
-        night: "from-slate-800/30 via-blue-900/20 to-slate-900/15",
+      evening: {
+        base: "from-indigo-200/45 via-purple-200/40 to-blue-300/35",
+        dark: "dark:from-indigo-900/25 dark:via-purple-900/20 dark:to-blue-900/15",
+      },
+      night: {
+        base: "from-indigo-300/35 via-purple-300/30 to-slate-300/25",
+        dark: "dark:from-indigo-950/30 dark:via-purple-950/25 dark:to-slate-950/20",
       },
     };
 
-    const baseGradient = themeColors[dashboardTheme][timeOfDay];
+    const gradient = timeGradients[timeOfDay];
     
     // Add warm glow when high progress
     if (isHighProgress) {
-      return `${baseGradient} dark:from-purple-900/20 dark:via-orange-900/15 dark:to-purple-800/10`;
+      return `${gradient.base} ${gradient.dark}`;
     }
     
-    return `${baseGradient} dark:from-slate-900/30 dark:via-purple-900/15 dark:to-slate-900/20`;
+    return `${gradient.base} ${gradient.dark}`;
   };
 
   return (
@@ -59,40 +57,38 @@ export const AmbientBackground = ({ timeOfDay, progressPercentage }: AmbientBack
 
       {/* Ambient motion layer 1: Pulsing light */}
       <div 
-        className="absolute inset-0 opacity-30"
+        className="absolute inset-0 opacity-25"
         style={{
-          background: `radial-gradient(circle at ${50 + Math.sin(Date.now() / 5000) * 10}% ${50 + Math.cos(Date.now() / 5000) * 10}%, rgba(167, 139, 250, 0.15) 0%, transparent 60%)`,
-          animation: "breathing 4s ease-in-out infinite",
+          background: `radial-gradient(circle at 50% 40%, rgba(167, 139, 250, 0.12) 0%, transparent 65%)`,
+          animation: "breathing 5s ease-in-out infinite",
         }}
       />
 
-      {/* Ambient motion layer 2: Floating objects */}
-      <div className="absolute inset-0 overflow-hidden opacity-20">
-        {[...Array(5)].map((_, i) => (
+      {/* Ambient motion layer 2: Floating bubbles/elements */}
+      <div className="absolute inset-0 overflow-hidden opacity-15">
+        {[...Array(3)].map((_, i) => (
           <div
             key={i}
-            className="absolute text-2xl"
+            className="absolute w-12 h-12 rounded-full"
             style={{
-              left: `${(i * 20 + 10)}%`,
-              top: `${(i * 15 + 5)}%`,
-              animation: `float-drift ${8 + i * 2}s ease-in-out infinite`,
-              animationDelay: `${i * 0.8}s`,
+              left: `${(i * 30 + 15)}%`,
+              top: `${(i * 25 + 10)}%`,
+              background: "radial-gradient(circle, rgba(255,255,255,0.2) 0%, transparent 70%)",
+              animation: `float-drift ${4 + i}s ease-in-out infinite`,
+              animationDelay: `${i * 1.2}s`,
+              filter: "blur(20px)",
             }}
-          >
-            {timeOfDay === "morning" && "🌊"}
-            {timeOfDay === "afternoon" && "🐚"}
-            {timeOfDay === "evening" && "✨"}
-            {timeOfDay === "night" && "🌙"}
-          </div>
+          />
         ))}
       </div>
 
-      {/* Ambient motion layer 3: Water ripples */}
+      {/* Ambient motion layer 3: Gentle shimmer wave */}
       <div 
-        className="absolute inset-0 opacity-10"
+        className="absolute inset-0 opacity-8"
         style={{
-          backgroundImage: `repeating-linear-gradient(0deg, transparent, transparent 50px, rgba(139, 92, 246, 0.03) 50px, rgba(139, 92, 246, 0.03) 52px)`,
-          animation: "ripple-slow 8s linear infinite",
+          background: `linear-gradient(135deg, transparent 40%, rgba(255,255,255,0.05) 50%, transparent 60%)`,
+          animation: "wave-flow 8s ease-in-out infinite",
+          backgroundSize: "200% 200%",
         }}
       />
     </div>

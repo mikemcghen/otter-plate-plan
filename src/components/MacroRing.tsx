@@ -22,7 +22,7 @@ export const MacroRing = ({
 
   return (
     <div className="flex flex-col items-center gap-2 group">
-      <div className="relative transition-transform duration-300 group-hover:scale-110">
+      <div className="relative transition-transform duration-[350ms] group-hover:scale-110">
         {/* Soft outer glow layer - additive blending effect */}
         {percentage > 30 && (
           <div 
@@ -75,7 +75,7 @@ export const MacroRing = ({
             strokeLinecap="round"
             strokeDasharray={circumference}
             strokeDashoffset={offset}
-            className="transition-all duration-700 ease-out"
+            className="transition-all duration-[400ms] ease-out"
           />
           
           {/* Shimmer overlay on progress ring */}
@@ -90,7 +90,7 @@ export const MacroRing = ({
               strokeLinecap="round"
               strokeDasharray={circumference}
               strokeDashoffset={offset}
-              className="transition-all duration-700 ease-out"
+              className="transition-all duration-[400ms] ease-out"
               opacity="0.6"
             />
           )}
@@ -124,7 +124,7 @@ export const MacroRing = ({
         </svg>
         
         <div className="absolute inset-0 flex flex-col items-center justify-center z-20">
-          <span className="text-sm font-bold text-foreground transition-all duration-300">
+          <span className="text-sm font-bold text-foreground transition-all duration-[300ms]">
             {current}
           </span>
           <span className="text-xs text-muted-foreground">/{target}{unit}</span>
