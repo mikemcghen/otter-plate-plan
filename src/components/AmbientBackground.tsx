@@ -15,28 +15,36 @@ export const AmbientBackground = ({ timeOfDay, progressPercentage }: AmbientBack
   }, []);
 
   const getGradient = () => {
-    // Storybook-style layered gradients with more depth
+    const isHighProgress = progressPercentage >= 80;
+
+    // Enhanced time-of-day gradients (more vivid, better contrast)
     const timeGradients = {
       morning: {
-        sky: "from-purple-200/60 via-pink-100/50 to-orange-100/40",
-        darkSky: "dark:from-purple-900/30 dark:via-pink-900/25 dark:to-orange-900/20",
+        base: "from-purple-200/50 via-orange-100/40 to-pink-100/30",
+        dark: "dark:from-purple-900/25 dark:via-orange-900/20 dark:to-purple-800/15",
       },
       afternoon: {
-        sky: "from-cyan-200/50 via-blue-100/45 to-orange-100/40",
-        darkSky: "dark:from-cyan-900/25 dark:via-blue-900/20 dark:to-orange-900/15",
+        base: "from-blue-100/40 via-purple-100/35 to-blue-200/30",
+        dark: "dark:from-blue-900/20 dark:via-purple-900/15 dark:to-blue-800/10",
       },
       evening: {
-        sky: "from-indigo-300/50 via-purple-200/45 to-pink-200/40",
-        darkSky: "dark:from-indigo-900/30 dark:via-purple-900/25 dark:to-pink-900/20",
+        base: "from-indigo-200/45 via-purple-200/40 to-blue-300/35",
+        dark: "dark:from-indigo-900/25 dark:via-purple-900/20 dark:to-blue-900/15",
       },
       night: {
-        sky: "from-indigo-500/40 via-purple-400/35 to-blue-500/30",
-        darkSky: "dark:from-indigo-950/35 dark:via-purple-950/30 dark:to-blue-950/25",
+        base: "from-indigo-300/35 via-purple-300/30 to-slate-300/25",
+        dark: "dark:from-indigo-950/30 dark:via-purple-950/25 dark:to-slate-950/20",
       },
     };
 
     const gradient = timeGradients[timeOfDay];
-    return `${gradient.sky} ${gradient.darkSky}`;
+    
+    // Add warm glow when high progress
+    if (isHighProgress) {
+      return `${gradient.base} ${gradient.dark}`;
+    }
+    
+    return `${gradient.base} ${gradient.dark}`;
   };
 
   return (
@@ -83,25 +91,6 @@ export const AmbientBackground = ({ timeOfDay, progressPercentage }: AmbientBack
           backgroundSize: "200% 200%",
         }}
       />
-
-      {/* Stars for night time */}
-      {timeOfDay === "night" && (
-        <div className="absolute inset-0 overflow-hidden">
-          {[...Array(12)].map((_, i) => (
-            <div
-              key={i}
-              className="absolute w-1 h-1 bg-white rounded-full"
-              style={{
-                left: `${(i * 13 + 7) % 95}%`,
-                top: `${(i * 17 + 5) % 70}%`,
-                opacity: 0.6,
-                animation: `twinkle ${2 + (i % 3)}s ease-in-out infinite`,
-                animationDelay: `${i * 0.3}s`,
-              }}
-            />
-          ))}
-        </div>
-      )}
     </div>
   );
 };
