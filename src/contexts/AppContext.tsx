@@ -20,6 +20,8 @@ interface AppState {
   carbsTarget: number;
   fatConsumed: number;
   fatTarget: number;
+  waterConsumed: number;
+  waterTarget: number;
   
   // Gamification
   xp: number;
@@ -31,10 +33,13 @@ interface AppState {
   
   // Last activity
   lastLogDate: string;
+  lastWaterLog?: Date;
 }
 
 interface AppContextType extends AppState {
   logFood: (food: Omit<FoodLog, "id" | "timestamp">) => void;
+  logWater: (amount: number) => void;
+  undoLastWater: () => void;
   resetDailyStats: () => void;
   getXPForNextLevel: () => number;
   getCaloriesRemaining: () => number;
@@ -72,6 +77,8 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
       carbsTarget: 200,
       fatConsumed: 0,
       fatTarget: 60,
+      waterConsumed: 0,
+      waterTarget: 2000, // 2 liters in ml
       xp: 0,
       level: 1,
       streak: 0,
@@ -170,6 +177,28 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
     checkAndUpdateStreak();
   };
 
+  const logWater = (amount: number) => {
+    setState((prev) => ({
+      ...prev,
+      waterConsumed: Math.min(prev.waterConsumed + amount, prev.waterTarget * 1.5),
+      lastWaterLog: new Date(),
+    }));
+    
+    // Award XP for water logging
+    awardXP(5, "water_log");
+  };
+
+  const undoLastWater = () => {
+    setState((prev) => {
+      // Simple undo: reduce by 250ml (1 cup)
+      const newAmount = Math.max(0, prev.waterConsumed - 250);
+      return {
+        ...prev,
+        waterConsumed: newAmount,
+      };
+    });
+  };
+
   const resetDailyStats = () => {
     setState((prev) => ({
       ...prev,
@@ -177,6 +206,7 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
       proteinConsumed: 0,
       carbsConsumed: 0,
       fatConsumed: 0,
+      waterConsumed: 0,
       foodLogs: [],
     }));
   };
@@ -217,6 +247,8 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
       value={{
         ...state,
         logFood,
+        logWater,
+        undoLastWater,
         resetDailyStats,
         getXPForNextLevel,
         getCaloriesRemaining,

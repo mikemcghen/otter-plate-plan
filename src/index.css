@@ -533,4 +533,50 @@ All colors MUST be HSL.
   .animate-ripple-slow {
     animation: ripple-slow 8s linear infinite;
   }
+
+  /* Water-specific animations */
+  @keyframes water-rise {
+    0% {
+      stroke-dashoffset: var(--circumference);
+    }
+    100% {
+      stroke-dashoffset: var(--target-offset);
+    }
+  }
+
+  @keyframes shimmer-horizontal {
+    0% {
+      background-position: -200% 0;
+    }
+    100% {
+      background-position: 200% 0;
+    }
+  }
+
+  @keyframes twinkle {
+    0%, 100% {
+      opacity: 0.3;
+      transform: scale(1);
+    }
+    50% {
+      opacity: 1;
+      transform: scale(1.2);
+    }
+  }
+
+  .animate-twinkle {
+    animation: twinkle 3s ease-in-out infinite;
+  }
+
+  @keyframes wave-flow {
+    0% {
+      transform: translateX(0) translateY(0);
+    }
+    50% {
+      transform: translateX(-2%) translateY(2px);
+    }
+    100% {
+      transform: translateX(0) translateY(0);
+    }
+  }
 }

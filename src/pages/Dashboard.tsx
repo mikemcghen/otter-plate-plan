@@ -13,6 +13,9 @@ import { MacroRing } from "@/components/MacroRing";
 import { SnackSuggestionBubble } from "@/components/SnackSuggestionBubble";
 import { FriendWaveChip } from "@/components/FriendWaveChip";
 import { OttrAffirmation } from "@/components/OttrAffirmation";
+import { OceanWaves } from "@/components/OceanWaves";
+import { OttrEnvironment } from "@/components/OttrEnvironment";
+import { WaterLogModal } from "@/components/WaterLogModal";
 import { Droplet, Apple, BookOpen } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 import { useHaptics } from "@/hooks/useHaptics";
@@ -31,6 +34,7 @@ const Dashboard = () => {
   } = appContext;
 
   const [showQuickLog, setShowQuickLog] = useState(false);
+  const [showWaterModal, setShowWaterModal] = useState(false);
   const [userName, setUserName] = useState("Friend");
   const [showWaterRipple, setShowWaterRipple] = useState(false);
   const [greetingMessage, setGreetingMessage] = useState<string | null>(null);
@@ -92,9 +96,10 @@ const Dashboard = () => {
   const proteinPercentage = (appContext.proteinConsumed / appContext.proteinTarget) * 100;
   const carbsPercentage = (appContext.carbsConsumed / appContext.carbsTarget) * 100;
   const fatPercentage = (appContext.fatConsumed / appContext.fatTarget) * 100;
+  const waterPercentage = (appContext.waterConsumed / appContext.waterTarget) * 100;
 
   // Check if rings are complete
-  const ringsComplete = caloriePercentage >= 100 && proteinPercentage >= 100 && carbsPercentage >= 100 && fatPercentage >= 100;
+  const ringsComplete = caloriePercentage >= 100 && proteinPercentage >= 100 && carbsPercentage >= 100 && fatPercentage >= 100 && waterPercentage >= 100;
 
   // Trigger ripple when rings complete
   useEffect(() => {
@@ -160,14 +165,40 @@ const Dashboard = () => {
     
     if (quest === 'hydration') {
       setHydrationComplete(true);
+      appContext.awardXP(10, "hydration_quest");
       toast({ title: "Hydration Hero! 💧", description: "+10 XP" });
     } else if (quest === 'snack') {
       setSnackComplete(true);
+      appContext.awardXP(10, "snack_quest");
       toast({ title: "Snack Explorer! 🍓", description: "+10 XP" });
     } else {
       setReflectionComplete(true);
+      appContext.awardXP(10, "reflection_quest");
       toast({ title: "Reflection Ripple! 🌊", description: "+10 XP" });
     }
+  };
+
+  const handleLogWater = async (amount: number) => {
+    await impact();
+    appContext.logWater(amount);
+    
+    const newPercentage = ((appContext.waterConsumed + amount) / appContext.waterTarget) * 100;
+    
+    // Trigger ripple if just completed
+    if (newPercentage >= 100 && waterPercentage < 100) {
+      setShowWaterRipple(true);
+      setTimeout(() => setShowWaterRipple(false), 2000);
+    }
+    
+    toast({
+      title: "Water logged! 💧",
+      description: `+${amount}ml • +5 XP`,
+    });
+  };
+
+  const handleOpenWaterModal = async () => {
+    await impact();
+    setShowWaterModal(true);
   };
 
   return (
@@ -194,10 +225,20 @@ const Dashboard = () => {
         onLog={handleQuickLogFood}
       />
 
+      {/* Water Log Modal */}
+      <WaterLogModal
+        open={showWaterModal}
+        onOpenChange={setShowWaterModal}
+        currentWater={appContext.waterConsumed}
+        targetWater={appContext.waterTarget}
+        onLogWater={handleLogWater}
+        onUndoWater={appContext.undoLastWater}
+      />
+
       <PullToRefresh onRefresh={handleRefresh}>
         <main className="relative max-w-md mx-auto px-6 pt-8 pb-8 space-y-6">
           
-          {/* Header Zone - Greeting above Ottr */}
+          {/* Header Zone - Greeting + Ottr on Environment */}
           <section className="text-center space-y-4 animate-fade-in">
             {greetingMessage && (
               <>
@@ -211,12 +252,17 @@ const Dashboard = () => {
                     </p>
                   )}
                 </div>
-                <div className="flex justify-center">
-                  <div className="w-24 h-24">
+                
+                {/* Ottr on Environment Platform */}
+                <div className="relative flex flex-col items-center gap-0">
+                  <div className="relative w-20 h-20 z-20">
                     <OtterMascot 
                       mood={otterState.mood}
                       animate={true}
                     />
+                  </div>
+                  <div className="-mt-6 z-10">
+                    <OttrEnvironment timeOfDay={timeOfDay} />
                   </div>
                 </div>
               </>
@@ -258,18 +304,21 @@ const Dashboard = () => {
             </div>
           </section>
 
-          {/* Core Tracker Zone - Calorie & Macro Rings */}
-          <section className="space-y-6 py-4">
-            {/* Main Calorie Ring */}
+          {/* Core Tracker Zone - Orbital Ring Layout */}
+          <section className="space-y-6 py-8 relative">
+            {/* Backdrop blur for readability */}
+            <div className="absolute inset-0 bg-background/40 backdrop-blur-sm rounded-3xl -z-10" />
+            
+            {/* Main Calorie Ring (Center) */}
             <div className="flex justify-center relative">
               <div className={cn(
-                "relative transition-all duration-400",
+                "relative transition-all duration-300",
                 ringsComplete && "animate-[glow-pulse_2s_ease-in-out_infinite]"
               )}>
                 <CircularProgress
                   percentage={caloriePercentage}
-                  size={220}
-                  strokeWidth={16}
+                  size={200}
+                  strokeWidth={14}
                   label="Calories"
                   value={`${Math.round(caloriesConsumed)} / ${caloriesTarget}`}
                   status={caloriePercentage >= 100 ? "success" : "normal"}
@@ -278,11 +327,12 @@ const Dashboard = () => {
               </div>
             </div>
 
-            {/* Orbiting Macro Rings + Snack Suggestion Bubble */}
-            <div className="grid grid-cols-3 gap-3 px-4 relative">
+            {/* Orbiting Stat Rings - 2x2 Grid Around Center */}
+            <div className="grid grid-cols-2 gap-x-12 gap-y-6 max-w-xs mx-auto relative">
+              {/* Top-left: Protein */}
               <button 
                 onClick={handleQuickLog}
-                className="transition-transform active:scale-95"
+                className="transition-transform active:scale-95 justify-self-end"
               >
                 <MacroRing
                   label="Protein"
@@ -292,9 +342,25 @@ const Dashboard = () => {
                   unit="g"
                 />
               </button>
+
+              {/* Top-right: Water */}
+              <button 
+                onClick={handleOpenWaterModal}
+                className="transition-transform active:scale-95 justify-self-start"
+              >
+                <MacroRing
+                  label="Water"
+                  current={Math.round(appContext.waterConsumed)}
+                  target={appContext.waterTarget}
+                  color="#06b6d4"
+                  unit="ml"
+                />
+              </button>
+
+              {/* Bottom-left: Carbs */}
               <button 
                 onClick={handleQuickLog}
-                className="transition-transform active:scale-95"
+                className="transition-transform active:scale-95 justify-self-end"
               >
                 <MacroRing
                   label="Carbs"
@@ -304,9 +370,11 @@ const Dashboard = () => {
                   unit="g"
                 />
               </button>
+
+              {/* Bottom-right: Fat */}
               <button 
                 onClick={handleQuickLog}
-                className="transition-transform duration-300 active:scale-95"
+                className="transition-transform active:scale-95 justify-self-start"
               >
                 <MacroRing
                   label="Fat"
@@ -316,8 +384,10 @@ const Dashboard = () => {
                   unit="g"
                 />
               </button>
-              
-              {/* Snack Suggestion Bubble */}
+            </div>
+            
+            {/* Snack Suggestion Bubble - positioned near rings */}
+            <div className="absolute -bottom-4 left-1/2 -translate-x-1/2">
               <SnackSuggestionBubble 
                 caloriesConsumed={caloriesConsumed}
                 caloriesTarget={caloriesTarget}
@@ -325,8 +395,11 @@ const Dashboard = () => {
             </div>
           </section>
 
+          {/* Ocean Waves - positioned above Daily Focus */}
+          <OceanWaves timeOfDay={timeOfDay} />
+
           {/* Micro-Quests Section */}
-          <section className="space-y-3">
+          <section className="space-y-3 relative z-10">
             <h2 className="text-sm font-medium text-muted-foreground px-2">Daily Focus</h2>
             <div className="grid grid-cols-1 gap-3">
               {/* Hydration Quest */}

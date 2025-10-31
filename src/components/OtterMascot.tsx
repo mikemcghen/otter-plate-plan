@@ -80,7 +80,7 @@ export const OtterMascot = ({
         <img
           src={otterImages[mood]}
           alt={`Otter is ${mood}`}
-          className="w-40 h-40 object-contain drop-shadow-2xl relative z-10"
+          className="w-full h-full object-contain drop-shadow-2xl relative z-10"
           style={{
             filter: mood === "sleepy" ? "brightness(0.9)" : "brightness(1)",
           }}

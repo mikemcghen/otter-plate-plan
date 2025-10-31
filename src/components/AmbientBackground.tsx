@@ -17,43 +17,73 @@ export const AmbientBackground = ({ timeOfDay, progressPercentage }: AmbientBack
   const getGradient = () => {
     const isHighProgress = progressPercentage >= 80;
 
-    // Enhanced time-of-day gradients (more vivid, better contrast)
+    // Living Cove: Ocean-in-a-cave gradients (deeper, more immersive)
     const timeGradients = {
       morning: {
-        base: "from-purple-200/50 via-orange-100/40 to-pink-100/30",
-        dark: "dark:from-purple-900/25 dark:via-orange-900/20 dark:to-purple-800/15",
+        base: "from-purple-300/40 via-orange-200/35 to-pink-200/30",
+        dark: "dark:from-purple-900/35 dark:via-indigo-900/30 dark:to-purple-800/25",
+        accent: isHighProgress ? "from-amber-300/20" : "",
       },
       afternoon: {
-        base: "from-blue-100/40 via-purple-100/35 to-blue-200/30",
-        dark: "dark:from-blue-900/20 dark:via-purple-900/15 dark:to-blue-800/10",
+        base: "from-cyan-200/35 via-blue-200/30 to-purple-200/25",
+        dark: "dark:from-blue-900/30 dark:via-cyan-900/25 dark:to-indigo-800/20",
+        accent: isHighProgress ? "from-sky-300/15" : "",
       },
       evening: {
-        base: "from-indigo-200/45 via-purple-200/40 to-blue-300/35",
-        dark: "dark:from-indigo-900/25 dark:via-purple-900/20 dark:to-blue-900/15",
+        base: "from-indigo-300/40 via-purple-300/35 to-blue-400/30",
+        dark: "dark:from-indigo-900/35 dark:via-purple-900/30 dark:to-blue-900/25",
+        accent: isHighProgress ? "from-violet-300/20" : "",
       },
       night: {
-        base: "from-indigo-300/35 via-purple-300/30 to-slate-300/25",
-        dark: "dark:from-indigo-950/30 dark:via-purple-950/25 dark:to-slate-950/20",
+        base: "from-indigo-400/30 via-purple-400/25 to-slate-400/20",
+        dark: "dark:from-indigo-950/40 dark:via-purple-950/35 dark:to-slate-950/30",
+        accent: isHighProgress ? "from-blue-400/15" : "",
       },
     };
 
     const gradient = timeGradients[timeOfDay];
-    
-    // Add warm glow when high progress
-    if (isHighProgress) {
-      return `${gradient.base} ${gradient.dark}`;
-    }
-    
-    return `${gradient.base} ${gradient.dark}`;
+    return `${gradient.base} ${gradient.dark} ${gradient.accent}`;
   };
 
   return (
     <div className="fixed inset-0 -z-10 overflow-hidden">
-      {/* Base gradient layer */}
+      {/* Base gradient layer - Ocean-in-a-cave */}
       <div 
         className={`absolute inset-0 bg-gradient-to-br transition-all duration-[6000ms] ease-in-out ${getGradient()}`}
         style={{ opacity: mounted ? 1 : 0 }}
       />
+
+      {/* Light rays from above */}
+      <div 
+        className="absolute inset-0 opacity-20 pointer-events-none"
+        style={{
+          background: timeOfDay === "morning" 
+            ? "radial-gradient(ellipse at 50% 0%, rgba(251, 146, 60, 0.25) 0%, transparent 60%)"
+            : timeOfDay === "afternoon"
+            ? "radial-gradient(ellipse at 50% 0%, rgba(96, 165, 250, 0.2) 0%, transparent 60%)"
+            : timeOfDay === "evening"
+            ? "radial-gradient(ellipse at 50% 0%, rgba(129, 140, 248, 0.25) 0%, transparent 60%)"
+            : "radial-gradient(ellipse at 50% 0%, rgba(147, 197, 253, 0.15) 0%, transparent 60%)",
+          animation: "breathing 8s ease-in-out infinite",
+        }}
+      />
+
+      {/* Twinkling stars (night only) */}
+      {timeOfDay === "night" && (
+        <div className="absolute inset-0 overflow-hidden opacity-60">
+          {[...Array(8)].map((_, i) => (
+            <div
+              key={i}
+              className="absolute w-1 h-1 rounded-full bg-blue-100 animate-twinkle"
+              style={{
+                left: `${(i * 13 + 10)}%`,
+                top: `${(i * 7 + 5)}%`,
+                animationDelay: `${i * 0.4}s`,
+              }}
+            />
+          ))}
+        </div>
+      )}
 
       {/* Ambient motion layer 1: Pulsing light */}
       <div 
