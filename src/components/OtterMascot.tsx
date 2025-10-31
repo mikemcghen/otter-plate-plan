@@ -73,14 +73,14 @@ export const OtterMascot = ({
       } ${className}`}
     >
       <div className={`relative transition-all duration-[2500ms] ${getAnimationClass()}`}>
-        {/* Shadow layer for depth */}
-        <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-24 h-4 bg-foreground/5 rounded-full blur-md" />
+        {/* Soft ground shadow - positioned naturally */}
+        <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 w-20 h-3 bg-foreground/8 rounded-full blur-lg" />
         
-        {/* Ottr image */}
+        {/* Ottr image - positioned to sit on environment */}
         <img
           src={otterImages[mood]}
           alt={`Otter is ${mood}`}
-          className="w-40 h-40 object-contain drop-shadow-2xl relative z-10"
+          className="w-32 h-32 object-contain drop-shadow-2xl relative z-20"
           style={{
             filter: mood === "sleepy" ? "brightness(0.9)" : "brightness(1)",
           }}
@@ -94,6 +94,24 @@ export const OtterMascot = ({
         {/* Resting moonlight for sleepy mood */}
         {mood === "sleepy" && (
           <div className="absolute inset-0 bg-blue-400/10 rounded-full blur-2xl -z-10 animate-breathing" />
+        )}
+        
+        {/* Celebration particles for joyful mood */}
+        {mood === "joyful" && (
+          <>
+            <div 
+              className="absolute -top-2 -right-2 text-2xl z-30"
+              style={{ animation: "float-up 2s ease-out infinite" }}
+            >
+              ✨
+            </div>
+            <div 
+              className="absolute -top-1 -left-3 text-xl z-30"
+              style={{ animation: "float-up 2.5s ease-out infinite", animationDelay: "0.5s" }}
+            >
+              💜
+            </div>
+          </>
         )}
       </div>
       

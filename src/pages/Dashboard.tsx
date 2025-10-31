@@ -4,6 +4,8 @@ import { useAuth } from "@/contexts/AuthContext";
 import { AmbientBackground } from "@/components/AmbientBackground";
 import { OtterMascot } from "@/components/OtterMascot";
 import type { OtterMood } from "@/components/OtterMascot";
+import { OceanWaves } from "@/components/OceanWaves";
+import { OttrEnvironment } from "@/components/OttrEnvironment";
 import { useAppContext } from "@/contexts/AppContext";
 import { MobileBottomNav } from "@/components/MobileBottomNav";
 import { PullToRefresh } from "@/components/PullToRefresh";
@@ -197,26 +199,36 @@ const Dashboard = () => {
       <PullToRefresh onRefresh={handleRefresh}>
         <main className="relative max-w-md mx-auto px-6 pt-8 pb-8 space-y-6">
           
-          {/* Header Zone - Greeting above Ottr */}
-          <section className="text-center space-y-4 animate-fade-in">
+          {/* Header Zone - Greeting above Ottr with Environment */}
+          <section className="text-center space-y-4 animate-fade-in relative">
             {greetingMessage && (
               <>
-                <div className="space-y-1">
-                  <h1 className="text-xl font-semibold text-foreground">
+                <div className="space-y-1 relative z-10">
+                  <h1 className="text-xl font-semibold text-foreground drop-shadow-sm">
                     {greetingMessage}
                   </h1>
                   {subGreeting && (
-                    <p className="text-sm text-muted-foreground">
+                    <p className="text-sm text-muted-foreground drop-shadow-sm">
                       {subGreeting}
                     </p>
                   )}
                 </div>
-                <div className="flex justify-center">
-                  <div className="w-24 h-24">
-                    <OtterMascot 
-                      mood={otterState.mood}
-                      animate={true}
-                    />
+                
+                {/* Ottr Environment + Mascot Layer */}
+                <div className="flex justify-center relative">
+                  <div className="relative w-48 h-36">
+                    {/* Environment element (rock/driftwood/sandbar) */}
+                    <div className="absolute bottom-4 left-1/2 -translate-x-1/2">
+                      <OttrEnvironment timeOfDay={timeOfDay} />
+                    </div>
+                    
+                    {/* Ottr sitting on environment */}
+                    <div className="absolute bottom-0 left-1/2 -translate-x-1/2 z-10">
+                      <OtterMascot 
+                        mood={otterState.mood}
+                        animate={true}
+                      />
+                    </div>
                   </div>
                 </div>
               </>
@@ -258,14 +270,17 @@ const Dashboard = () => {
             </div>
           </section>
 
-          {/* Core Tracker Zone - Calorie & Macro Rings */}
+          {/* Core Tracker Zone - Calorie & Macro Rings (embedded in environment) */}
           <section className="space-y-6 py-4">
-            {/* Main Calorie Ring */}
+            {/* Main Calorie Ring - with soft blur backdrop */}
             <div className="flex justify-center relative">
               <div className={cn(
                 "relative transition-all duration-400",
                 ringsComplete && "animate-[glow-pulse_2s_ease-in-out_infinite]"
               )}>
+                {/* Soft backdrop blur for readability */}
+                <div className="absolute inset-0 -m-8 bg-background/30 backdrop-blur-md rounded-full -z-10" />
+                
                 <CircularProgress
                   percentage={caloriePercentage}
                   size={220}
@@ -325,9 +340,14 @@ const Dashboard = () => {
             </div>
           </section>
 
-          {/* Micro-Quests Section */}
-          <section className="space-y-3">
-            <h2 className="text-sm font-medium text-muted-foreground px-2">Daily Focus</h2>
+          {/* Ocean Waves - Foreground layer above Daily Focus */}
+          <div className="relative -mx-6 pointer-events-none">
+            <OceanWaves timeOfDay={timeOfDay} />
+          </div>
+
+          {/* Micro-Quests Section - Rest on water surface */}
+          <section className="space-y-3 relative">
+            <h2 className="text-sm font-medium text-muted-foreground px-2 drop-shadow-sm">Daily Focus</h2>
             <div className="grid grid-cols-1 gap-3">
               {/* Hydration Quest */}
               <button
