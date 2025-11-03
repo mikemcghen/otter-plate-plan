@@ -318,15 +318,15 @@ const Dashboard = () => {
                 />
               </div>
 
-              {/* Satellite Rings - Orbital Positioning */}
+              {/* Satellite Rings - Circular Orbital Positioning */}
               
-              {/* Top-Left: Protein */}
+              {/* 10 o'clock: Protein (upper-left) */}
               <button 
                 onClick={handleQuickLog}
                 className="absolute transition-transform active:scale-95 drop-shadow-lg"
                 style={{
-                  top: '10%',
-                  left: '10%',
+                  top: '18%',
+                  left: '8%',
                 }}
               >
                 <MacroRing
@@ -338,13 +338,13 @@ const Dashboard = () => {
                 />
               </button>
 
-              {/* Top-Right: Water */}
+              {/* 2 o'clock: Water (upper-right) */}
               <button 
                 onClick={handleOpenWaterModal}
                 className="absolute transition-transform active:scale-95 drop-shadow-lg"
                 style={{
-                  top: '10%',
-                  right: '10%',
+                  top: '18%',
+                  right: '8%',
                 }}
               >
                 <MacroRing
@@ -356,13 +356,13 @@ const Dashboard = () => {
                 />
               </button>
 
-              {/* Bottom-Left: Carbs */}
+              {/* 8 o'clock: Carbs (lower-left) */}
               <button 
                 onClick={handleQuickLog}
                 className="absolute transition-transform active:scale-95 drop-shadow-lg"
                 style={{
-                  bottom: '10%',
-                  left: '10%',
+                  bottom: '18%',
+                  left: '8%',
                 }}
               >
                 <MacroRing
@@ -374,13 +374,13 @@ const Dashboard = () => {
                 />
               </button>
 
-              {/* Bottom-Right: Fat */}
+              {/* 4 o'clock: Fat (lower-right) */}
               <button 
                 onClick={handleQuickLog}
                 className="absolute transition-transform active:scale-95 drop-shadow-lg"
                 style={{
-                  bottom: '10%',
-                  right: '10%',
+                  bottom: '18%',
+                  right: '8%',
                 }}
               >
                 <MacroRing
