@@ -299,7 +299,7 @@ const Dashboard = () => {
           </section>
 
           {/* Core Tracker Zone - Circular Orbital Ring Layout */}
-          <div className="pt-5 pb-5 relative w-full max-w-md mx-auto" style={{ minHeight: '480px' }}>
+          <div className="-mt-8 -mb-4 relative w-full max-w-md mx-auto" style={{ minHeight: '480px' }}>
             {/* Orbital Container */}
             <div className="relative w-full h-full flex items-center justify-center">
               
