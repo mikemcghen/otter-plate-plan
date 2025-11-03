@@ -14,6 +14,7 @@ import { SnackSuggestionBubble } from "@/components/SnackSuggestionBubble";
 import { FriendWaveChip } from "@/components/FriendWaveChip";
 import { OttrAffirmation } from "@/components/OttrAffirmation";
 import { WaterLogModal } from "@/components/WaterLogModal";
+import { OttrFoodSuggestion } from "@/components/OttrFoodSuggestion";
 import { Droplet, Apple, BookOpen } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 import { useHaptics } from "@/hooks/useHaptics";
@@ -417,6 +418,15 @@ const Dashboard = () => {
               />
             </div>
           </div>
+
+          {/* Ottr's Pick for You Section */}
+          <OttrFoodSuggestion
+            caloriesRemaining={appContext.getCaloriesRemaining()}
+            proteinRemaining={appContext.proteinTarget - appContext.proteinConsumed}
+            carbsRemaining={appContext.carbsTarget - appContext.carbsConsumed}
+            fatRemaining={appContext.fatTarget - appContext.fatConsumed}
+            onLogFood={handleQuickLogFood}
+          />
 
           {/* Micro-Quests Section */}
           <section className="space-y-3 relative z-10">
