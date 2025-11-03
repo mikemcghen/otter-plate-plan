@@ -327,7 +327,7 @@ const Dashboard = () => {
                 style={{
                   top: '50%',
                   left: '50%',
-                  transform: 'translate(calc(-50% - 80px), calc(-50% - 60px))',
+                  transform: 'translate(calc(-50% - 120px), calc(-50% - 100px))',
                 }}
               >
                 <MacroRing
@@ -346,7 +346,7 @@ const Dashboard = () => {
                 style={{
                   top: '50%',
                   left: '50%',
-                  transform: 'translate(calc(-50% + 80px), calc(-50% - 60px))',
+                  transform: 'translate(calc(-50% + 120px), calc(-50% - 100px))',
                 }}
               >
                 <MacroRing
@@ -365,7 +365,7 @@ const Dashboard = () => {
                 style={{
                   top: '50%',
                   left: '50%',
-                  transform: 'translate(calc(-50% - 80px), calc(-50% + 70px))',
+                  transform: 'translate(calc(-50% - 120px), calc(-50% + 110px))',
                 }}
               >
                 <MacroRing
@@ -384,7 +384,7 @@ const Dashboard = () => {
                 style={{
                   top: '50%',
                   left: '50%',
-                  transform: 'translate(calc(-50% + 80px), calc(-50% + 70px))',
+                  transform: 'translate(calc(-50% + 120px), calc(-50% + 110px))',
                 }}
               >
                 <MacroRing
