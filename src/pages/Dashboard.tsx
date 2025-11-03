@@ -13,8 +13,6 @@ import { MacroRing } from "@/components/MacroRing";
 import { SnackSuggestionBubble } from "@/components/SnackSuggestionBubble";
 import { FriendWaveChip } from "@/components/FriendWaveChip";
 import { OttrAffirmation } from "@/components/OttrAffirmation";
-import { OceanWaves } from "@/components/OceanWaves";
-import { OttrEnvironment } from "@/components/OttrEnvironment";
 import { WaterLogModal } from "@/components/WaterLogModal";
 import { Droplet, Apple, BookOpen } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
@@ -253,17 +251,12 @@ const Dashboard = () => {
                   )}
                 </div>
                 
-                {/* Ottr on Environment Platform */}
-                <div className="relative flex flex-col items-center gap-0">
-                  <div className="relative w-20 h-20 z-20">
-                    <OtterMascot 
-                      mood={otterState.mood}
-                      animate={true}
-                    />
-                  </div>
-                  <div className="-mt-6 z-10">
-                    <OttrEnvironment timeOfDay={timeOfDay} />
-                  </div>
+                {/* Ottr Mascot */}
+                <div className="relative w-20 h-20 mx-auto">
+                  <OtterMascot 
+                    mood={otterState.mood}
+                    animate={true}
+                  />
                 </div>
               </>
             )}
@@ -395,9 +388,6 @@ const Dashboard = () => {
               />
             </div>
           </section>
-
-          {/* Ocean Waves - positioned above Daily Focus */}
-          <OceanWaves timeOfDay={timeOfDay} />
 
           {/* Micro-Quests Section */}
           <section className="space-y-3 relative z-10">
