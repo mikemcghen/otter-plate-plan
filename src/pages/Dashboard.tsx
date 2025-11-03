@@ -297,41 +297,14 @@ const Dashboard = () => {
             </div>
           </section>
 
-          {/* Core Tracker Zone - Orbital Ring Layout */}
-          <div className="py-8 relative max-w-xs mx-auto">
-            {/* Top Row: Protein and Water - Above Main Ring */}
-            <div className="flex justify-center gap-12 mb-2">
-              <button 
-                onClick={handleQuickLog}
-                className="transition-transform active:scale-95"
-              >
-                <MacroRing
-                  label="Protein"
-                  current={Math.round(appContext.proteinConsumed)}
-                  target={appContext.proteinTarget}
-                  color="#3b82f6"
-                  unit="g"
-                />
-              </button>
-
-              <button 
-                onClick={handleOpenWaterModal}
-                className="transition-transform active:scale-95"
-              >
-                <MacroRing
-                  label="Water"
-                  current={Math.round(appContext.waterConsumed)}
-                  target={appContext.waterTarget}
-                  color="#06b6d4"
-                  unit="ml"
-                />
-              </button>
-            </div>
-
-            {/* Main Calorie Ring (Center) */}
-            <div className="flex justify-center relative my-4">
+          {/* Core Tracker Zone - Circular Orbital Ring Layout */}
+          <div className="py-12 relative w-full max-w-md mx-auto" style={{ minHeight: '450px' }}>
+            {/* Orbital Container */}
+            <div className="relative w-full h-full flex items-center justify-center">
+              
+              {/* Main Calorie Ring (Center) */}
               <div className={cn(
-                "relative transition-all duration-300",
+                "relative z-10 transition-all duration-300",
                 ringsComplete && "animate-[glow-pulse_2s_ease-in-out_infinite]"
               )}>
                 <CircularProgress
@@ -344,13 +317,53 @@ const Dashboard = () => {
                   showGlow={ringsComplete}
                 />
               </div>
-            </div>
 
-            {/* Bottom Row: Carbs and Fat */}
-            <div className="flex justify-center gap-12 mt-2">
+              {/* Satellite Rings - Orbital Positioning */}
+              
+              {/* Top-Left: Protein */}
               <button 
                 onClick={handleQuickLog}
-                className="transition-transform active:scale-95"
+                className="absolute transition-transform active:scale-95 drop-shadow-lg"
+                style={{
+                  top: '10%',
+                  left: '10%',
+                }}
+              >
+                <MacroRing
+                  label="Protein"
+                  current={Math.round(appContext.proteinConsumed)}
+                  target={appContext.proteinTarget}
+                  color="#8b5cf6"
+                  unit="g"
+                />
+              </button>
+
+              {/* Top-Right: Water */}
+              <button 
+                onClick={handleOpenWaterModal}
+                className="absolute transition-transform active:scale-95 drop-shadow-lg"
+                style={{
+                  top: '10%',
+                  right: '10%',
+                }}
+              >
+                <MacroRing
+                  label="Water"
+                  current={Math.round(appContext.waterConsumed)}
+                  target={appContext.waterTarget}
+                  color="#06b6d4"
+                  unit="ml"
+                />
+              </button>
+
+              {/* Bottom-Left: Carbs */}
+              <button 
+                onClick={handleQuickLog}
+                className="absolute transition-transform active:scale-95 drop-shadow-lg"
+                style={{
+                  bottom: '10%',
+                  left: '10%',
+                }}
               >
                 <MacroRing
                   label="Carbs"
@@ -361,9 +374,14 @@ const Dashboard = () => {
                 />
               </button>
 
+              {/* Bottom-Right: Fat */}
               <button 
                 onClick={handleQuickLog}
-                className="transition-transform active:scale-95"
+                className="absolute transition-transform active:scale-95 drop-shadow-lg"
+                style={{
+                  bottom: '10%',
+                  right: '10%',
+                }}
               >
                 <MacroRing
                   label="Fat"
@@ -373,10 +391,22 @@ const Dashboard = () => {
                   unit="g"
                 />
               </button>
+
+              {/* Orbital Glow Effect - appears when all rings complete */}
+              {ringsComplete && (
+                <div className="absolute inset-0 pointer-events-none">
+                  <div 
+                    className="absolute inset-0 rounded-full animate-pulse"
+                    style={{
+                      background: "radial-gradient(circle, rgba(139, 92, 246, 0.1) 0%, transparent 70%)",
+                    }}
+                  />
+                </div>
+              )}
             </div>
             
-            {/* Snack Suggestion Bubble - positioned near rings */}
-            <div className="absolute -bottom-4 left-1/2 -translate-x-1/2">
+            {/* Snack Suggestion Bubble - positioned below orbital system */}
+            <div className="absolute -bottom-8 left-1/2 -translate-x-1/2">
               <SnackSuggestionBubble 
                 caloriesConsumed={caloriesConsumed}
                 caloriesTarget={caloriesTarget}
