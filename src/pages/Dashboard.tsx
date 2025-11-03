@@ -235,10 +235,10 @@ const Dashboard = () => {
       />
 
       <PullToRefresh onRefresh={handleRefresh}>
-        <main className="relative max-w-md mx-auto px-6 pt-6 pb-8">
+        <main className="relative max-w-md mx-auto px-6 pt-4 pb-8">
           
           {/* 1. Greeting + Environment Text */}
-          <section className="text-center space-y-1 animate-fade-in mb-4">
+          <section className="text-center space-y-1 animate-fade-in mb-2">
             {greetingMessage && (
               <>
                 <h1 className="text-xl font-semibold text-foreground">
@@ -254,7 +254,7 @@ const Dashboard = () => {
           </section>
           
           {/* 2. Ottr Mascot Section with Level & Streak */}
-          <section className="relative mb-3">
+          <section className="relative -mt-2 mb-2">
             {/* Ottr centered */}
             <div className="relative w-20 h-20 mx-auto">
               <OtterMascot 
@@ -276,14 +276,14 @@ const Dashboard = () => {
           </section>
           
           {/* 3. XP Bar & Friend Wave Chip */}
-          <section className="space-y-2 mb-6">
+          <section className="space-y-2 mb-4">
             {/* Friend Wave Chip */}
             <div className="flex justify-center">
               <FriendWaveChip waveCount={3} friendName="Alex" />
             </div>
             
             {/* XP Progress Bar */}
-            <div className="px-2">
+            <div className="px-6">
               <div className="relative h-3 bg-secondary/50 rounded-full overflow-hidden border border-border/30">
                 <div 
                   className="absolute inset-y-0 left-0 bg-gradient-to-r from-primary to-primary/80 rounded-full transition-all duration-500"
@@ -299,8 +299,8 @@ const Dashboard = () => {
           </section>
 
           {/* 4. Ring Cluster - Centerpiece Section */}
-          <section className="relative mb-6 flex items-center justify-center">
-            <div className="relative mx-auto" style={{ width: '440px', height: '410px' }}>
+          <section className="relative mb-7 flex items-center justify-center">
+            <div className="relative mx-auto" style={{ width: '440px', height: '400px' }}>
             {/* Orbital Container */}
             <div className="absolute inset-0 flex items-center justify-center">
               
@@ -329,7 +329,7 @@ const Dashboard = () => {
                 style={{
                   top: '50%',
                   left: '50%',
-                  transform: 'translate(calc(-50% - 120px), calc(-50% - 100px))',
+                  transform: 'translate(calc(-50% - 115px), calc(-50% - 95px))',
                 }}
               >
                 <MacroRing
@@ -348,7 +348,7 @@ const Dashboard = () => {
                 style={{
                   top: '50%',
                   left: '50%',
-                  transform: 'translate(calc(-50% + 120px), calc(-50% - 100px))',
+                  transform: 'translate(calc(-50% + 115px), calc(-50% - 95px))',
                 }}
               >
                 <MacroRing
@@ -367,7 +367,7 @@ const Dashboard = () => {
                 style={{
                   top: '50%',
                   left: '50%',
-                  transform: 'translate(calc(-50% - 120px), calc(-50% + 110px))',
+                  transform: 'translate(calc(-50% - 115px), calc(-50% + 105px))',
                 }}
               >
                 <MacroRing
@@ -386,7 +386,7 @@ const Dashboard = () => {
                 style={{
                   top: '50%',
                   left: '50%',
-                  transform: 'translate(calc(-50% + 120px), calc(-50% + 110px))',
+                  transform: 'translate(calc(-50% + 115px), calc(-50% + 105px))',
                 }}
               >
                 <MacroRing
@@ -422,7 +422,7 @@ const Dashboard = () => {
           </section>
 
           {/* 5. Ottr's Pick for You Section */}
-          <section className="mb-5">
+          <section className="mb-4">
             <OttrFoodSuggestion
               caloriesRemaining={appContext.getCaloriesRemaining()}
               proteinRemaining={appContext.proteinTarget - appContext.proteinConsumed}
@@ -433,7 +433,7 @@ const Dashboard = () => {
           </section>
 
           {/* 6. Daily Focus Section */}
-          <section className="space-y-3">
+          <section className="space-y-2">
             <h2 className="text-sm font-medium text-muted-foreground px-2">Daily Focus</h2>
             <div className="grid grid-cols-1 gap-3">
               {/* Hydration Quest */}
