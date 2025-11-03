@@ -325,8 +325,9 @@ const Dashboard = () => {
                 onClick={handleQuickLog}
                 className="absolute transition-transform active:scale-95 drop-shadow-lg"
                 style={{
-                  top: '18%',
-                  left: '8%',
+                  top: '50%',
+                  left: '50%',
+                  transform: 'translate(calc(-50% - 80px), calc(-50% - 60px))',
                 }}
               >
                 <MacroRing
@@ -343,8 +344,9 @@ const Dashboard = () => {
                 onClick={handleOpenWaterModal}
                 className="absolute transition-transform active:scale-95 drop-shadow-lg"
                 style={{
-                  top: '18%',
-                  right: '8%',
+                  top: '50%',
+                  left: '50%',
+                  transform: 'translate(calc(-50% + 80px), calc(-50% - 60px))',
                 }}
               >
                 <MacroRing
@@ -361,8 +363,9 @@ const Dashboard = () => {
                 onClick={handleQuickLog}
                 className="absolute transition-transform active:scale-95 drop-shadow-lg"
                 style={{
-                  bottom: '18%',
-                  left: '8%',
+                  top: '50%',
+                  left: '50%',
+                  transform: 'translate(calc(-50% - 80px), calc(-50% + 70px))',
                 }}
               >
                 <MacroRing
@@ -379,8 +382,9 @@ const Dashboard = () => {
                 onClick={handleQuickLog}
                 className="absolute transition-transform active:scale-95 drop-shadow-lg"
                 style={{
-                  bottom: '18%',
-                  right: '8%',
+                  top: '50%',
+                  left: '50%',
+                  transform: 'translate(calc(-50% + 80px), calc(-50% + 70px))',
                 }}
               >
                 <MacroRing
