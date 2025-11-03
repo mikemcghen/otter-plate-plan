@@ -298,86 +298,81 @@ const Dashboard = () => {
           </section>
 
           {/* Core Tracker Zone - Orbital Ring Layout */}
-          <section className="py-8 relative">
-            {/* Backdrop blur for readability */}
-            <div className="absolute inset-0 bg-background/40 backdrop-blur-sm rounded-3xl -z-10" />
-            
-            <div className="relative max-w-xs mx-auto">
-              {/* Top Row: Protein and Water - Above Main Ring */}
-              <div className="flex justify-center gap-12 mb-2">
-                <button 
-                  onClick={handleQuickLog}
-                  className="transition-transform active:scale-95"
-                >
-                  <MacroRing
-                    label="Protein"
-                    current={Math.round(appContext.proteinConsumed)}
-                    target={appContext.proteinTarget}
-                    color="#3b82f6"
-                    unit="g"
-                  />
-                </button>
+          <div className="py-8 relative max-w-xs mx-auto">
+            {/* Top Row: Protein and Water - Above Main Ring */}
+            <div className="flex justify-center gap-12 mb-2">
+              <button 
+                onClick={handleQuickLog}
+                className="transition-transform active:scale-95"
+              >
+                <MacroRing
+                  label="Protein"
+                  current={Math.round(appContext.proteinConsumed)}
+                  target={appContext.proteinTarget}
+                  color="#3b82f6"
+                  unit="g"
+                />
+              </button>
 
-                <button 
-                  onClick={handleOpenWaterModal}
-                  className="transition-transform active:scale-95"
-                >
-                  <MacroRing
-                    label="Water"
-                    current={Math.round(appContext.waterConsumed)}
-                    target={appContext.waterTarget}
-                    color="#06b6d4"
-                    unit="ml"
-                  />
-                </button>
+              <button 
+                onClick={handleOpenWaterModal}
+                className="transition-transform active:scale-95"
+              >
+                <MacroRing
+                  label="Water"
+                  current={Math.round(appContext.waterConsumed)}
+                  target={appContext.waterTarget}
+                  color="#06b6d4"
+                  unit="ml"
+                />
+              </button>
+            </div>
+
+            {/* Main Calorie Ring (Center) */}
+            <div className="flex justify-center relative my-4">
+              <div className={cn(
+                "relative transition-all duration-300",
+                ringsComplete && "animate-[glow-pulse_2s_ease-in-out_infinite]"
+              )}>
+                <CircularProgress
+                  percentage={caloriePercentage}
+                  size={200}
+                  strokeWidth={14}
+                  label="Calories"
+                  value={`${Math.round(caloriesConsumed)} / ${caloriesTarget}`}
+                  status={caloriePercentage >= 100 ? "success" : "normal"}
+                  showGlow={ringsComplete}
+                />
               </div>
+            </div>
 
-              {/* Main Calorie Ring (Center) */}
-              <div className="flex justify-center relative my-4">
-                <div className={cn(
-                  "relative transition-all duration-300",
-                  ringsComplete && "animate-[glow-pulse_2s_ease-in-out_infinite]"
-                )}>
-                  <CircularProgress
-                    percentage={caloriePercentage}
-                    size={200}
-                    strokeWidth={14}
-                    label="Calories"
-                    value={`${Math.round(caloriesConsumed)} / ${caloriesTarget}`}
-                    status={caloriePercentage >= 100 ? "success" : "normal"}
-                    showGlow={ringsComplete}
-                  />
-                </div>
-              </div>
+            {/* Bottom Row: Carbs and Fat */}
+            <div className="flex justify-center gap-12 mt-2">
+              <button 
+                onClick={handleQuickLog}
+                className="transition-transform active:scale-95"
+              >
+                <MacroRing
+                  label="Carbs"
+                  current={Math.round(appContext.carbsConsumed)}
+                  target={appContext.carbsTarget}
+                  color="#f97316"
+                  unit="g"
+                />
+              </button>
 
-              {/* Bottom Row: Carbs and Fat */}
-              <div className="flex justify-center gap-12 mt-2">
-                <button 
-                  onClick={handleQuickLog}
-                  className="transition-transform active:scale-95"
-                >
-                  <MacroRing
-                    label="Carbs"
-                    current={Math.round(appContext.carbsConsumed)}
-                    target={appContext.carbsTarget}
-                    color="#f97316"
-                    unit="g"
-                  />
-                </button>
-
-                <button 
-                  onClick={handleQuickLog}
-                  className="transition-transform active:scale-95"
-                >
-                  <MacroRing
-                    label="Fat"
-                    current={Math.round(appContext.fatConsumed)}
-                    target={appContext.fatTarget}
-                    color="#eab308"
-                    unit="g"
-                  />
-                </button>
-              </div>
+              <button 
+                onClick={handleQuickLog}
+                className="transition-transform active:scale-95"
+              >
+                <MacroRing
+                  label="Fat"
+                  current={Math.round(appContext.fatConsumed)}
+                  target={appContext.fatTarget}
+                  color="#eab308"
+                  unit="g"
+                />
+              </button>
             </div>
             
             {/* Snack Suggestion Bubble - positioned near rings */}
@@ -387,7 +382,7 @@ const Dashboard = () => {
                 caloriesTarget={caloriesTarget}
               />
             </div>
-          </section>
+          </div>
 
           {/* Micro-Quests Section */}
           <section className="space-y-3 relative z-10">
