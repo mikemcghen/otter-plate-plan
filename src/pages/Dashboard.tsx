@@ -254,7 +254,7 @@ const Dashboard = () => {
           </section>
           
           {/* 2. Ottr Mascot Section with Level & Streak */}
-          <section className="relative -mt-2 mb-2">
+          <section className="relative -mt-1 mb-2">
             {/* Ottr centered */}
             <div className="relative w-20 h-20 mx-auto">
               <OtterMascot 
@@ -299,8 +299,8 @@ const Dashboard = () => {
           </section>
 
           {/* 4. Ring Cluster - Centerpiece Section */}
-          <section className="relative mb-7 flex items-center justify-center">
-            <div className="relative mx-auto" style={{ width: '440px', height: '400px' }}>
+          <section className="relative mb-6 flex items-center justify-center">
+            <div className="relative mx-auto" style={{ width: '420px', height: '380px' }}>
             {/* Orbital Container */}
             <div className="absolute inset-0 flex items-center justify-center">
               
@@ -329,7 +329,7 @@ const Dashboard = () => {
                 style={{
                   top: '50%',
                   left: '50%',
-                  transform: 'translate(calc(-50% - 115px), calc(-50% - 95px))',
+                  transform: 'translate(calc(-50% - 110px), calc(-50% - 90px))',
                 }}
               >
                 <MacroRing
@@ -348,7 +348,7 @@ const Dashboard = () => {
                 style={{
                   top: '50%',
                   left: '50%',
-                  transform: 'translate(calc(-50% + 115px), calc(-50% - 95px))',
+                  transform: 'translate(calc(-50% + 110px), calc(-50% - 90px))',
                 }}
               >
                 <MacroRing
@@ -367,7 +367,7 @@ const Dashboard = () => {
                 style={{
                   top: '50%',
                   left: '50%',
-                  transform: 'translate(calc(-50% - 115px), calc(-50% + 105px))',
+                  transform: 'translate(calc(-50% - 110px), calc(-50% + 100px))',
                 }}
               >
                 <MacroRing
@@ -386,7 +386,7 @@ const Dashboard = () => {
                 style={{
                   top: '50%',
                   left: '50%',
-                  transform: 'translate(calc(-50% + 115px), calc(-50% + 105px))',
+                  transform: 'translate(calc(-50% + 110px), calc(-50% + 100px))',
                 }}
               >
                 <MacroRing
