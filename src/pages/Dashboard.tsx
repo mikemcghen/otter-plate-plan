@@ -299,7 +299,8 @@ const Dashboard = () => {
           </section>
 
           {/* Core Tracker Zone - Circular Orbital Ring Layout */}
-          <div className="-mt-8 -mb-4 relative w-full max-w-md mx-auto" style={{ minHeight: '480px' }}>
+          <div className="absolute w-full flex justify-center" style={{ top: '460px' }}>
+            <div className="relative w-full max-w-md" style={{ minHeight: '480px' }}>
             {/* Orbital Container */}
             <div className="relative w-full h-full flex items-center justify-center">
               
@@ -416,6 +417,7 @@ const Dashboard = () => {
                 caloriesConsumed={caloriesConsumed}
                 caloriesTarget={caloriesTarget}
               />
+            </div>
             </div>
           </div>
 
