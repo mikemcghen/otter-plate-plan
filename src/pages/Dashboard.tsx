@@ -299,10 +299,10 @@ const Dashboard = () => {
           </section>
 
           {/* 4. Ring Cluster - Centerpiece Section */}
-          <section className="relative mb-6">
-            <div className="relative w-full" style={{ minHeight: '420px' }}>
+          <section className="relative mb-6 flex items-center justify-center">
+            <div className="relative w-full max-w-md mx-auto" style={{ minHeight: '420px' }}>
             {/* Orbital Container */}
-            <div className="relative w-full h-full flex items-center justify-center">
+            <div className="absolute inset-0 flex items-center justify-center">
               
               {/* Main Calorie Ring (Center) */}
               <div className={cn(
