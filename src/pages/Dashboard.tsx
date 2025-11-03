@@ -235,48 +235,48 @@ const Dashboard = () => {
       />
 
       <PullToRefresh onRefresh={handleRefresh}>
-        <main className="relative max-w-md mx-auto px-6 pt-8 pb-8 space-y-6">
+        <main className="relative max-w-md mx-auto px-6 pt-6 pb-8">
           
-          {/* Header Zone - Greeting + Ottr on Environment */}
-          <section className="text-center space-y-4 animate-fade-in">
+          {/* 1. Greeting + Environment Text */}
+          <section className="text-center space-y-1 animate-fade-in mb-4">
             {greetingMessage && (
               <>
-                <div className="space-y-1">
-                  <h1 className="text-xl font-semibold text-foreground">
-                    {greetingMessage}
-                  </h1>
-                  {subGreeting && (
-                    <p className="text-sm text-muted-foreground">
-                      {subGreeting}
-                    </p>
-                  )}
-                </div>
-                
-                {/* Ottr Mascot */}
-                <div className="relative w-20 h-20 mx-auto">
-                  <OtterMascot 
-                    mood={otterState.mood}
-                    animate={true}
-                  />
-                </div>
+                <h1 className="text-xl font-semibold text-foreground">
+                  {greetingMessage}
+                </h1>
+                {subGreeting && (
+                  <p className="text-sm text-muted-foreground">
+                    {subGreeting}
+                  </p>
+                )}
               </>
             )}
           </section>
           
-          {/* Level & Streak + XP Bar + Friend Wave Chip */}
-          <section className="space-y-2">
-            <div className="flex items-center justify-between px-2">
-              {/* Level indicator */}
-              <div className="flex items-center gap-2 bg-primary/10 rounded-full px-4 py-2 border border-primary/20 transition-all duration-300">
+          {/* 2. Ottr Mascot Section with Level & Streak */}
+          <section className="relative mb-3">
+            {/* Ottr centered */}
+            <div className="relative w-20 h-20 mx-auto">
+              <OtterMascot 
+                mood={otterState.mood}
+                animate={true}
+              />
+            </div>
+            
+            {/* Level & Streak badges positioned with mascot */}
+            <div className="absolute top-1/2 -translate-y-1/2 left-0 right-0 flex items-center justify-between px-2 pointer-events-none">
+              <div className="flex items-center gap-2 bg-primary/10 rounded-full px-4 py-2 border border-primary/20 pointer-events-auto">
                 <span className="text-sm font-semibold text-primary">Lv.{level}</span>
               </div>
               
-              {/* Streak indicator */}
-              <div className="flex items-center gap-2 bg-orange-500/10 rounded-full px-4 py-2 border border-orange-500/20 transition-all duration-300">
+              <div className="flex items-center gap-2 bg-orange-500/10 rounded-full px-4 py-2 border border-orange-500/20 pointer-events-auto">
                 <span className="text-sm font-semibold text-orange-500">{streak}🔥</span>
               </div>
             </div>
-            
+          </section>
+          
+          {/* 3. XP Bar & Friend Wave Chip */}
+          <section className="space-y-2 mb-6">
             {/* Friend Wave Chip */}
             <div className="flex justify-center">
               <FriendWaveChip waveCount={3} friendName="Alex" />
@@ -298,9 +298,9 @@ const Dashboard = () => {
             </div>
           </section>
 
-          {/* Core Tracker Zone - Circular Orbital Ring Layout */}
-          <div className="absolute w-full flex justify-center" style={{ top: '340px' }}>
-            <div className="relative w-full max-w-md" style={{ minHeight: '480px' }}>
+          {/* 4. Ring Cluster - Centerpiece Section */}
+          <section className="relative mb-6">
+            <div className="relative w-full" style={{ minHeight: '420px' }}>
             {/* Orbital Container */}
             <div className="relative w-full h-full flex items-center justify-center">
               
@@ -412,26 +412,28 @@ const Dashboard = () => {
             </div>
             
             {/* Snack Suggestion Bubble - positioned below orbital system */}
-            <div className="absolute -bottom-8 left-1/2 -translate-x-1/2">
+            <div className="absolute -bottom-4 left-1/2 -translate-x-1/2">
               <SnackSuggestionBubble 
                 caloriesConsumed={caloriesConsumed}
                 caloriesTarget={caloriesTarget}
               />
             </div>
             </div>
-          </div>
+          </section>
 
-          {/* Ottr's Pick for You Section */}
-          <OttrFoodSuggestion
-            caloriesRemaining={appContext.getCaloriesRemaining()}
-            proteinRemaining={appContext.proteinTarget - appContext.proteinConsumed}
-            carbsRemaining={appContext.carbsTarget - appContext.carbsConsumed}
-            fatRemaining={appContext.fatTarget - appContext.fatConsumed}
-            onLogFood={handleQuickLogFood}
-          />
+          {/* 5. Ottr's Pick for You Section */}
+          <section className="mb-5">
+            <OttrFoodSuggestion
+              caloriesRemaining={appContext.getCaloriesRemaining()}
+              proteinRemaining={appContext.proteinTarget - appContext.proteinConsumed}
+              carbsRemaining={appContext.carbsTarget - appContext.carbsConsumed}
+              fatRemaining={appContext.fatTarget - appContext.fatConsumed}
+              onLogFood={handleQuickLogFood}
+            />
+          </section>
 
-          {/* Micro-Quests Section */}
-          <section className="space-y-3 relative z-10">
+          {/* 6. Daily Focus Section */}
+          <section className="space-y-3">
             <h2 className="text-sm font-medium text-muted-foreground px-2">Daily Focus</h2>
             <div className="grid grid-cols-1 gap-3">
               {/* Hydration Quest */}

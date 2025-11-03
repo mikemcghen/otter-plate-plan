@@ -116,10 +116,10 @@ export const OttrFoodSuggestion = ({
   // Balance reminder if over goal
   if (caloriesRemaining < 0) {
     return (
-      <section className="relative space-y-3">
+      <section className="relative space-y-2">
         <h2 className="text-sm font-medium text-muted-foreground px-2">Ottr's Pick for You 🦦</h2>
-        <div className="relative p-6 rounded-2xl border-2 border-primary/20 bg-gradient-to-br from-orange-500/5 via-primary/5 to-purple-500/5 overflow-hidden">
-          <div className="absolute top-2 right-2 w-12 h-12">
+        <div className="relative p-4 rounded-2xl border-2 border-primary/20 bg-gradient-to-br from-orange-500/5 via-primary/5 to-purple-500/5 overflow-hidden">
+          <div className="absolute top-2 right-2 w-10 h-10">
             <OtterMascot mood="encouraging" animate={true} />
           </div>
           <div className="space-y-2 pr-12">
@@ -136,10 +136,10 @@ export const OttrFoodSuggestion = ({
   // No suggestion available
   if (!suggestion) {
     return (
-      <section className="relative space-y-3">
+      <section className="relative space-y-2">
         <h2 className="text-sm font-medium text-muted-foreground px-2">Ottr's Pick for You 🦦</h2>
-        <div className="relative p-6 rounded-2xl border-2 border-primary/20 bg-gradient-to-br from-orange-500/5 via-primary/5 to-purple-500/5">
-          <div className="absolute top-2 right-2 w-12 h-12">
+        <div className="relative p-4 rounded-2xl border-2 border-primary/20 bg-gradient-to-br from-orange-500/5 via-primary/5 to-purple-500/5">
+          <div className="absolute top-2 right-2 w-10 h-10">
             <OtterMascot mood="sleepy" animate={true} />
           </div>
           <p className="text-sm text-muted-foreground pr-12">
@@ -152,11 +152,11 @@ export const OttrFoodSuggestion = ({
 
   // Show suggestion
   return (
-    <section className="relative space-y-3 animate-fade-in">
+    <section className="relative space-y-2 animate-fade-in">
       <h2 className="text-sm font-medium text-muted-foreground px-2">Ottr's Pick for You 🦦</h2>
       <div 
         className={cn(
-          "relative p-6 rounded-2xl border-2 border-primary/20 overflow-hidden transition-all duration-300",
+          "relative p-4 rounded-2xl border-2 border-primary/20 overflow-hidden transition-all duration-300",
           "bg-gradient-to-br from-orange-500/10 via-primary/10 to-purple-500/10",
           "animate-[shimmer_3s_ease-in-out_infinite]"
         )}
@@ -172,18 +172,18 @@ export const OttrFoodSuggestion = ({
 
         {/* Ottr mascot */}
         <div className={cn(
-          "absolute top-2 right-2 w-12 h-12 transition-transform duration-300",
+          "absolute top-2 right-2 w-10 h-10 transition-transform duration-300",
           isLogging && "animate-bounce"
         )}>
           <OtterMascot mood="happy" animate={true} />
         </div>
 
-        <div className="space-y-4 pr-14">
+        <div className="space-y-3 pr-12">
           {/* Suggestion header */}
           <div className="space-y-1">
             <p className="text-xs text-muted-foreground">{suggestion.reason}</p>
-            <h3 className="text-lg font-bold text-foreground flex items-center gap-2">
-              <span className="text-2xl">{suggestion.emoji}</span>
+            <h3 className="text-base font-bold text-foreground flex items-center gap-2">
+              <span className="text-xl">{suggestion.emoji}</span>
               {suggestion.name}
             </h3>
           </div>
@@ -213,7 +213,7 @@ export const OttrFoodSuggestion = ({
             onClick={handleLogFood}
             disabled={isLogging}
             className={cn(
-              "w-full py-2.5 px-4 rounded-xl font-medium text-sm transition-all duration-200",
+              "w-full py-2 px-4 rounded-xl font-medium text-sm transition-all duration-200",
               "bg-gradient-to-r from-orange-500/90 to-primary/90 text-white",
               "hover:from-orange-500 hover:to-primary",
               "active:scale-[0.98]",
