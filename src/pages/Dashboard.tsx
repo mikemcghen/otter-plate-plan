@@ -300,7 +300,7 @@ const Dashboard = () => {
 
           {/* 4. Ring Cluster - Centerpiece Section */}
           <section className="relative mb-6 flex items-center justify-center">
-            <div className="relative w-full max-w-md mx-auto" style={{ minHeight: '420px' }}>
+            <div className="relative mx-auto" style={{ width: '440px', height: '410px' }}>
             {/* Orbital Container */}
             <div className="absolute inset-0 flex items-center justify-center">
               
