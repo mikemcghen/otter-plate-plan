@@ -33,7 +33,7 @@ const navItems = [
   { title: "Account", url: "/account", icon: User },
   { title: "Settings", url: "/settings", icon: Settings },
   { title: "Onboarding", url: "/onboarding", icon: Sparkles },
-  { title: "State Flow", url: "/state-flow", icon: GitBranch },
+  { title: "Dev Reference", url: "/state-flow", icon: GitBranch },
 ];
 
 type DevAdminSidebarProps = {
