@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { FriendCard } from "@/components/FriendCard";
-import { BadgeCard } from "@/components/BadgeCard";
+import { StickerBook } from "@/components/StickerBook";
 import { AddFriendModal } from "@/components/AddFriendModal";
 import { BadgeUnlockModal } from "@/components/BadgeUnlockModal";
 import { ShareContentModal } from "@/components/ShareContentModal";
@@ -399,7 +399,7 @@ const Account = () => {
           <TabsList className="grid w-full grid-cols-3">
             <TabsTrigger value="badges">
               <Trophy className="w-4 h-4 mr-2" />
-              Badges
+              Stickers
             </TabsTrigger>
             <TabsTrigger value="friends">
               <Users className="w-4 h-4 mr-2" />
@@ -411,24 +411,14 @@ const Account = () => {
             </TabsTrigger>
           </TabsList>
 
-          {/* Badges Tab */}
+          {/* Sticker Book Tab */}
           <TabsContent value="badges" className="space-y-4">
-            <div className="bg-card rounded-3xl p-6 shadow-[0_8px_30px_rgb(0,0,0,0.08)] border-2 border-border">
-              <h3 className="text-lg font-bold text-foreground mb-4">
-                Your Badges
-              </h3>
-              <div className="grid grid-cols-2 gap-3">
-                {badges.map((badge) => (
-                  <BadgeCard
-                    key={badge.id}
-                    badge={badge}
-                    unlocked={isBadgeUnlocked(badge.id)}
-                    isFavorite={profile?.favorite_badge_id === badge.id}
-                    onSetFavorite={() => handleSetFavoriteBadge(badge.id)}
-                  />
-                ))}
-              </div>
-            </div>
+            <StickerBook
+              stickers={badges}
+              userStickers={userBadges}
+              favoriteBadgeId={profile?.favorite_badge_id}
+              onSetFavorite={handleSetFavoriteBadge}
+            />
           </TabsContent>
 
           {/* Friends Tab */}
