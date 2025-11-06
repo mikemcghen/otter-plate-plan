@@ -21,6 +21,7 @@ import Account from "./pages/Account";
 import Auth from "./pages/Auth";
 import Onboarding from "./pages/Onboarding";
 import StateFlowDiagram from "./pages/StateFlowDiagram";
+import Wellness from "./pages/Wellness";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -111,6 +112,7 @@ const AppContent = () => {
                     <Route path="/weekly-checkin" element={<WeeklyCheckIn />} />
                     <Route path="/trends" element={<Trends />} />
                     <Route path="/settings" element={<Settings />} />
+                    <Route path="/wellness" element={<Wellness />} />
                     <Route path="/state-flow" element={<StateFlowDiagram />} />
                     <Route path="*" element={<NotFound />} />
                   </Routes>
