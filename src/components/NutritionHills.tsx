@@ -25,7 +25,9 @@ export const NutritionHills = ({ protein, carbs, fats }: NutritionHillsProps) =>
             {/* Hill shape */}
             <div className="relative w-full h-24 flex items-end">
               <div
-                className={`w-full bg-gradient-to-t ${hill.color} rounded-t-full transition-all duration-700 ease-out`}
+                className={`w-full bg-gradient-to-t ${hill.color} rounded-t-full transition-all duration-700 ease-out ${
+                  hill.percent >= 80 ? "animate-pulse-glow" : ""
+                }`}
                 style={{ height: `${hill.percent}%` }}
               >
                 {/* Shimmer effect */}

@@ -34,21 +34,29 @@ export const MoodReflectionCard = ({ onSave }: MoodReflectionCardProps) => {
           <h3 className="text-lg font-semibold text-foreground">Pause for a moment...</h3>
         </div>
         
-        <p className="text-sm text-muted-foreground italic">{prompt}</p>
+        <p className="text-sm text-muted-foreground italic mb-2">
+          🦦 <span className="font-medium">"Take a moment to breathe — what energized you today?"</span>
+        </p>
+        
+        <p className="text-xs text-muted-foreground italic">{prompt}</p>
         
         <textarea
           value={reflection}
           onChange={(e) => setReflection(e.target.value)}
           placeholder="Type your thoughts here..."
-          className="w-full min-h-[100px] bg-background/50 border border-border rounded-2xl p-4 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/30 resize-none transition-all"
+          className="w-full min-h-[100px] bg-background/50 border border-border rounded-2xl p-4 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/30 resize-none transition-all shadow-inner"
+          style={{ boxShadow: 'inset 0 2px 8px rgba(0, 0, 0, 0.08)' }}
         />
         
         <button
           onClick={handleSave}
           disabled={!reflection.trim()}
-          className="w-full bg-gradient-to-r from-primary to-primary/80 text-primary-foreground font-medium py-3 rounded-full hover:shadow-lg hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300"
+          className="relative w-full bg-gradient-to-r from-primary via-accent to-primary text-primary-foreground font-medium py-3 rounded-full hover:shadow-lg hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 overflow-hidden group"
         >
-          Save Reflection
+          {/* Shimmer effect on hover */}
+          <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent opacity-0 group-hover:opacity-100 group-hover:animate-shimmer transition-opacity" 
+               style={{ backgroundSize: "200% 100%" }} />
+          <span className="relative z-10">Save Reflection</span>
         </button>
       </div>
     </div>

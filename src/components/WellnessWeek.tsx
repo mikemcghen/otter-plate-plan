@@ -1,6 +1,7 @@
 import { OtterMascot } from "./OtterMascot";
 import { XPBar } from "./XPBar";
 import { StreakCounter } from "./StreakCounter";
+import { AmbientParticle } from "./AmbientParticle";
 import { useAppContext } from "@/contexts/AppContext";
 import { TrendingUp, Droplets, Activity, Heart } from "lucide-react";
 
@@ -17,12 +18,20 @@ export const WellnessWeek = () => {
   return (
     <div className="relative min-h-screen pb-24">
       {/* Gradient background */}
-      <div className="fixed inset-0 bg-gradient-to-b from-[#FDF6EC] via-[#C4B5FD]/20 to-[#C4B5FD]/40 -z-10" />
+      <div className="fixed inset-0 bg-gradient-to-br from-[#FDF6EC] via-[#C4B5FD]/20 to-[#C4B5FD]/40 -z-10" />
       
       <div className="container max-w-2xl mx-auto px-4 py-8 space-y-8">
         {/* 1️⃣ HeaderScene */}
-        <section className="text-center space-y-6 animate-fade-in">
-          <div className="flex justify-center">
+        <section className="relative text-center space-y-6 animate-fade-in">
+          {/* Breathing gradient backdrop */}
+          <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-accent/10 to-transparent rounded-3xl animate-breathing-gradient -z-10" />
+          
+          {/* Floating particles */}
+          <AmbientParticle delay={0.5} size={6} left="20%" />
+          <AmbientParticle delay={2} size={8} left="80%" />
+          <AmbientParticle delay={1.2} size={5} left="50%" />
+          
+          <div className="flex justify-center pt-6">
             <OtterMascot 
               mood={streak > 7 ? "proud" : "encouraging"} 
               className="w-32"
@@ -30,12 +39,12 @@ export const WellnessWeek = () => {
             />
           </div>
           
-          <div className="space-y-2">
-            <h1 className="text-2xl font-bold text-foreground">Your Week in Reflection</h1>
+          <div className="space-y-2 px-4">
+            <h1 className="text-2xl font-bold text-foreground tracking-wide">Your Week in Reflection</h1>
             <p className="text-sm text-muted-foreground">A story of rhythm and balance</p>
           </div>
           
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pb-6">
             <StreakCounter days={streak} />
             <div className="w-full sm:w-64">
               <XPBar current={xp} max={getXPForNextLevel()} level={level} />
