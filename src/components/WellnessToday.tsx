@@ -209,8 +209,6 @@ export const WellnessToday = () => {
 
         {/* 4️⃣ ReflectionZone */}
         <section className="space-y-4 animate-fade-in" style={{ animationDelay: "0.6s" }}>
-          <MoodReflectionCard onSave={(reflection) => console.log("Saved:", reflection)} />
-          
           {/* Evening mood check */}
           <div className="bg-background/80 backdrop-blur-md rounded-3xl p-6 border border-border/30 shadow-lg space-y-3">
             <label className="text-sm font-medium text-foreground block">How are you feeling now?</label>
