@@ -13,8 +13,8 @@ import { useAppContext } from "@/contexts/AppContext";
 export const ReflectionCarousel = () => {
   const [api, setApi] = useState<CarouselApi>();
   const [current, setCurrent] = useState(0);
-  const [completed, setCompleted] = useState<boolean[]>([false, false, false, false, false]);
-  const { streak } = useAppContext();
+  const [reflectionData, setReflectionData] = useState<any>({});
+  const { streak, waterConsumed, foodLogs } = useAppContext();
 
   const totalCards = 5;
 
@@ -26,18 +26,20 @@ export const ReflectionCarousel = () => {
     });
   }, [api]);
 
-  const handleCardComplete = (index: number) => {
-    const newCompleted = [...completed];
-    newCompleted[index] = true;
-    setCompleted(newCompleted);
+  const handleCardComplete = (step: string, data: any) => {
+    const updated = { ...reflectionData, [step]: data };
+    setReflectionData(updated);
     
     // Auto-advance to next card
-    if (api && index < totalCards - 1) {
-      setTimeout(() => api.scrollNext(), 300);
+    if (step !== "reflection" && api) {
+      setTimeout(() => api.scrollNext(), 400);
     }
   };
 
-  const allCompleted = completed.every(c => c);
+  const allCompleted = reflectionData.reflection !== undefined;
+
+  const steps = ["sleep", "energy", "mood", "hydration", "reflection"];
+  const completedCount = steps.filter(s => reflectionData[s] !== undefined).length;
 
   return (
     <div className="fixed inset-0 bg-gradient-to-br from-primary/5 via-accent/5 to-secondary/5 overflow-hidden">
@@ -51,13 +53,13 @@ export const ReflectionCarousel = () => {
 
       {/* Progress Dots */}
       <div className="absolute top-20 left-0 right-0 z-10 flex justify-center gap-2 px-4">
-        {Array.from({ length: totalCards }).map((_, i) => (
+        {steps.map((_, i) => (
           <div
             key={i}
             className={`h-1.5 rounded-full transition-all duration-300 ${
               i === current
                 ? "w-8 bg-primary"
-                : completed[i]
+                : i < completedCount
                 ? "w-1.5 bg-primary/60"
                 : "w-1.5 bg-muted-foreground/30"
             }`}
@@ -73,39 +75,42 @@ export const ReflectionCarousel = () => {
             align: "center",
             loop: false,
             skipSnaps: false,
-            duration: 18, // 180ms = 18 in embla (uses 10ms units)
+            duration: 18,
           }}
           className="h-full w-full pt-28 pb-8"
         >
           <CarouselContent className="h-full">
             <CarouselItem className="h-full">
               <SleepReflectionCard
-                onComplete={() => handleCardComplete(0)}
-                isCompleted={completed[0]}
+                onComplete={(data) => handleCardComplete("sleep", data)}
+                data={reflectionData.sleep}
               />
             </CarouselItem>
             <CarouselItem className="h-full">
               <EnergyReflectionCard
-                onComplete={() => handleCardComplete(1)}
-                isCompleted={completed[1]}
+                onComplete={(data) => handleCardComplete("energy", data)}
+                data={reflectionData.energy}
+                recentFoodTags={foodLogs.slice(-3).map(f => f.name)}
               />
             </CarouselItem>
             <CarouselItem className="h-full">
               <MoodReflectionCard
-                onComplete={() => handleCardComplete(2)}
-                isCompleted={completed[2]}
+                onComplete={(data) => handleCardComplete("mood", data)}
+                data={reflectionData.mood}
+                waterCups={Math.floor(waterConsumed / 8)}
               />
             </CarouselItem>
             <CarouselItem className="h-full">
               <HydrationReflectionCard
-                onComplete={() => handleCardComplete(3)}
-                isCompleted={completed[3]}
+                onComplete={(data) => handleCardComplete("hydration", data)}
+                data={reflectionData.hydration}
               />
             </CarouselItem>
             <CarouselItem className="h-full">
               <OpenReflectionCard
-                onComplete={() => handleCardComplete(4)}
-                isCompleted={completed[4]}
+                onComplete={(data) => handleCardComplete("reflection", data)}
+                data={reflectionData.reflection}
+                reflectionData={reflectionData}
               />
             </CarouselItem>
           </CarouselContent>

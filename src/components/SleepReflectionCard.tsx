@@ -1,28 +1,53 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Slider } from "@/components/ui/slider";
 import { Button } from "@/components/ui/button";
-import { Moon, Star } from "lucide-react";
+import { Moon } from "lucide-react";
 
 interface SleepReflectionCardProps {
-  onComplete: () => void;
-  isCompleted: boolean;
+  onComplete: (data: { hours: number; quality: number }) => void;
+  data?: { hours: number; quality: number };
 }
 
 const sleepQuality = ["😴", "😪", "😌"];
 
-export const SleepReflectionCard = ({ onComplete, isCompleted }: SleepReflectionCardProps) => {
-  const [hours, setHours] = useState([7]);
-  const [quality, setQuality] = useState<number | null>(null);
+const getInsight = (hours: number, quality: number) => {
+  if (hours >= 7 && quality === 2) return "You feel most focused after 7h of rest — a steady rhythm.";
+  if (hours < 6) return "Even light rest counts — take it easy today.";
+  if (hours >= 8) return "Deep rest is your foundation — you're building strength.";
+  return "Sleep is when your body tells its story — listen closely.";
+};
+
+export const SleepReflectionCard = ({ onComplete, data }: SleepReflectionCardProps) => {
+  const [hours, setHours] = useState([data?.hours || 7]);
+  const [quality, setQuality] = useState<number | null>(data?.quality ?? null);
+  const [insight, setInsight] = useState("");
+  const [showInsight, setShowInsight] = useState(false);
+
+  useEffect(() => {
+    if (quality !== null) {
+      setShowInsight(false);
+      const timer = setTimeout(() => {
+        setInsight(getInsight(hours[0], quality));
+        setShowInsight(true);
+      }, 800);
+      return () => clearTimeout(timer);
+    }
+  }, [quality, hours]);
 
   const handleComplete = () => {
     if (quality !== null) {
-      onComplete();
+      onComplete({ hours: hours[0], quality });
     }
   };
 
   return (
     <div className="w-full p-6 space-y-6">
-      <h2 className="text-2xl font-bold text-center text-foreground">
+      {/* Decorative ambient */}
+      <div className="flex justify-center mb-2">
+        <Moon className="w-8 h-8 text-primary/40 animate-pulse" strokeWidth={1.5} />
+      </div>
+
+      <h2 className="text-xl font-semibold text-center text-foreground tracking-tight">
         How did you sleep last night?
       </h2>
 
@@ -51,7 +76,7 @@ export const SleepReflectionCard = ({ onComplete, isCompleted }: SleepReflection
               <button
                 key={idx}
                 onClick={() => setQuality(idx)}
-                className={`text-5xl ${
+                className={`text-5xl transition-all duration-200 ${
                   quality === idx
                     ? "scale-110"
                     : "scale-100 opacity-60"
@@ -64,13 +89,20 @@ export const SleepReflectionCard = ({ onComplete, isCompleted }: SleepReflection
           </div>
         </div>
 
+        {/* Insight */}
+        {showInsight && (
+          <p className="text-sm italic text-primary/80 text-center animate-fade-in px-4 leading-relaxed">
+            {insight}
+          </p>
+        )}
+
         {/* Complete Button */}
         <Button
           onClick={handleComplete}
-          disabled={quality === null || isCompleted}
-          className="w-full py-6 text-lg font-semibold rounded-2xl bg-gradient-to-r from-primary to-accent hover:shadow-lg transition-all"
+          disabled={quality === null}
+          className="w-full py-6 text-lg font-semibold rounded-2xl bg-gradient-to-r from-primary to-accent hover:shadow-lg transition-all disabled:opacity-50"
         >
-          {isCompleted ? "✓ Recorded" : "Continue"}
+          Continue
         </Button>
       </div>
     </div>

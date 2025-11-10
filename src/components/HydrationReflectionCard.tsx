@@ -2,16 +2,16 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 
 interface HydrationReflectionCardProps {
-  onComplete: () => void;
-  isCompleted: boolean;
+  onComplete: (data: number) => void;
+  data?: number;
 }
 
-export const HydrationReflectionCard = ({ onComplete, isCompleted }: HydrationReflectionCardProps) => {
-  const [cups, setCups] = useState<number>(0);
+export const HydrationReflectionCard = ({ onComplete, data }: HydrationReflectionCardProps) => {
+  const [cups, setCups] = useState<number>(data || 0);
 
   const handleComplete = () => {
     if (cups > 0) {
-      onComplete();
+      onComplete(cups);
     }
   };
 
@@ -65,10 +65,10 @@ export const HydrationReflectionCard = ({ onComplete, isCompleted }: HydrationRe
 
         <Button
           onClick={handleComplete}
-          disabled={cups === 0 || isCompleted}
-          className="w-full py-6 text-lg font-semibold rounded-2xl bg-gradient-to-r from-primary to-secondary hover:shadow-lg transition-all"
+          disabled={cups === 0}
+          className="w-full py-6 text-lg font-semibold rounded-2xl bg-gradient-to-r from-primary to-secondary hover:shadow-lg transition-all disabled:opacity-50"
         >
-          {isCompleted ? "✓ Recorded" : "Continue"}
+          Continue
         </Button>
       </div>
     </div>
