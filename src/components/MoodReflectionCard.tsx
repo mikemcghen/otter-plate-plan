@@ -1,7 +1,5 @@
 import { useState } from "react";
-import { ReflectionCardBase } from "./ReflectionCardBase";
 import { Button } from "@/components/ui/button";
-import { Heart, Sparkles } from "lucide-react";
 
 interface MoodReflectionCardProps {
   onComplete: () => void;
@@ -25,21 +23,12 @@ export const MoodReflectionCard = ({ onComplete, isCompleted }: MoodReflectionCa
     }
   };
 
-  const decorativeScene = (
-    <div className="absolute inset-0 flex items-center justify-center">
-      <Heart className="w-20 h-20 text-primary/30" />
-      <Sparkles className="absolute top-12 right-16 w-8 h-8 text-accent/40" />
-      <Sparkles className="absolute bottom-12 left-16 w-6 h-6 text-accent/40" />
-    </div>
-  );
-
   return (
-    <ReflectionCardBase
-      decorativeScene={decorativeScene}
-      promptText="How are you feeling?"
-      gradientFrom="--accent"
-      gradientTo="--primary"
-    >
+    <div className="w-full p-6 space-y-6">
+      <h2 className="text-2xl font-bold text-center text-foreground">
+        How are you feeling?
+      </h2>
+
       <div className="space-y-8">
         <div className="space-y-4">
           <div className="flex justify-center gap-3">
@@ -69,6 +58,6 @@ export const MoodReflectionCard = ({ onComplete, isCompleted }: MoodReflectionCa
           {isCompleted ? "✓ Recorded" : "Continue"}
         </Button>
       </div>
-    </ReflectionCardBase>
+    </div>
   );
 };

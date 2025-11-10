@@ -1,7 +1,5 @@
 import { useState } from "react";
-import { ReflectionCardBase } from "./ReflectionCardBase";
 import { Button } from "@/components/ui/button";
-import { Droplet, Waves } from "lucide-react";
 
 interface HydrationReflectionCardProps {
   onComplete: () => void;
@@ -17,21 +15,12 @@ export const HydrationReflectionCard = ({ onComplete, isCompleted }: HydrationRe
     }
   };
 
-  const decorativeScene = (
-    <div className="absolute inset-0 flex items-center justify-center">
-      <Waves className="w-24 h-24 text-primary/30" />
-      <Droplet className="absolute top-12 right-20 w-6 h-6 text-primary/40" />
-      <Droplet className="absolute bottom-16 left-16 w-8 h-8 text-primary/40" />
-    </div>
-  );
-
   return (
-    <ReflectionCardBase
-      decorativeScene={decorativeScene}
-      promptText="How many cups of water today?"
-      gradientFrom="--primary"
-      gradientTo="--secondary"
-    >
+    <div className="w-full p-6 space-y-6">
+      <h2 className="text-2xl font-bold text-center text-foreground">
+        How many cups of water today?
+      </h2>
+
       <div className="space-y-8">
         <div className="space-y-4">
           <div className="text-center">
@@ -82,6 +71,6 @@ export const HydrationReflectionCard = ({ onComplete, isCompleted }: HydrationRe
           {isCompleted ? "✓ Recorded" : "Continue"}
         </Button>
       </div>
-    </ReflectionCardBase>
+    </div>
   );
 };

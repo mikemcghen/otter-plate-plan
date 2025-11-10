@@ -1,7 +1,5 @@
 import { useState } from "react";
-import { ReflectionCardBase } from "./ReflectionCardBase";
 import { Button } from "@/components/ui/button";
-import { Zap, Sun } from "lucide-react";
 
 interface EnergyReflectionCardProps {
   onComplete: () => void;
@@ -19,20 +17,12 @@ export const EnergyReflectionCard = ({ onComplete, isCompleted }: EnergyReflecti
     }
   };
 
-  const decorativeScene = (
-    <div className="absolute inset-0 flex items-center justify-center">
-      <Sun className="w-24 h-24 text-secondary/30" />
-      <Zap className="absolute bottom-16 right-16 w-8 h-8 text-accent/40" />
-    </div>
-  );
-
   return (
-    <ReflectionCardBase
-      decorativeScene={decorativeScene}
-      promptText="How's your energy today?"
-      gradientFrom="--secondary"
-      gradientTo="--accent"
-    >
+    <div className="w-full p-6 space-y-6">
+      <h2 className="text-2xl font-bold text-center text-foreground">
+        How's your energy today?
+      </h2>
+
       <div className="space-y-8">
         <div className="space-y-4">
           <div className="flex justify-center gap-4">
@@ -66,6 +56,6 @@ export const EnergyReflectionCard = ({ onComplete, isCompleted }: EnergyReflecti
           {isCompleted ? "✓ Recorded" : "Continue"}
         </Button>
       </div>
-    </ReflectionCardBase>
+    </div>
   );
 };

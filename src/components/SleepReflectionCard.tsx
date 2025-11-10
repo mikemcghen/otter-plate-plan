@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { ReflectionCardBase } from "./ReflectionCardBase";
 import { Slider } from "@/components/ui/slider";
 import { Button } from "@/components/ui/button";
 import { Moon, Star } from "lucide-react";
@@ -21,22 +20,12 @@ export const SleepReflectionCard = ({ onComplete, isCompleted }: SleepReflection
     }
   };
 
-  const decorativeScene = (
-    <div className="absolute inset-0 flex items-center justify-center">
-      <Moon className="w-20 h-20 text-primary/30" />
-      <Star className="absolute top-8 right-12 w-6 h-6 text-accent/40" />
-      <Star className="absolute top-16 left-16 w-4 h-4 text-accent/40" />
-      <Star className="absolute bottom-12 right-20 w-5 h-5 text-accent/40" />
-    </div>
-  );
-
   return (
-    <ReflectionCardBase
-      decorativeScene={decorativeScene}
-      promptText="How did you sleep last night?"
-      gradientFrom="--primary"
-      gradientTo="--accent"
-    >
+    <div className="w-full p-6 space-y-6">
+      <h2 className="text-2xl font-bold text-center text-foreground">
+        How did you sleep last night?
+      </h2>
+
       <div className="space-y-8">
         {/* Hours Slider */}
         <div className="space-y-3">
@@ -84,6 +73,6 @@ export const SleepReflectionCard = ({ onComplete, isCompleted }: SleepReflection
           {isCompleted ? "✓ Recorded" : "Continue"}
         </Button>
       </div>
-    </ReflectionCardBase>
+    </div>
   );
 };
