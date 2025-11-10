@@ -97,9 +97,9 @@ export default function Wellness() {
 
         {/* Daily Reflection Tile */}
         <div 
-          className={`relative bg-gradient-to-br from-primary/20 via-accent/20 to-secondary/20 backdrop-blur-md rounded-3xl border-2 border-primary/30 shadow-xl overflow-hidden transition-all duration-200 ease-in-out ${
+          className={`relative bg-gradient-to-br from-primary/20 via-accent/20 to-secondary/20 backdrop-blur-md rounded-3xl border-2 border-primary/30 shadow-xl overflow-hidden ${
             reflectionState === "collapsed" 
-              ? "p-8 cursor-pointer hover:scale-[1.02] hover:shadow-2xl hover:border-primary/50 animate-card-breathing" 
+              ? "p-8 cursor-pointer" 
               : "p-0"
           } ${
             reflectionState === "active" ? "min-h-[calc(100vh-200px)]" : ""
@@ -109,19 +109,13 @@ export default function Wellness() {
           {/* Collapsed State */}
           {reflectionState === "collapsed" && (
             <>
-              {/* Shimmer effect on hover */}
-              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 translate-x-[-100%] group-hover:translate-x-[100%]" style={{ transition: 'all 1s ease-in-out' }} />
-              
-              {/* Background ambient glow */}
-              <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-accent/5 animate-breathing-gradient" />
-              
               <div className="relative z-10 space-y-6">
                 {/* Icon row */}
                 <div className="flex items-center justify-center gap-4 text-primary/60">
-                  <Moon className="w-6 h-6 animate-float" style={{ animationDelay: '0s' }} />
-                  <Sun className="w-6 h-6 animate-float" style={{ animationDelay: '0.5s' }} />
-                  <Droplets className="w-6 h-6 animate-float" style={{ animationDelay: '1s' }} />
-                  <Sparkles className="w-6 h-6 animate-float" style={{ animationDelay: '1.5s' }} />
+                  <Moon className="w-6 h-6" />
+                  <Sun className="w-6 h-6" />
+                  <Droplets className="w-6 h-6" />
+                  <Sparkles className="w-6 h-6" />
                 </div>
 
                 {/* Main content */}
@@ -137,7 +131,7 @@ export default function Wellness() {
                 {/* CTA indicator */}
                 <div className="flex items-center justify-center gap-2 text-primary font-semibold">
                   <span>Start your reflection</span>
-                  <Sparkles className="w-5 h-5 group-hover:animate-wiggle" />
+                  <Sparkles className="w-5 h-5" />
                 </div>
 
                 {/* Progress hint */}
@@ -145,7 +139,7 @@ export default function Wellness() {
                   {[...Array(5)].map((_, i) => (
                     <div 
                       key={i} 
-                      className="w-2 h-2 rounded-full bg-primary/30 group-hover:bg-primary/50 transition-colors"
+                      className="w-2 h-2 rounded-full bg-primary/30"
                     />
                   ))}
                 </div>
