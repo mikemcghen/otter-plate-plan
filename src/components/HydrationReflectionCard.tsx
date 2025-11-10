@@ -19,9 +19,9 @@ export const HydrationReflectionCard = ({ onComplete, isCompleted }: HydrationRe
 
   const decorativeScene = (
     <div className="absolute inset-0 flex items-center justify-center">
-      <Waves className="w-24 h-24 text-primary/30 animate-wave" />
-      <Droplet className="absolute top-12 right-20 w-6 h-6 text-primary/40 animate-bounce" />
-      <Droplet className="absolute bottom-16 left-16 w-8 h-8 text-primary/40 animate-bounce delay-200" />
+      <Waves className="w-24 h-24 text-primary/30" />
+      <Droplet className="absolute top-12 right-20 w-6 h-6 text-primary/40" />
+      <Droplet className="absolute bottom-16 left-16 w-8 h-8 text-primary/40" />
     </div>
   );
 

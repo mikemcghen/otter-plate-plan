@@ -23,10 +23,10 @@ export const SleepReflectionCard = ({ onComplete, isCompleted }: SleepReflection
 
   const decorativeScene = (
     <div className="absolute inset-0 flex items-center justify-center">
-      <Moon className="w-20 h-20 text-primary/30 animate-pulse" />
-      <Star className="absolute top-8 right-12 w-6 h-6 text-accent/40 animate-twinkle" />
-      <Star className="absolute top-16 left-16 w-4 h-4 text-accent/40 animate-twinkle delay-200" />
-      <Star className="absolute bottom-12 right-20 w-5 h-5 text-accent/40 animate-twinkle delay-400" />
+      <Moon className="w-20 h-20 text-primary/30" />
+      <Star className="absolute top-8 right-12 w-6 h-6 text-accent/40" />
+      <Star className="absolute top-16 left-16 w-4 h-4 text-accent/40" />
+      <Star className="absolute bottom-12 right-20 w-5 h-5 text-accent/40" />
     </div>
   );
 
@@ -62,10 +62,10 @@ export const SleepReflectionCard = ({ onComplete, isCompleted }: SleepReflection
               <button
                 key={idx}
                 onClick={() => setQuality(idx)}
-                className={`text-5xl transition-all duration-200 ${
+                className={`text-5xl ${
                   quality === idx
-                    ? "scale-110 animate-float"
-                    : "scale-100 opacity-60 hover:opacity-100 hover:scale-105"
+                    ? "scale-110"
+                    : "scale-100 opacity-60"
                 }`}
                 style={{ padding: "8px" }}
               >

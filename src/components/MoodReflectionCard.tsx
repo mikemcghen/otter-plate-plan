@@ -27,9 +27,9 @@ export const MoodReflectionCard = ({ onComplete, isCompleted }: MoodReflectionCa
 
   const decorativeScene = (
     <div className="absolute inset-0 flex items-center justify-center">
-      <Heart className="w-20 h-20 text-primary/30 animate-pulse" />
-      <Sparkles className="absolute top-12 right-16 w-8 h-8 text-accent/40 animate-twinkle" />
-      <Sparkles className="absolute bottom-12 left-16 w-6 h-6 text-accent/40 animate-twinkle delay-300" />
+      <Heart className="w-20 h-20 text-primary/30" />
+      <Sparkles className="absolute top-12 right-16 w-8 h-8 text-accent/40" />
+      <Sparkles className="absolute bottom-12 left-16 w-6 h-6 text-accent/40" />
     </div>
   );
 
@@ -47,10 +47,10 @@ export const MoodReflectionCard = ({ onComplete, isCompleted }: MoodReflectionCa
               <button
                 key={idx}
                 onClick={() => setMood(idx)}
-                className={`flex flex-col items-center transition-all duration-200 ${
+                className={`flex flex-col items-center ${
                   mood === idx
-                    ? "scale-110 animate-float"
-                    : "scale-100 opacity-60 hover:opacity-100 hover:scale-105"
+                    ? "scale-110"
+                    : "scale-100 opacity-60"
                 }`}
                 style={{ padding: "8px" }}
               >

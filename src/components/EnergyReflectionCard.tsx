@@ -21,8 +21,8 @@ export const EnergyReflectionCard = ({ onComplete, isCompleted }: EnergyReflecti
 
   const decorativeScene = (
     <div className="absolute inset-0 flex items-center justify-center">
-      <Sun className="w-24 h-24 text-secondary/30 animate-spin-slow" />
-      <Zap className="absolute bottom-16 right-16 w-8 h-8 text-accent/40 animate-pulse" />
+      <Sun className="w-24 h-24 text-secondary/30" />
+      <Zap className="absolute bottom-16 right-16 w-8 h-8 text-accent/40" />
     </div>
   );
 
@@ -40,10 +40,10 @@ export const EnergyReflectionCard = ({ onComplete, isCompleted }: EnergyReflecti
               <button
                 key={idx}
                 onClick={() => setEnergy(idx)}
-                className={`text-5xl transition-all duration-200 ${
+                className={`text-5xl ${
                   energy === idx
-                    ? "scale-110 animate-float"
-                    : "scale-100 opacity-60 hover:opacity-100 hover:scale-105"
+                    ? "scale-110"
+                    : "scale-100 opacity-60"
                 }`}
                 style={{ padding: "8px" }}
               >

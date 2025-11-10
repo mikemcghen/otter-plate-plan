@@ -18,7 +18,7 @@ export const ReflectionCardBase = ({
   return (
     <div className="h-full w-full flex items-center justify-center px-4">
       <div 
-        className="w-full max-w-md h-[calc(100vh-12rem)] rounded-3xl overflow-hidden shadow-2xl animate-card-breathing relative"
+        className="w-full max-w-md h-[calc(100vh-12rem)] rounded-3xl overflow-hidden shadow-2xl relative"
         style={{
           background: `linear-gradient(135deg, hsl(var(${gradientFrom})), hsl(var(${gradientTo})))`,
           boxShadow: "0 20px 60px -10px rgba(0, 0, 0, 0.3), 0 0 40px rgba(var(--primary-rgb), 0.15)",

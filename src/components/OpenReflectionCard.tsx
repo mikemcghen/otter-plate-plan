@@ -28,9 +28,9 @@ export const OpenReflectionCard = ({ onComplete, isCompleted }: OpenReflectionCa
 
   const decorativeScene = (
     <div className="absolute inset-0 flex items-center justify-center">
-      <Cloud className="w-24 h-24 text-accent/30 animate-float" />
-      <Sparkles className="absolute top-12 right-16 w-8 h-8 text-primary/40 animate-twinkle" />
-      <Sparkles className="absolute bottom-16 left-12 w-6 h-6 text-primary/40 animate-twinkle delay-400" />
+      <Cloud className="w-24 h-24 text-accent/30" />
+      <Sparkles className="absolute top-12 right-16 w-8 h-8 text-primary/40" />
+      <Sparkles className="absolute bottom-16 left-12 w-6 h-6 text-primary/40" />
     </div>
   );
 
