@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { Sparkles, Moon, Footprints, Droplet, Target } from "lucide-react";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
+import { ReflectionCardBase } from "./ReflectionCardBase";
 
 interface FinalReflectionCardProps {
   onComplete: (data: string) => void;
@@ -147,22 +148,34 @@ export const FinalReflectionCard = ({
     }
   };
 
-  return (
-    <div className="relative w-full bg-background/40 backdrop-blur-xl rounded-3xl p-8 border border-border/20 shadow-2xl space-y-6 max-h-[75vh] overflow-y-auto">
-      {/* Ambient background */}
-      <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-accent/5 to-secondary/5 rounded-3xl animate-breathing" />
-      
-      <div className="relative z-10 space-y-6">
-        {/* Header */}
-        <div className="text-center space-y-2 animate-fade-in">
-          <h3 className="text-2xl font-bold text-foreground">
-            One last reflection…
-          </h3>
-          <p className="text-base text-muted-foreground italic">
-            {prompt}
-          </p>
-        </div>
+  // Decorative scene - floating sparkles
+  const decorativeScene = (
+    <div className="absolute inset-0 overflow-hidden">
+      {[...Array(8)].map((_, i) => (
+        <Sparkles
+          key={i}
+          className="absolute text-primary/20"
+          style={{
+            left: `${Math.random() * 100}%`,
+            top: `${Math.random() * 100}%`,
+            width: `${12 + Math.random() * 12}px`,
+            height: `${12 + Math.random() * 12}px`,
+            animation: `float ${3 + Math.random() * 2}s ease-in-out infinite`,
+            animationDelay: `${Math.random() * 2}s`,
+          }}
+        />
+      ))}
+    </div>
+  );
 
+  return (
+    <ReflectionCardBase
+      decorativeScene={decorativeScene}
+      promptText={prompt}
+      gradientFrom="--primary"
+      gradientTo="--secondary"
+    >
+      <div className="space-y-6">
         {/* Insights Panel */}
         {insights.length > 0 && (
           <div className="space-y-3">
@@ -212,6 +225,6 @@ export const FinalReflectionCard = ({
           </p>
         </div>
       </div>
-    </div>
+    </ReflectionCardBase>
   );
 };
