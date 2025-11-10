@@ -21,7 +21,7 @@ export const MobileBottomNav = ({ onQuickLog }: MobileBottomNavProps) => {
 
   const navItems: NavItem[] = [
     { icon: Home, label: "Home", path: "/" },
-    { icon: Heart, label: "Wellness", path: "/check-in" },
+    { icon: Heart, label: "Wellness", path: "/wellness" },
     { icon: Plus, label: "Quick Log", path: "/quick-log", isQuickLog: true },
     { icon: Waves, label: "Social Cove", path: "/trends" },
     { icon: User, label: "Account", path: "/account" },
