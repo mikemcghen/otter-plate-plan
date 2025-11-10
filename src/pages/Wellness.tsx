@@ -149,7 +149,7 @@ export default function Wellness() {
 
           {/* Active State - Carousel */}
           {reflectionState === "active" && (
-            <div className="animate-scale-in">
+            <>
               {/* Progress Dots */}
               <div className="absolute top-4 left-0 right-0 z-10 flex justify-center gap-2 px-4">
                 {Array.from({ length: totalCards }).map((_, i) => (
@@ -210,7 +210,7 @@ export default function Wellness() {
                   </CarouselItem>
                 </CarouselContent>
               </Carousel>
-            </div>
+            </>
           )}
 
           {/* Complete State */}
