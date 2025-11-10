@@ -20,7 +20,7 @@ interface ReflectionData {
 
 export const ReflectionFlow = () => {
   const { caloriesConsumed, caloriesTarget, waterConsumed, foodLogs, streak, xp, level } = useAppContext();
-  const [flowState, setFlowState] = useState<"collapsed" | "active" | "complete">("collapsed");
+  const [flowState, setFlowState] = useState<"collapsed" | "active" | "final" | "complete">("collapsed");
   const [api, setApi] = useState<CarouselApi>();
   const [current, setCurrent] = useState(0);
   const [reflectionData, setReflectionData] = useState<ReflectionData>({});
@@ -53,7 +53,10 @@ export const ReflectionFlow = () => {
     const updated = { ...reflectionData, [step]: data };
     setReflectionData(updated);
 
-    if (step === "reflection") {
+    if (step === "mood") {
+      // After mood, show final reflection card
+      setFlowState("final");
+    } else if (step === "reflection") {
       // Final step - mark complete
       const final = { ...updated, completedAt: new Date().toDateString() };
       localStorage.setItem("dailyReflection", JSON.stringify(final));
@@ -69,7 +72,6 @@ export const ReflectionFlow = () => {
     { icon: Moon, label: "Sleep" },
     { icon: Zap, label: "Energy" },
     { icon: Heart, label: "Feeling" },
-    { icon: Sparkles, label: "Reflect" },
   ];
 
   if (flowState === "collapsed") {
@@ -111,6 +113,21 @@ export const ReflectionFlow = () => {
           </div>
         </div>
       </div>
+    );
+  }
+
+  if (flowState === "final") {
+    return (
+      <FinalReflectionCard
+        onComplete={(data) => handleStepComplete("reflection", data)}
+        data={reflectionData.reflection}
+        reflectionData={reflectionData}
+        caloriesConsumed={caloriesConsumed}
+        calorieGoal={caloriesTarget}
+        waterCups={Math.floor(waterConsumed / 8)}
+        movementMinutes={0}
+        streak={streak}
+      />
     );
   }
 
@@ -175,18 +192,6 @@ export const ReflectionFlow = () => {
                   onComplete={(data) => handleStepComplete("mood", data)}
                   data={reflectionData.mood}
                   waterCups={Math.floor(waterConsumed / 8)}
-                />
-              </CarouselItem>
-              <CarouselItem>
-                <FinalReflectionCard 
-                  onComplete={(data) => handleStepComplete("reflection", data)}
-                  data={reflectionData.reflection}
-                  reflectionData={reflectionData}
-                  caloriesConsumed={caloriesConsumed}
-                  calorieGoal={caloriesTarget}
-                  waterCups={Math.floor(waterConsumed / 8)}
-                  movementMinutes={0}
-                  streak={streak}
                 />
               </CarouselItem>
             </CarouselContent>
