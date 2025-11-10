@@ -1,0 +1,217 @@
+import { useState, useEffect } from "react";
+import { Sparkles, Moon, Footprints, Droplet, Target } from "lucide-react";
+import { Textarea } from "@/components/ui/textarea";
+import { Button } from "@/components/ui/button";
+
+interface FinalReflectionCardProps {
+  onComplete: (data: string) => void;
+  data?: string;
+  reflectionData: any;
+  caloriesConsumed: number;
+  calorieGoal: number;
+  waterCups: number;
+  movementMinutes: number;
+  streak: number;
+}
+
+const prompts = [
+  "What are you grateful for?",
+  "What felt good today?",
+  "What helped you recharge?",
+  "What brought you joy today?",
+  "What made you feel calm?"
+];
+
+interface Insight {
+  icon: any;
+  text: string;
+  visible: boolean;
+}
+
+export const FinalReflectionCard = ({
+  onComplete,
+  data = "",
+  reflectionData,
+  caloriesConsumed,
+  calorieGoal,
+  waterCups,
+  movementMinutes,
+  streak
+}: FinalReflectionCardProps) => {
+  const [reflection, setReflection] = useState(data);
+  const [prompt] = useState(() => prompts[Math.floor(Math.random() * prompts.length)]);
+  const [insights, setInsights] = useState<Insight[]>([]);
+
+  useEffect(() => {
+    // Generate insights based on user data
+    const generatedInsights: Insight[] = [];
+
+    // Sleep insight
+    if (reflectionData?.sleep?.hours) {
+      const hours = reflectionData.sleep.hours;
+      let sleepText = "";
+      if (hours >= 7 && hours <= 9) {
+        sleepText = `You rested for ${hours}h — right in your sweet spot.`;
+      } else if (hours < 6) {
+        sleepText = `Even ${hours}h of rest counts — take it easy today.`;
+      } else {
+        sleepText = `You rested for ${hours}h — your body knows what it needs.`;
+      }
+      generatedInsights.push({
+        icon: Moon,
+        text: sleepText,
+        visible: false
+      });
+    }
+
+    // Movement insight
+    if (movementMinutes > 0) {
+      const goalPercent = Math.round((movementMinutes / 30) * 100);
+      let moveText = "";
+      if (goalPercent >= 80) {
+        moveText = `You hit ${goalPercent}% of your move goal — a gentle victory.`;
+      } else if (goalPercent >= 50) {
+        moveText = `You moved for ${movementMinutes} minutes — every step counts.`;
+      } else {
+        moveText = `You moved ${movementMinutes} minutes — momentum builds slowly.`;
+      }
+      generatedInsights.push({
+        icon: Footprints,
+        text: moveText,
+        visible: false
+      });
+    }
+
+    // Hydration insight
+    if (waterCups > 0) {
+      const hydrationPercent = Math.round((waterCups / 8) * 100);
+      let waterText = "";
+      if (hydrationPercent >= 80) {
+        waterText = "Fluids were on track — keep your river flowing.";
+      } else if (hydrationPercent >= 50) {
+        waterText = `${waterCups} cups down — gentle progress.`;
+      } else {
+        waterText = "A gentle nudge — more water helps balance.";
+      }
+      generatedInsights.push({
+        icon: Droplet,
+        text: waterText,
+        visible: false
+      });
+    }
+
+    // Nutrition insight
+    if (caloriesConsumed > 0) {
+      const caloriePercent = Math.round((caloriesConsumed / calorieGoal) * 100);
+      let nutritionText = "";
+      if (caloriePercent >= 80 && caloriePercent <= 110) {
+        nutritionText = "Your nourishment was balanced today — harmony found.";
+      } else if (caloriePercent < 80) {
+        nutritionText = "You nourished yourself gently — that's enough.";
+      } else {
+        nutritionText = "You fueled yourself fully — your body knows what it needs.";
+      }
+      generatedInsights.push({
+        icon: Sparkles,
+        text: nutritionText,
+        visible: false
+      });
+    }
+
+    // Streak insight
+    if (streak > 0) {
+      generatedInsights.push({
+        icon: Target,
+        text: `That's ${streak} days of showing up — Ottr's proud.`,
+        visible: false
+      });
+    }
+
+    setInsights(generatedInsights.slice(0, 4));
+
+    // Stagger the fade-in of insights
+    generatedInsights.slice(0, 4).forEach((_, index) => {
+      setTimeout(() => {
+        setInsights(prev => 
+          prev.map((insight, i) => 
+            i === index ? { ...insight, visible: true } : insight
+          )
+        );
+      }, index * 300);
+    });
+  }, [reflectionData, caloriesConsumed, calorieGoal, waterCups, movementMinutes, streak]);
+
+  const handleComplete = () => {
+    if (reflection.trim()) {
+      onComplete(reflection);
+    }
+  };
+
+  return (
+    <div className="relative w-full bg-background/40 backdrop-blur-xl rounded-3xl p-8 border border-border/20 shadow-2xl space-y-6 max-h-[75vh] overflow-y-auto">
+      {/* Ambient background */}
+      <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-accent/5 to-secondary/5 rounded-3xl animate-breathing" />
+      
+      <div className="relative z-10 space-y-6">
+        {/* Header */}
+        <div className="text-center space-y-2 animate-fade-in">
+          <h3 className="text-2xl font-bold text-foreground">
+            One last reflection…
+          </h3>
+          <p className="text-base text-muted-foreground italic">
+            {prompt}
+          </p>
+        </div>
+
+        {/* Insights Panel */}
+        {insights.length > 0 && (
+          <div className="space-y-3">
+            {insights.map((insight, index) => (
+              <div
+                key={index}
+                className={`flex items-start gap-3 bg-background/60 backdrop-blur-sm rounded-2xl p-4 border border-border/30 transition-all duration-500 ${
+                  insight.visible 
+                    ? 'opacity-100 translate-y-0' 
+                    : 'opacity-0 translate-y-4'
+                }`}
+              >
+                <div className="flex-shrink-0 w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
+                  <insight.icon className="w-4 h-4 text-primary" strokeWidth={1.5} />
+                </div>
+                <p className="text-sm text-foreground italic leading-relaxed pt-1">
+                  {insight.text}
+                </p>
+              </div>
+            ))}
+          </div>
+        )}
+
+        {/* Reflection Input */}
+        <div className="space-y-3">
+          <Textarea
+            value={reflection}
+            onChange={(e) => setReflection(e.target.value)}
+            placeholder="Take a moment to write what comes to mind..."
+            className="min-h-[120px] bg-background/60 backdrop-blur-sm border-border/30 text-foreground placeholder:text-muted-foreground resize-none rounded-2xl focus-visible:ring-primary/50"
+          />
+        </div>
+
+        {/* Complete Button */}
+        <Button
+          onClick={handleComplete}
+          disabled={!reflection.trim()}
+          className="w-full py-6 text-base font-medium rounded-2xl bg-primary hover:bg-primary/90 text-primary-foreground shadow-lg disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
+        >
+          Complete Reflection
+        </Button>
+
+        {/* Affirmation */}
+        <div className="text-center animate-fade-in">
+          <p className="text-xs text-muted-foreground italic">
+            🦦 "You showed up for yourself today."
+          </p>
+        </div>
+      </div>
+    </div>
+  );
+};

@@ -4,7 +4,7 @@ import { Carousel, CarouselContent, CarouselItem } from "@/components/ui/carouse
 import { SleepReflectionCard } from "./SleepReflectionCard";
 import { EnergyReflectionCard } from "./EnergyReflectionCard";
 import { MoodReflectionCard } from "./MoodReflectionCard";
-import { OpenReflectionCard } from "./OpenReflectionCard";
+import { FinalReflectionCard } from "./FinalReflectionCard";
 import { ReflectionSummary } from "./ReflectionSummary";
 import { Moon, Zap, Heart, Sparkles } from "lucide-react";
 import { Button } from "./ui/button";
@@ -19,7 +19,7 @@ interface ReflectionData {
 }
 
 export const ReflectionFlow = () => {
-  const { caloriesConsumed, caloriesTarget, waterConsumed, foodLogs } = useAppContext();
+  const { caloriesConsumed, caloriesTarget, waterConsumed, foodLogs, streak, xp, level } = useAppContext();
   const [flowState, setFlowState] = useState<"collapsed" | "active" | "complete">("collapsed");
   const [api, setApi] = useState<CarouselApi>();
   const [current, setCurrent] = useState(0);
@@ -178,10 +178,15 @@ export const ReflectionFlow = () => {
                 />
               </CarouselItem>
               <CarouselItem>
-                <OpenReflectionCard 
+                <FinalReflectionCard 
                   onComplete={(data) => handleStepComplete("reflection", data)}
                   data={reflectionData.reflection}
                   reflectionData={reflectionData}
+                  caloriesConsumed={caloriesConsumed}
+                  calorieGoal={caloriesTarget}
+                  waterCups={Math.floor(waterConsumed / 8)}
+                  movementMinutes={0}
+                  streak={streak}
                 />
               </CarouselItem>
             </CarouselContent>
