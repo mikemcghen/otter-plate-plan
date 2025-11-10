@@ -102,7 +102,7 @@ export default function Wellness() {
               ? "p-8 cursor-pointer" 
               : "p-0"
           } ${
-            reflectionState === "active" ? "min-h-[calc(100vh-200px)]" : ""
+            reflectionState === "active" ? "max-h-[70vh]" : ""
           }`}
           onClick={() => reflectionState === "collapsed" && setReflectionState("active")}
         >
@@ -175,7 +175,7 @@ export default function Wellness() {
                   skipSnaps: false,
                   duration: 18,
                 }}
-                className="h-full w-full pt-16 pb-8"
+                className="w-full pt-16 pb-8"
               >
                 <CarouselContent className="h-full">
                   <CarouselItem className="h-full">
